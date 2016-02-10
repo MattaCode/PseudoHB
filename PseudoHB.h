@@ -85,9 +85,21 @@ class Modell{
     void readFromFileModell( const char* );
 
     //count plaquett at idx, for two selected direction i,j
-    //up initialized as Identity
+    //result initialized as Identity
     //assumes calls with existing indices idx-y-z-k and i-j
     void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
+
+    //count forward staple (plaquett without the selected link)
+    //result initialized as Identity
+    void TriplUForw(const unsigned int, const unsigned int, int, int, int, int, arma::cx_mat &);
+
+    //count all six staple for a selected link
+    //result init.ed as Identity
+    void Count6Staple(const unsigned int,int,int,int,int,arma::cx_mat&);
+
+    //count backward staple (plaquett without the selected link)
+    //result initialized as Identity
+    void TriplURev(const unsigned int, const unsigned int, int, int, int, int, arma::cx_mat &);
 
     //Modify the selected link
     void ModifyLink(int, int, int, int, int, const arma::cx_mat& );

@@ -167,6 +167,189 @@ void Modell::RandomInit(){
     //assumes calls with existing indices idx-y-z-k and i-j
     //void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
 
+//count forward staple (plaquett without the selected link)
+//result initialized as Identity
+void Modell::TriplUForw(const unsigned int grididx, const unsigned int grididx2,
+int idx, int idy, int idz, int idk, arma::cx_mat & result){
+    //maxdim of SU3Grid
+    const int maxdim=SU3Grid::GetDim();
+    const int maxtdim=SU3Grid::GetTDim();
+    if(grididx==grididx2) throw "equal direction error";
+        //step along first direction: index->index+ei*a
+        switch(grididx){
+        case 0:
+            idx++;
+            //modulo for periodic BC
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy++;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz++;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk++;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        //multipl by second edge (j) at index+ei*a
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
+        //step back along first direction
+        switch(grididx){
+        case 0:
+            idx--;
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy--;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz--;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk--;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        //step along second direction
+        switch(grididx2){
+        case 0:
+            idx++;
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy++;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz++;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk++;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        //multipl by third edge at index+ej*a
+        result=(grid(grididx).GetGrid())(idx,idy,idz,idk).t()*result;
+        //step back along second direction
+        switch(grididx2){
+        case 0:
+            idx--;
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy--;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz--;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk--;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        //multipl by fourth edge at index - closing the cycle
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
+}
+
+//count backward staple (plaquett without the selected link)
+//result initialized as Identity
+void Modell::TriplURev(const unsigned int grididx, const unsigned int grididx2,
+int idx, int idy, int idz, int idk, arma::cx_mat & result){
+    //maxdim of SU3Grid
+    const int maxdim=SU3Grid::GetDim();
+    const int maxtdim=SU3Grid::GetTDim();
+    if(grididx==grididx2) throw "equal direction error";
+    //step back along second direction
+    switch(grididx2){
+        case 0:
+            idx--;
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy--;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz--;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk--;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        result=(grid(grididx).GetGrid())(idx,idy,idz,idk)*result;
+        //step along first direction
+        switch(grididx){
+        case 0:
+            idx++;
+            //modulo for periodic BC
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy++;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz++;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk++;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
+        //step back along first direction
+        switch(grididx){
+        case 0:
+            idx--;
+            idx=(idx+maxtdim)%maxtdim;
+            break;
+        case 1:
+            idy--;
+            idy=(idy+maxdim)%maxdim;
+            break;
+        case 2:
+            idz--;
+            idz=(idz+maxdim)%maxdim;
+            break;
+        case 3:
+            idk--;
+            idk=(idk+maxdim)%maxdim;
+            break;
+        }//switch
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
+
+}
+
+//count all six staple for a selected link
+//sixstaple init.ed as Zero matrix
+void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk,cx_mat& sixstaple){
+    int grididx2=grididx;
+    cx_mat identity(3,3,fill::eye);
+    cx_mat result=identity;
+    for(int i=1;i<4;i++){
+        grididx2=grididx+i;
+        grididx2=(grididx2+4)%4;
+        result=identity;
+        TriplUForw(grididx,grididx2,idx,idy,idz,idk,result);
+        sixstaple+=result;
+        result=identity;
+        TriplURev(grididx,grididx2,idx,idy,idz,idk,result);
+        sixstaple+=result;
+    }
+}
+
 //Modify the selected link
 void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const arma::cx_mat& newlink){
 //debug
