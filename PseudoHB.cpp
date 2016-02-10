@@ -167,8 +167,12 @@ void Modell::RandomInit(){
     //assumes calls with existing indices idx-y-z-k and i-j
     //void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
 
-    //Modify the selected link
-    //void ModifyLink(int, int, int, int, int, const arma::cx_mat& );
+//Modify the selected link
+void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const arma::cx_mat& newlink){
+//debug
+cout<<"modell modifylink call"<<endl;
+    grid(grididx).ModifyGrid()(idx,idy,idz,idk)=newlink;
+}
 
 //access for reading
 const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
