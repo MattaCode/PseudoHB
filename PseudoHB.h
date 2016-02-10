@@ -26,7 +26,7 @@ class SU3Grid{
     SU3Grid& operator=(const SU3Grid& fromsu3grid);
 
     //copy
-    SU3Grid(const SU3Grid& su3grid)=delete;
+    SU3Grid(const SU3Grid& );
 
     //write SU3Grid to os
     void writeSU3Grid(std::ostream &)const;

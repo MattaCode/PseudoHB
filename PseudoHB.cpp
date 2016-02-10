@@ -31,11 +31,19 @@ cx_mat RandSU3(cx_mat su3){
     return su3;
 }
 
+/*******************/
+/******SU3GRID******/
+/*******************/
 
-SU3Grid::SU3Grid():ei(tdim,dim,dim,dim){}
+SU3Grid::SU3Grid():ei(tdim,dim,dim,dim){
+//debug
+cout<<"su3grid def. ctr. call"<<endl;
+}
 
 //construct from random
 SU3Grid::SU3Grid(bool flag):ei(tdim,dim,dim,dim){
+//debug
+cout<<"su3grid ctr from rand call"<<endl;
     for(int i=0;i<tdim;i++){
         for(int j=0;j<dim;j++){
             for(int k=0;k<dim;k++){
@@ -48,7 +56,31 @@ SU3Grid::SU3Grid(bool flag):ei(tdim,dim,dim,dim){
     }//for i timelike
 }
 
-SU3Grid::~SU3Grid(){}
+
+
+//assignment operator
+SU3Grid& SU3Grid::operator=(const SU3Grid& fromsu3grid){
+//debug
+cout<<"su3grid assignment call"<<endl;
+    if(this!=&fromsu3grid){
+        ei=fromsu3grid.ei;
+    }
+    return *this;
+}
+
+//copy
+SU3Grid::SU3Grid(const SU3Grid& su3grid):ei(tdim,dim,dim,dim){
+//debug
+cout<<"su3grid copy call"<<endl;
+    *this=su3grid;
+}
+
+//TO DO
+    //write SU3Grid to os
+    //void writeSU3Grid(std::ostream &){}
+
+    //read SU3Grid from is
+    //void readSU3Grid(std::istream&){}
 
 //get value of dimension
 const int SU3Grid::GetDim(){
@@ -70,8 +102,26 @@ Array::array4<cx_mat>& SU3Grid::ModifyGrid(){
     return ei;
 }
 
+SU3Grid::~SU3Grid(){}
+/*******************************************************/
+
+
+/*********************/
+/***** MODELL ********/
+/*********************/
+
 //default constr
 Modell::Modell():grid(4){}
+
+//construct from random
+Modell::Modell(bool flag):grid(4){
+    RandomInit();
+}
+
+//TO DO
+    //construct from file
+    //Modell(const char* );
+    //SU3Grid(std::istream&);
 
 //RandomInit
 void Modell::RandomInit(){
@@ -92,10 +142,33 @@ void Modell::RandomInit(){
         }//for grid
     }
 
-//construct from random
-Modell::Modell(bool flag):grid(4){
-    RandomInit();
-}
+//ASSIGNMENT
+//Modell& operator=(const Modell&);
+
+    //COPY
+    //Modell(const Modell&);
+    //get beta
+   // static const double GetBeta();
+
+    //write Modell to os
+    //void writeModell( std::ostream& )const;
+
+    //write Modell to file
+    //void writeToFileModell( const char* )const;
+
+    //read Modell from is
+    //void readModell( std::istream& );
+
+    //read Modell from file
+    //void readFromFileModell( const char* );
+
+    //count plaquett at idx, for two selected direction i,j
+    //up initialized as Identity
+    //assumes calls with existing indices idx-y-z-k and i-j
+    //void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
+
+    //Modify the selected link
+    //void ModifyLink(int, int, int, int, int, const arma::cx_mat& );
 
 //access for reading
 const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
@@ -103,6 +176,8 @@ const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
 }
 
 Modell::~Modell(){}
+
+/****************************************************************/
 
 const double Modell::beta=6;
 const int SU3Grid::dim=4;
