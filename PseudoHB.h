@@ -51,6 +51,7 @@ class Modell{
     //links
     Array::array1<SU3Grid> grid;
     static const double beta;
+    arma::cx_mat su3staple;
 
     public:
 
@@ -95,7 +96,7 @@ class Modell{
 
     //count all six staple for a selected link
     //result init.ed as Identity
-    void Count6Staple(const unsigned int,int,int,int,int,arma::cx_mat&);
+    void Count6Staple(const unsigned int,int,int,int,int);
 
     //count backward staple (plaquett without the selected link)
     //result initialized as Identity

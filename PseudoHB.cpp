@@ -111,10 +111,10 @@ SU3Grid::~SU3Grid(){}
 /*********************/
 
 //default constr
-Modell::Modell():grid(4){}
+Modell::Modell():grid(4),su3staple(3,3,fill::eye){}
 
 //construct from random
-Modell::Modell(bool flag):grid(4){
+Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::eye){
     RandomInit();
 }
 
@@ -335,19 +335,20 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
 
 //count all six staple for a selected link
 //sixstaple init.ed as Zero matrix
-void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk,cx_mat& sixstaple){
+void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk){
     int grididx2=grididx;
     cx_mat identity(3,3,fill::eye);
+    su3staple=identity;//reinitialize before counting
     cx_mat result=identity;
     for(int i=1;i<4;i++){
         grididx2=grididx+i;
         grididx2=(grididx2+4)%4;
         result=identity;
         TriplUForw(grididx,grididx2,idx,idy,idz,idk,result);
-        sixstaple+=result;
+        su3staple+=result;
         result=identity;
         TriplURev(grididx,grididx2,idx,idy,idz,idk,result);
-        sixstaple+=result;
+        su3staple+=result;
     }
 }
 
