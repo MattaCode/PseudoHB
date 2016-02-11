@@ -1,4 +1,5 @@
 #include<iostream>
+#include<complex>
 #include<cmath>
 #include<armadillo>
 #include"PseudoHB.h"
@@ -111,10 +112,10 @@ SU3Grid::~SU3Grid(){}
 /*********************/
 
 //default constr
-Modell::Modell():grid(4),su3staple(3,3,fill::eye){}
+Modell::Modell():grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){}
 
 //construct from random
-Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::eye){
+Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
     RandomInit();
 }
 
@@ -337,20 +338,41 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //sixstaple init.ed as Zero matrix
 void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk){
     int grididx2=grididx;
-    cx_mat identity(3,3,fill::eye);
-    su3staple=identity;//reinitialize before counting
-    cx_mat result=identity;
+    su3staple.zeros();
+    cx_mat result(3,3,fill::eye);
     for(int i=1;i<4;i++){
         grididx2=grididx+i;
         grididx2=(grididx2+4)%4;
-        result=identity;
+        result.eye();
         TriplUForw(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
-        result=identity;
+        result.eye();
         TriplURev(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
     }
 }
+
+//find Pauli coefficients for 2x2 submatrix of su3staple
+//then build SU2 "staple like" matrix
+//strowcol: first row and column idx of submatrix
+void Modell::BuildSU2staple(const int strowcol){
+//count coefficients (Pauli base coordinates)
+    std::complex<double> r0=1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1));
+    std::complex<double> r1=(1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol));
+    std::complex<double> r2=(1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1));
+    std::complex<double> r3=(1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1));
+//reinitialize su2staple
+su2staple.zeros();
+//build su2 staple like matrix
+su2staple+=real(r0)*identity2;
+su2staple-=iunit*real(r1)*pauli1;
+su2staple-=iunit*real(r2)*pauli2;
+su2staple-=iunit*real(r3)*pauli3;
+
+su2strootdet=sqrt(det(su2staple));
+
+}
+
 
 //Modify the selected link
 void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const arma::cx_mat& newlink){
@@ -371,3 +393,10 @@ Modell::~Modell(){}
 const double Modell::beta=6;
 const int SU3Grid::dim=4;
 const int SU3Grid::tdim=8;
+const std::complex<double> Modell::iunit(0,1);
+const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
+const arma::cx_mat Modell::pauli2={{{0,0},{0,1}},{{0,-1},{0,0}}};
+const arma::cx_mat Modell::pauli3={{{1,0},{0,0}},{{0,0},{-1,0}}};
+const arma::cx_mat Modell::identity2(2,2,fill::eye);
+
+

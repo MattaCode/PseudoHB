@@ -52,6 +52,15 @@ class Modell{
     Array::array1<SU3Grid> grid;
     static const double beta;
     arma::cx_mat su3staple;
+    arma::cx_mat su2staple;
+    std::complex<double> su2strootdet;
+    static const std::complex<double> iunit;
+    static const arma::cx_mat pauli1;
+    static const arma::cx_mat pauli2;
+    static const arma::cx_mat pauli3;
+    static const arma::cx_mat identity2;
+
+
 
     public:
 
@@ -101,6 +110,10 @@ class Modell{
     //count backward staple (plaquett without the selected link)
     //result initialized as Identity
     void TriplURev(const unsigned int, const unsigned int, int, int, int, int, arma::cx_mat &);
+
+    //find Pauli coefficients for 2x2 submatrix of su3staple
+    //then build SU2 "staple like" matrix
+    void BuildSU2staple(const int);
 
     //Modify the selected link
     void ModifyLink(int, int, int, int, int, const arma::cx_mat& );
