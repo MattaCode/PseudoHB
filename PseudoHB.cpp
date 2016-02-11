@@ -287,7 +287,6 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
-        result=(grid(grididx).GetGrid())(idx,idy,idz,idk)*result;
         //step along first direction
         switch(grididx){
         case 0:
@@ -308,7 +307,7 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
-        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
         //step back along first direction
         switch(grididx){
         case 0:
@@ -328,7 +327,9 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
-        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
+        result=(grid(grididx).GetGrid())(idx,idy,idz,idk).t()*result;
+
+        result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
 
 }
 
