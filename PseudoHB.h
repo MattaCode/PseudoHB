@@ -114,8 +114,14 @@ class Modell{
     //find Pauli coefficients for 2x2 submatrix of su3staple
     std::vector<double> CountCoeffs(const int);
 
+    //generating new su2 matrix coeff0
+    double GenerateCoeff0();
+
+    //generate new su2 matrix coeffs 3d sphere
+    std::vector<double> GenerateCoeffs();
+
     // build SU2 matrix
-    void BuildSU2(const std::vector<double> & ,arma::cx_mat &);
+    void BuildSU2(const double, const std::vector<double> & ,arma::cx_mat &);
 
     //su2staple
     //and determinant

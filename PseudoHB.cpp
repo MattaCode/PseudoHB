@@ -4,6 +4,7 @@
 #include<vector>
 #include<armadillo>
 #include"PseudoHB.h"
+#include "HBRandom.h"
 
 using namespace arma;
 using namespace std;
@@ -355,38 +356,64 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
 
 //find Pauli coefficients for 2x2 submatrix of su3staple
 //strowcol: first row and column idx of submatrix
+//negative sign because different way for building SU2 staple matrix as opposed to other su2 matrix
 vector<double> Modell::CountCoeffs(const int strowcol){
 
-vector<double> coeffs={real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
-                       real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
-                       real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
-                       real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
+vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
+                       -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
+                       -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
     return coeffs;
+}
+
+//generating new su2 matrix coeffs
+double Modell::GenerateCoeff0(){
+    double a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+//debug
+cout<<su2strootdet<<endl;
+cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
+    //generate a_0
+    //with accept-reject
+    bool accept=Flip(sqrt(1-a0*a0));
+//debug
+int counter=1;
+    while(!accept){
+        a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+        accept=Flip(sqrt(1-a0*a0));
+        //debug
+        counter++;
+        //debug
+        cout<<"num of trials: "<<counter<<endl;
+    }
+return a0;
+}
+
+//generate new su2 matrix coeffs 3d sphere
+std::vector<double> Modell::GenerateCoeffs(){
+    vector<double> coeff3d=RandOnSphere(3);
+    return coeff3d;
 }
 
 // build SU2  matrix
 //su2: result matrix, initialized as zeros
-void Modell::BuildSU2(const vector<double> & coeffs,cx_mat & su2){
+void Modell::BuildSU2(const double coeff0, const vector<double> & coeffs,cx_mat & su2){
 
 //reinitialize su2staple
 //su2staple.zeros();
 su2.zeros(); //just in case
 if (coeffs.empty()) throw "BuildSU2staple fails! empty coeffs";
-if(coeffs.size()!=4) throw "Build SU2staple fails! wrong coeffs size";
+if(coeffs.size()!=3) throw "Build SU2staple fails! wrong coeffs size";
 //build su2 staple like matrix
-su2+=coeffs.front()*identity2;
-su2-=iunit*coeffs[1]*pauli1;
-su2-=iunit*coeffs[2]*pauli2;
-su2-=iunit*coeffs.back()*pauli3;
-
-
-
+su2+=coeff0*identity2;
+su2+=iunit*coeffs.front()*pauli1;
+su2+=iunit*coeffs[1]*pauli2;
+su2+=iunit*coeffs.back()*pauli3;
 }
 
 //su2staple
 //and determinant
 void Modell::BuildSU2staple(const int strowcol){
-    BuildSU2(CountCoeffs(strowcol),su2staple);
+    BuildSU2(real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
+    CountCoeffs(strowcol),su2staple);
     su2strootdet=sqrt(det(su2staple));
 }
 
