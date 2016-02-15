@@ -1,6 +1,7 @@
 #include<iostream>
 #include<complex>
 #include<cmath>
+#include<vector>
 #include<armadillo>
 #include"PseudoHB.h"
 
@@ -353,24 +354,40 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
 }
 
 //find Pauli coefficients for 2x2 submatrix of su3staple
-//then build SU2 "staple like" matrix
 //strowcol: first row and column idx of submatrix
-void Modell::BuildSU2staple(const int strowcol){
-//count coefficients (Pauli base coordinates)
-    std::complex<double> r0=1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1));
-    std::complex<double> r1=(1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol));
-    std::complex<double> r2=(1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1));
-    std::complex<double> r3=(1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1));
+vector<double> Modell::CountCoeffs(const int strowcol){
+
+vector<double> coeffs={real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
+                       real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
+                       real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
+                       real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
+    return coeffs;
+}
+
+// build SU2  matrix
+//su2: result matrix, initialized as zeros
+void Modell::BuildSU2(const vector<double> & coeffs,cx_mat & su2){
+
 //reinitialize su2staple
-su2staple.zeros();
+//su2staple.zeros();
+su2.zeros(); //just in case
+if (coeffs.empty()) throw "BuildSU2staple fails! empty coeffs";
+if(coeffs.size()!=4) throw "Build SU2staple fails! wrong coeffs size";
 //build su2 staple like matrix
-su2staple+=real(r0)*identity2;
-su2staple-=iunit*real(r1)*pauli1;
-su2staple-=iunit*real(r2)*pauli2;
-su2staple-=iunit*real(r3)*pauli3;
+su2+=coeffs.front()*identity2;
+su2-=iunit*coeffs[1]*pauli1;
+su2-=iunit*coeffs[2]*pauli2;
+su2-=iunit*coeffs.back()*pauli3;
 
-su2strootdet=sqrt(det(su2staple));
 
+
+}
+
+//su2staple
+//and determinant
+void Modell::BuildSU2staple(const int strowcol){
+    BuildSU2(CountCoeffs(strowcol),su2staple);
+    su2strootdet=sqrt(det(su2staple));
 }
 
 
