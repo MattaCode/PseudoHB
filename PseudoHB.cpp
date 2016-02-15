@@ -118,6 +118,8 @@ Modell::Modell():grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),s
 
 //construct from random
 Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
+//debug
+cout<<"Modell ctr from rand"<<endl;
     RandomInit();
 }
 
@@ -128,6 +130,8 @@ Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill:
 
 //RandomInit
 void Modell::RandomInit(){
+//debug
+cout<<"Modell randominit call"<<endl;
     int tgridmax=SU3Grid::GetTDim();
     int gridmax=SU3Grid::GetDim();
     //sweep cycle
@@ -174,6 +178,8 @@ void Modell::RandomInit(){
 //result initialized as Identity
 void Modell::TriplUForw(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
+//debug
+cout<<"Modell tripluforw call"<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -267,6 +273,8 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //result initialized as Identity
 void Modell::TriplURev(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
+//debug
+cout<<"Modell triplurev call"<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -339,6 +347,8 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //count all six staple for a selected link
 //sixstaple init.ed as Zero matrix
 void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk){
+//debug
+cout<<"Modell count6staple call"<<endl;
     int grididx2=grididx;
     su3staple.zeros();
     cx_mat result(3,3,fill::eye);
@@ -358,7 +368,8 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
 //strowcol: first row and column idx of submatrix
 //negative sign because different way for building SU2 staple matrix as opposed to other su2 matrix
 vector<double> Modell::CountCoeffs(const int strowcol){
-
+//debug
+cout<<"Modell countcoeffs call"<<endl;
 vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
                        -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
                        -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
@@ -367,7 +378,10 @@ vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3sta
 
 //generating new su2 matrix coeffs
 double Modell::GenerateCoeff0(){
+//debug
+cout<<"Modell gen.coeff0 call"<<endl;
     double a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+    a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
 //debug
 cout<<su2strootdet<<endl;
 cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
@@ -378,6 +392,7 @@ cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
 int counter=1;
     while(!accept){
         a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+        a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
         accept=Flip(sqrt(1-a0*a0));
         //debug
         counter++;
@@ -389,6 +404,8 @@ return a0;
 
 //generate new su2 matrix coeffs 3d sphere
 std::vector<double> Modell::GenerateCoeffs(){
+//debug modell
+cout<<"Modell gen.coeffs call"<<endl;
     vector<double> coeff3d=RandOnSphere(3);
     return coeff3d;
 }
@@ -396,7 +413,8 @@ std::vector<double> Modell::GenerateCoeffs(){
 // build SU2  matrix
 //su2: result matrix, initialized as zeros
 void Modell::BuildSU2(const double coeff0, const vector<double> & coeffs,cx_mat & su2){
-
+//debug
+cout<<"Modell build su2 call"<<endl;
 //reinitialize su2staple
 //su2staple.zeros();
 su2.zeros(); //just in case
@@ -412,6 +430,8 @@ su2+=iunit*coeffs.back()*pauli3;
 //su2staple
 //and determinant
 void Modell::BuildSU2staple(const int strowcol){
+//debug
+cout<<"Modell buildsu2staple call"<<endl;
     BuildSU2(real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
     CountCoeffs(strowcol),su2staple);
     su2strootdet=sqrt(det(su2staple));
@@ -420,6 +440,8 @@ void Modell::BuildSU2staple(const int strowcol){
 //build generated and transformed su3 matrix
 //refresh link with it
 void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, const int idz, const int idk, const int strowcol){
+//debug
+cout<<"Modell refreshlinkpart call"<<endl;
     //count su2 from generated coeffs
     cx_mat alphamat(2,2,fill::zeros);
     BuildSU2(GenerateCoeff0(),GenerateCoeffs(),alphamat);
@@ -446,7 +468,43 @@ cout<<"modell modifylink call"<<endl;
 
 //access for reading
 const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
+//debug
+cout<<"Modell getgrid call"<<endl;
     return grid;
+}
+
+//heat bath step
+void Modell::HeatBathStep(const unsigned int grididx,int idx,int idy, int idz, int idk){
+//debug
+cout<<"Modell heatbathstep call"<<endl;
+    //count staple
+    Count6Staple(grididx,idx,idy,idz,idk);
+    //for: fist and second sub SU2
+    for(int strawcol=0;strawcol<2;strawcol++){
+        //build su2 analog matrix
+        BuildSU2staple(strawcol);
+        //generate coeffs and refresh
+        RefreshLinkpart(grididx,idx,idy,idz,idk,strawcol);
+    }
+}
+
+//heat bath sweep
+void Modell::HeatBathSweep(){
+//debug
+cout<<"Modell heatbathsweep call"<<endl;
+    const int tdim=SU3Grid::GetTDim();
+    const int dim=SU3Grid::GetDim();
+    for(int grididx=0;grididx<4;grididx++){
+        for(int i=0;i<tdim;i++){
+            for(int j=0;j<dim;j++){
+                for(int k=0;k<dim;k++){
+                    for(int l=0;l<dim;l++){
+                        HeatBathStep(grididx,i,j,k,l);
+                    }//for space 3
+                }//for space 2
+            }//for space1
+        }//for time
+    }//for grid
 }
 
 Modell::~Modell(){}
@@ -454,8 +512,8 @@ Modell::~Modell(){}
 /****************************************************************/
 
 const double Modell::beta=6;
-const int SU3Grid::dim=4;
-const int SU3Grid::tdim=8;
+const int SU3Grid::dim=2;
+const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
 const arma::cx_mat Modell::pauli2={{{0,0},{0,1}},{{0,-1},{0,0}}};

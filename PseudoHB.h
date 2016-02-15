@@ -137,6 +137,10 @@ class Modell{
     //access for reading
     const Array::array1<SU3Grid>& GetModellGrid()const;
 
+    //heat bath step
+    void HeatBathStep(const unsigned int ,int ,int , int , int);
+    //heat bath sweep
+    void HeatBathSweep();
 
     ~Modell();
 
