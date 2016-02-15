@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include"PseudoHB.h"
 #include"HBRandom.h"
 
@@ -47,6 +48,18 @@ std::cout<<mymodell.GetModellGrid()(0).GetGrid()(0,0,0,0)<<std::endl;
 
 for(int i=0;i<10;i++){
 cout<<"random Bernoulli: "<<Flip(0.5)<<endl;
+}
+
+for(int i=0;i<10;i++){
+cout<<"random real: "<<GetRealRandom(-1,5)<<endl;
+}
+
+for(int i=0;i<10;i++){
+    vector<double> randsph=RandOnSphere(3);
+    cout<<"random on Sphere: "<<endl;
+    for(vector<double>::iterator it=randsph.begin();it!=randsph.end();it++){
+        cout<<*it<<endl;
+    }
 }
 
 return 0;
