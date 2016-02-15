@@ -123,6 +123,10 @@ class Modell{
     // build SU2 matrix
     void BuildSU2(const double, const std::vector<double> & ,arma::cx_mat &);
 
+    //build generated and transformed su3 matrix
+    //refresh link with it
+    void RefreshLinkpart(const int, const int, const int, const int, const int,const int);
+
     //su2staple
     //and determinant
     void BuildSU2staple(const int);

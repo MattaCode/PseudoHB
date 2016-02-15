@@ -417,6 +417,25 @@ void Modell::BuildSU2staple(const int strowcol){
     su2strootdet=sqrt(det(su2staple));
 }
 
+//build generated and transformed su3 matrix
+//refresh link with it
+void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, const int idz, const int idk, const int strowcol){
+    //count su2 from generated coeffs
+    cx_mat alphamat(2,2,fill::zeros);
+    BuildSU2(GenerateCoeff0(),GenerateCoeffs(),alphamat);
+    //transfom alpha
+    alphamat=alphamat*su2strootdet*inv(su2staple);
+    //build refresher matrix
+    cx_mat refresher(3,3,fill::eye);
+    refresher(strowcol,strowcol)=alphamat(0,0);
+    refresher(strowcol+1,strowcol)=alphamat(1,0);
+    refresher(strowcol,strowcol+1)=alphamat(0,1);
+    refresher(strowcol+1,strowcol+1)=alphamat(1,1);
+    //modify link
+    grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
+
+
+}
 
 //Modify the selected link
 void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const arma::cx_mat& newlink){
