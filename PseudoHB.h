@@ -142,6 +142,12 @@ class Modell{
     //heat bath sweep
     void HeatBathSweep();
 
+    //Polyakov loop
+    void PolyakovMatrix(const int,const int,const int,arma::cx_mat &);
+
+    //Polyakov space avg
+    double PolyakovLoopAVG();
+
     ~Modell();
 
 };

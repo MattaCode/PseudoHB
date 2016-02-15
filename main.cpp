@@ -16,6 +16,7 @@ Modell mymodell(true);
 
 for(int t=0;t<mcmaxtime;t++){
     mymodell.HeatBathSweep();
+    mymodell.PolyakovLoopAVG();
 }
 
 return 0;

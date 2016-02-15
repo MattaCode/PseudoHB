@@ -507,6 +507,42 @@ cout<<"Modell heatbathsweep call"<<endl;
     }//for grid
 }
 
+//Polyakov loop
+void Modell::PolyakovMatrix(const int x,const int y,const int z,arma::cx_mat & result){
+    result.eye(); //reinitialise just in case
+    const int maxtdim=SU3Grid::GetTDim();
+    for(int i=0;i<maxtdim;i++){
+            result=(grid(0).GetGrid())(i,x,y,z)*result;
+        }
+}
+
+//Polyakov space avg
+double Modell::PolyakovLoopAVG(){
+    const int maxdim=SU3Grid::GetDim();
+//debug
+complex<double> cmplavg(0,0);
+    cx_mat polyamatrix(3,3,fill::eye);
+    double polyaavg=0;
+    for(int i=0;i<maxdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                PolyakovMatrix(i,j,k,polyamatrix);
+                polyaavg+=real(trace(polyamatrix));
+//debug
+cmplavg+=trace(polyamatrix);
+
+            }//for k
+        }//for j
+    }//for i
+    polyaavg/=(maxdim*maxdim*maxdim);
+//debug
+cmplavg/=(maxdim*maxdim*maxdim);
+//debug
+cout<<cmplavg<<"vs."<<polyaavg<<endl;
+return polyaavg;
+}
+
+
 Modell::~Modell(){}
 
 /****************************************************************/
