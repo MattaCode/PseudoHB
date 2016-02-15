@@ -1,5 +1,6 @@
 #include<iostream>
 #include"PseudoHB.h"
+#include"HBRandom.h"
 
 using namespace std;
 
@@ -44,6 +45,9 @@ std::cout<<mymodell.GetModellGrid()(0).GetGrid()(0,0,0,0)<<std::endl;
     cin.ignore();
     cin.get();
 
+for(int i=0;i<10;i++){
+cout<<"random Bernoulli: "<<Flip(0.5)<<endl;
+}
 
 return 0;
 }
