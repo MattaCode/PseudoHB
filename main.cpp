@@ -2,65 +2,13 @@
 #include<vector>
 #include"PseudoHB.h"
 #include"HBRandom.h"
+#include"testing.h"
 
 using namespace std;
 
 int main(){
 
-SU3Grid mygrid(true);
-SU3Grid mygrid2(true);
-
-std::cout<<mygrid.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-std::cout<<mygrid2.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-mygrid2=mygrid;
-
-std::cout<<mygrid.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-std::cout<<mygrid2.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-
-SU3Grid mygrid3=mygrid;
-std::cout<<mygrid.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-std::cout<<mygrid2.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-    std::cout<<mygrid3.GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-
-
-Modell mymodell(true);
-std::cout<<"modell:"<<std::endl;
-std::cout<<mymodell.GetModellGrid()(0).GetGrid()(0,0,0,0)<<std::endl;
-cout<<mygrid2.GetGrid()(0,0,0,1)<<endl;
-mymodell.ModifyLink(0,0,0,0,0,mygrid2.GetGrid()(0,0,0,1));
-std::cout<<mymodell.GetModellGrid()(0).GetGrid()(0,0,0,0)<<std::endl;
-    cin.ignore();
-    cin.get();
-
-for(int i=0;i<10;i++){
-cout<<"random Bernoulli: "<<Flip(0.5)<<endl;
-}
-
-for(int i=0;i<10;i++){
-cout<<"random real: "<<GetRealRandom(-1,5)<<endl;
-}
-
-for(int i=0;i<10;i++){
-    vector<double> randsph=RandOnSphere(3);
-    cout<<"random on Sphere: "<<endl;
-    for(vector<double>::iterator it=randsph.begin();it!=randsph.end();it++){
-        cout<<*it<<endl;
-    }
-}
+test1();
 
 return 0;
 }
