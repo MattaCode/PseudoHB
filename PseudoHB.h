@@ -152,7 +152,7 @@ class Modell{
     void PolyakovMatrix(const int,const int,const int,arma::cx_mat &);
 
     //Polyakov space avg
-    double PolyakovLoopAVG();
+    std::complex<double> PolyakovLoopAVG();
 
     //debug
     static void GetPauli();

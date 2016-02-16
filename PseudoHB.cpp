@@ -518,7 +518,7 @@ void Modell::BuildSU2staple(const int strowcol){
 //cout<<"su2staple"<<su2staple<<endl;
 //cout<<"rootdet: "<<su2strootdet<<endl;
 //cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
-cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
+//cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
 
 }
 
@@ -526,7 +526,7 @@ cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<en
 //refresh link with it
 void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, const int idz, const int idk, const int strowcol){
 //debug
-cout<<"Modell refreshlinkpart call"<<endl;
+//cout<<"Modell refreshlinkpart call"<<endl;
     //count su2 from generated coeffs
     cx_mat alphamat(2,2,fill::zeros);
     double a0=GenerateCoeff0();
@@ -545,10 +545,10 @@ cout<<"Modell refreshlinkpart call"<<endl;
     refresher(strowcol+1,strowcol+1)=alphamat(1,1);
 //debug
 //cout<<"refresher"<<refresher<<endl;
-cout<<"refresher det"<<det(refresher)<<endl;
+//cout<<"refresher det"<<det(refresher)<<endl;
 
 //debug - original det
-cout<<"orig. det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+//cout<<"orig. det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
     //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
@@ -566,14 +566,14 @@ cout<<"modell modifylink call"<<endl;
 //access for reading
 const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
 //debug
-cout<<"Modell getgrid call"<<endl;
+//cout<<"Modell getgrid call"<<endl;
     return grid;
 }
 
 //heat bath step
 void Modell::HeatBathStep(const unsigned int grididx,int idx,int idy, int idz, int idk){
 //debug
-cout<<"Modell heatbathstep call"<<endl;
+//cout<<"Modell heatbathstep call"<<endl;
     //count staple
     Count6Staple(grididx,idx,idy,idz,idk);
     //for: fist and second sub SU2
@@ -588,7 +588,7 @@ cout<<"Modell heatbathstep call"<<endl;
 //heat bath sweep
 void Modell::HeatBathSweep(){
 //debug
-cout<<"Modell heatbathsweep call"<<endl;
+//cout<<"Modell heatbathsweep call"<<endl;
     const int tdim=SU3Grid::GetTDim();
     const int dim=SU3Grid::GetDim();
     for(int grididx=0;grididx<4;grididx++){
@@ -606,7 +606,7 @@ cout<<"Modell heatbathsweep call"<<endl;
 
 //Polyakov loop
 void Modell::PolyakovMatrix(const int x,const int y,const int z,arma::cx_mat & result){
-    result.eye(); //reinitialise just in case
+    result.eye(); //reinitialise just in case and actually it is needed
     const int maxtdim=SU3Grid::GetTDim();
     for(int i=0;i<maxtdim;i++){
             result=(grid(0).GetGrid())(i,x,y,z)*result;
@@ -614,29 +614,29 @@ void Modell::PolyakovMatrix(const int x,const int y,const int z,arma::cx_mat & r
 }
 
 //Polyakov space avg
-double Modell::PolyakovLoopAVG(){
+complex<double> Modell::PolyakovLoopAVG(){
     const int maxdim=SU3Grid::GetDim();
 //debug
 complex<double> cmplavg(0,0);
     cx_mat polyamatrix(3,3,fill::eye);
-    double polyaavg=0;
+    //double polyaavg=0;
     for(int i=0;i<maxdim;i++){
         for(int j=0;j<maxdim;j++){
             for(int k=0;k<maxdim;k++){
                 PolyakovMatrix(i,j,k,polyamatrix);
-                polyaavg+=real(trace(polyamatrix));
-//debug
-cmplavg+=trace(polyamatrix);
+                //polyakov loop trace is not real
+                //polyaavg+=real(trace(polyamatrix));
+                cmplavg+=trace(polyamatrix);
 
             }//for k
         }//for j
     }//for i
-    polyaavg/=(maxdim*maxdim*maxdim);
-//debug
+    //polyaavg/=(maxdim*maxdim*maxdim);
+
 cmplavg/=(maxdim*maxdim*maxdim);
 //debug
-cout<<cmplavg<<"vs."<<polyaavg<<endl;
-return polyaavg;
+cout<<cmplavg<<endl;
+return cmplavg;
 }
 
     //debug
@@ -655,7 +655,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=6;
+const double Modell::beta=20;
 const int SU3Grid::dim=2;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
