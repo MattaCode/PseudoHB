@@ -420,9 +420,9 @@ vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3sta
                        -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
                        -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
 //debug
-cout<<"coeff1"<<coeffs.front()<<endl;
-cout<<"coeff2"<<coeffs[1]<<endl;
-cout<<"coeff3"<<coeffs.back()<<endl;
+//cout<<"coeff1"<<coeffs.front()<<endl;
+//cout<<"coeff2"<<coeffs[1]<<endl;
+//cout<<"coeff3"<<coeffs.back()<<endl;
     return coeffs;
 }
 
@@ -441,9 +441,9 @@ double Modell::GenerateCoeff0(){
 //debug
 int counter=1;
 //debug
-cout<<"a0 "<<a0<<"success: "<<sqrt(1-a0*a0)<<endl;
+//cout<<"a0 "<<a0<<"success: "<<sqrt(1-a0*a0)<<endl;
 //debug
-cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
+//cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
     while(!accept){
         a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
         a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
@@ -482,28 +482,28 @@ if (coeffs.empty()) throw "BuildSU2staple fails! empty coeffs";
 if(coeffs.size()!=3) throw "Build SU2staple fails! wrong coeffs size";
 
 //debug
-cout<<"coeff0: "<<coeff0<<endl;
+//cout<<"coeff0: "<<coeff0<<endl;
 //debug
-cout<<"coeffs 0(1)"<<coeffs.front()<<endl;
+//cout<<"coeffs 0(1)"<<coeffs.front()<<endl;
 //debug
-cout<<"coeffs 1(2)"<<coeffs[1]<<endl;
+//cout<<"coeffs 1(2)"<<coeffs[1]<<endl;
 //debug
-cout<<"coeffs 2(3)"<<coeffs.back()<<endl;
+//cout<<"coeffs 2(3)"<<coeffs.back()<<endl;
 //debug
-cout<<"equals? "<<coeffs[2]<<endl;
+//cout<<"equals? "<<coeffs[2]<<endl;
 
 //build su2 staple like matrix
 su2+=coeff0*identity2;
 //debug
-cout<<su2<<endl;
+//cout<<su2<<endl;
 su2+=iunit*coeffs.front()*pauli1;
-cout<<su2<<endl;
+//cout<<su2<<endl;
 su2+=iunit*coeffs[1]*pauli2;
-cout<<su2<<endl;
+//cout<<su2<<endl;
 su2+=iunit*coeffs.back()*pauli3;
-cout<<su2<<endl;
+//cout<<su2<<endl;
 //debug
-cout<<"determinant: "<<det(su2)<<endl;
+//cout<<"determinant of build: "<<det(su2)<<endl;
 }
 
 //su2staple
@@ -515,10 +515,10 @@ void Modell::BuildSU2staple(const int strowcol){
     CountCoeffs(strowcol),su2staple);
     su2strootdet=sqrt(det(su2staple));
 //debug
-cout<<"su2staple"<<su2staple<<endl;
-cout<<"rootdet: "<<su2strootdet<<endl;
-cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
-cout<<"determinant of this: "<<det(su2strootdet*inv(su2staple))<<endl;
+//cout<<"su2staple"<<su2staple<<endl;
+//cout<<"rootdet: "<<su2strootdet<<endl;
+//cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
+cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
 
 }
 
@@ -531,8 +531,12 @@ cout<<"Modell refreshlinkpart call"<<endl;
     cx_mat alphamat(2,2,fill::zeros);
     double a0=GenerateCoeff0();
     BuildSU2(a0,GenerateCoeffs(a0),alphamat);
+//debug
+//cout<<"generated su2 det "<<det(alphamat)<<endl;
     //transfom alpha
     alphamat=alphamat*su2strootdet*inv(su2staple);
+//debug
+//cout<<"generated transformed su2 det "<<det(alphamat)<<endl;
     //build refresher matrix
     cx_mat refresher(3,3,fill::eye);
     refresher(strowcol,strowcol)=alphamat(0,0);
@@ -540,7 +544,7 @@ cout<<"Modell refreshlinkpart call"<<endl;
     refresher(strowcol,strowcol+1)=alphamat(0,1);
     refresher(strowcol+1,strowcol+1)=alphamat(1,1);
 //debug
-cout<<"refresher"<<refresher<<endl;
+//cout<<"refresher"<<refresher<<endl;
 cout<<"refresher det"<<det(refresher)<<endl;
 
 //debug - original det
@@ -651,7 +655,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=2;
+const double Modell::beta=6;
 const int SU3Grid::dim=2;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
