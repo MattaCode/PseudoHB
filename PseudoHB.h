@@ -15,6 +15,8 @@ class SU3Grid{
     SU3Grid();
     //from random
     SU3Grid(bool);
+    //with the same matrix
+    SU3Grid(const arma::cx_mat & );
 
 //TODO
     //construct from file
@@ -68,11 +70,15 @@ class Modell{
     Modell();
     //construct from random
     Modell(bool);
+    //same matrix for all element
+    Modell(arma::cx_mat &);
 
     //construct from file
     Modell(const char* );
 
     void RandomInit();
+
+    void MatrixInit(arma::cx_mat &);
 
     //ASSIGNMENT
     Modell& operator=(const Modell&);
@@ -118,7 +124,7 @@ class Modell{
     double GenerateCoeff0();
 
     //generate new su2 matrix coeffs 3d sphere
-    std::vector<double> GenerateCoeffs();
+    std::vector<double> GenerateCoeffs(double);
 
     // build SU2 matrix
     void BuildSU2(const double, const std::vector<double> & ,arma::cx_mat &);
@@ -147,6 +153,9 @@ class Modell{
 
     //Polyakov space avg
     double PolyakovLoopAVG();
+
+    //debug
+    static void GetPauli();
 
     ~Modell();
 

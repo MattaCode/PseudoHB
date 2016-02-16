@@ -30,7 +30,11 @@ cx_mat RandSU3(cx_mat su3){
     su3=Q*Lambda;
     //let it be SU(3) instead of U(3)
     complex<double> determinant=det(su3);
+//debug
+cout<<"original det: "<<determinant<<endl;
     su3=su3/determinant;
+//debug
+cout<<"det: "<<det(su3)<<endl;
     return su3;
 }
 
@@ -40,13 +44,26 @@ cx_mat RandSU3(cx_mat su3){
 
 SU3Grid::SU3Grid():ei(tdim,dim,dim,dim){
 //debug
-cout<<"su3grid def. ctr. call"<<endl;
+//cout<<"su3grid def. ctr. call"<<endl;
+}
+
+SU3Grid::SU3Grid(const cx_mat & initmatrix):ei(tdim,dim,dim,dim){
+    for(int i=0;i<tdim;i++){
+        for(int j=0;j<dim;j++){
+            for(int k=0;k<dim;k++){
+                for(int l=0;l<dim;l++){
+                    cx_mat su3(3,3);
+                    ei(i,j,k,l)=initmatrix;
+                }//for l spacelike
+            }//for k spacelike
+        }//for j spacelike
+    }//for i timelike
 }
 
 //construct from random
 SU3Grid::SU3Grid(bool flag):ei(tdim,dim,dim,dim){
 //debug
-cout<<"su3grid ctr from rand call"<<endl;
+//cout<<"su3grid ctr from rand call"<<endl;
     for(int i=0;i<tdim;i++){
         for(int j=0;j<dim;j++){
             for(int k=0;k<dim;k++){
@@ -64,7 +81,7 @@ cout<<"su3grid ctr from rand call"<<endl;
 //assignment operator
 SU3Grid& SU3Grid::operator=(const SU3Grid& fromsu3grid){
 //debug
-cout<<"su3grid assignment call"<<endl;
+//cout<<"su3grid assignment call"<<endl;
     if(this!=&fromsu3grid){
         ei=fromsu3grid.ei;
     }
@@ -74,7 +91,7 @@ cout<<"su3grid assignment call"<<endl;
 //copy
 SU3Grid::SU3Grid(const SU3Grid& su3grid):ei(tdim,dim,dim,dim){
 //debug
-cout<<"su3grid copy call"<<endl;
+//cout<<"su3grid copy call"<<endl;
     *this=su3grid;
 }
 
@@ -102,6 +119,8 @@ const Array::array4<arma::cx_mat>& SU3Grid::GetGrid()const{
 
 //GetGrid for modifing a link
 Array::array4<cx_mat>& SU3Grid::ModifyGrid(){
+//debug
+//cout<<"su3 grid modifygrid call"<<endl;
     return ei;
 }
 
@@ -116,6 +135,13 @@ SU3Grid::~SU3Grid(){}
 //default constr
 Modell::Modell():grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){}
 
+//same matrix for all element
+Modell::Modell(cx_mat & initmatrix):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
+//debug
+cout<<"Modell ctr with same matrix"<<endl;
+    MatrixInit(initmatrix);
+}
+
 //construct from random
 Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
 //debug
@@ -127,6 +153,26 @@ cout<<"Modell ctr from rand"<<endl;
     //construct from file
     //Modell(const char* );
     //SU3Grid(std::istream&);
+
+//Matrix Init
+void Modell::MatrixInit(arma::cx_mat & initmatrix){
+ //debug
+cout<<"Modell matrixinit call"<<endl;
+    int tgridmax=SU3Grid::GetTDim();
+    int gridmax=SU3Grid::GetDim();
+    //sweep cycle
+        for(int ei=0;ei<4;ei++){
+            for(int i=0;i<tgridmax;i++){
+                for(int j=0;j<gridmax;j++){
+                    for(int k=0;k<gridmax;k++){
+                        for(int l=0;l<gridmax;l++){
+                            grid(ei).ModifyGrid()(i,j,k,l)=initmatrix;
+                        }//for l
+                    }
+                }//for j
+            }//for timelike
+        }//for grid
+}
 
 //RandomInit
 void Modell::RandomInit(){
@@ -179,7 +225,7 @@ cout<<"Modell randominit call"<<endl;
 void Modell::TriplUForw(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
-cout<<"Modell tripluforw call"<<endl;
+//cout<<"Modell tripluforw call"<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -274,7 +320,7 @@ cout<<"Modell tripluforw call"<<endl;
 void Modell::TriplURev(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
-cout<<"Modell triplurev call"<<endl;
+//cout<<"Modell triplurev call"<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -348,7 +394,7 @@ cout<<"Modell triplurev call"<<endl;
 //sixstaple init.ed as Zero matrix
 void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int idk){
 //debug
-cout<<"Modell count6staple call"<<endl;
+//cout<<"Modell count6staple call"<<endl;
     int grididx2=grididx;
     su3staple.zeros();
     cx_mat result(3,3,fill::eye);
@@ -369,44 +415,58 @@ cout<<"Modell count6staple call"<<endl;
 //negative sign because different way for building SU2 staple matrix as opposed to other su2 matrix
 vector<double> Modell::CountCoeffs(const int strowcol){
 //debug
-cout<<"Modell countcoeffs call"<<endl;
+//cout<<"Modell countcoeffs call"<<endl;
 vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
                        -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
                        -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
+//debug
+cout<<"coeff1"<<coeffs.front()<<endl;
+cout<<"coeff2"<<coeffs[1]<<endl;
+cout<<"coeff3"<<coeffs.back()<<endl;
     return coeffs;
 }
 
 //generating new su2 matrix coeffs
 double Modell::GenerateCoeff0(){
 //debug
-cout<<"Modell gen.coeff0 call"<<endl;
+//cout<<"Modell gen.coeff0 call"<<endl;
     double a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
     a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
 //debug
-cout<<su2strootdet<<endl;
-cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
+//cout<<su2strootdet<<endl;
+//cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
     //generate a_0
     //with accept-reject
     bool accept=Flip(sqrt(1-a0*a0));
 //debug
 int counter=1;
+//debug
+cout<<"a0 "<<a0<<"success: "<<sqrt(1-a0*a0)<<endl;
+//debug
+cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
     while(!accept){
         a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
         a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
         accept=Flip(sqrt(1-a0*a0));
-        //debug
-        counter++;
-        //debug
-        cout<<"num of trials: "<<counter<<endl;
+//debug
+counter++;
+//debug
+//cout<<"num of trials: "<<counter<<endl;
     }
+//debug
+cout<<"num of trials: "<<counter<<endl;
 return a0;
 }
 
 //generate new su2 matrix coeffs 3d sphere
-std::vector<double> Modell::GenerateCoeffs(){
+std::vector<double> Modell::GenerateCoeffs(double a0){
 //debug modell
-cout<<"Modell gen.coeffs call"<<endl;
+//cout<<"Modell gen.coeffs call"<<endl;
     vector<double> coeff3d=RandOnSphere(3);
+    double factor=sqrt(1-a0*a0);
+    coeff3d[0]*=factor;
+    coeff3d[1]*=factor;
+    coeff3d[2]*=factor;
     return coeff3d;
 }
 
@@ -414,27 +474,52 @@ cout<<"Modell gen.coeffs call"<<endl;
 //su2: result matrix, initialized as zeros
 void Modell::BuildSU2(const double coeff0, const vector<double> & coeffs,cx_mat & su2){
 //debug
-cout<<"Modell build su2 call"<<endl;
+//cout<<"Modell build su2 call"<<endl;
 //reinitialize su2staple
 //su2staple.zeros();
 su2.zeros(); //just in case
 if (coeffs.empty()) throw "BuildSU2staple fails! empty coeffs";
 if(coeffs.size()!=3) throw "Build SU2staple fails! wrong coeffs size";
+
+//debug
+cout<<"coeff0: "<<coeff0<<endl;
+//debug
+cout<<"coeffs 0(1)"<<coeffs.front()<<endl;
+//debug
+cout<<"coeffs 1(2)"<<coeffs[1]<<endl;
+//debug
+cout<<"coeffs 2(3)"<<coeffs.back()<<endl;
+//debug
+cout<<"equals? "<<coeffs[2]<<endl;
+
 //build su2 staple like matrix
 su2+=coeff0*identity2;
+//debug
+cout<<su2<<endl;
 su2+=iunit*coeffs.front()*pauli1;
+cout<<su2<<endl;
 su2+=iunit*coeffs[1]*pauli2;
+cout<<su2<<endl;
 su2+=iunit*coeffs.back()*pauli3;
+cout<<su2<<endl;
+//debug
+cout<<"determinant: "<<det(su2)<<endl;
 }
 
 //su2staple
 //and determinant
 void Modell::BuildSU2staple(const int strowcol){
 //debug
-cout<<"Modell buildsu2staple call"<<endl;
+//cout<<"Modell buildsu2staple call"<<endl;
     BuildSU2(real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
     CountCoeffs(strowcol),su2staple);
     su2strootdet=sqrt(det(su2staple));
+//debug
+cout<<"su2staple"<<su2staple<<endl;
+cout<<"rootdet: "<<su2strootdet<<endl;
+cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
+cout<<"determinant of this: "<<det(su2strootdet*inv(su2staple))<<endl;
+
 }
 
 //build generated and transformed su3 matrix
@@ -444,7 +529,8 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 cout<<"Modell refreshlinkpart call"<<endl;
     //count su2 from generated coeffs
     cx_mat alphamat(2,2,fill::zeros);
-    BuildSU2(GenerateCoeff0(),GenerateCoeffs(),alphamat);
+    double a0=GenerateCoeff0();
+    BuildSU2(a0,GenerateCoeffs(a0),alphamat);
     //transfom alpha
     alphamat=alphamat*su2strootdet*inv(su2staple);
     //build refresher matrix
@@ -453,9 +539,16 @@ cout<<"Modell refreshlinkpart call"<<endl;
     refresher(strowcol+1,strowcol)=alphamat(1,0);
     refresher(strowcol,strowcol+1)=alphamat(0,1);
     refresher(strowcol+1,strowcol+1)=alphamat(1,1);
+//debug
+cout<<"refresher"<<refresher<<endl;
+cout<<"refresher det"<<det(refresher)<<endl;
+
+//debug - original det
+cout<<"orig. det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
     //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
-
+//debug - new det
+cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 
 }
 
@@ -542,17 +635,28 @@ cout<<cmplavg<<"vs."<<polyaavg<<endl;
 return polyaavg;
 }
 
+    //debug
+    void Modell::GetPauli(){
+        cout<<"Identity"<<endl;
+        cout<<Modell::identity2<<endl;
+        cout<<"Pauli1"<<endl;
+        cout<<Modell::pauli1<<endl;
+        cout<<"Pauli2"<<endl;
+        cout<<Modell::pauli2<<endl;
+        cout<<"Pauli3"<<endl;
+        cout<<Modell::pauli3<<endl;
+    }
 
 Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=6;
+const double Modell::beta=2;
 const int SU3Grid::dim=2;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
-const arma::cx_mat Modell::pauli2={{{0,0},{0,1}},{{0,-1},{0,0}}};
+const arma::cx_mat Modell::pauli2={{{0,0},{0,-1}},{{0,1},{0,0}}};
 const arma::cx_mat Modell::pauli3={{{1,0},{0,0}},{{0,0},{-1,0}}};
 const arma::cx_mat Modell::identity2(2,2,fill::eye);
 

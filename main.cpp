@@ -12,7 +12,12 @@ using namespace std;
 int main(){
 
 const int mcmaxtime=1;
-Modell mymodell(true);
+arma::cx_mat id3d(3,3,arma::fill::eye);
+Modell mymodell(id3d);
+
+//debug
+Modell::GetPauli();
+
 
 for(int t=0;t<mcmaxtime;t++){
     mymodell.HeatBathSweep();

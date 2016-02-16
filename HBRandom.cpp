@@ -12,7 +12,7 @@ boost::mt19937 gen(time(NULL));
 //return: true - accept, false - reject
 bool Flip(const double accept){
 //debug
-std::cout<<"Flip call"<<std::endl;
+//std::cout<<"Flip call"<<std::endl;
     boost::random::bernoulli_distribution<> dist(accept);
     return dist(gen);
 }
@@ -22,7 +22,7 @@ std::cout<<"Flip call"<<std::endl;
 //min. param to max param.
 double GetRealRandom(const double xmin,const double xmax){
 //debug
-std::cout<<"Real rand call"<<std::endl;
+//std::cout<<"Real rand call"<<std::endl;
 	boost::random::uniform_real_distribution<> dist(xmin, xmax);
 	return dist(gen);
 }
@@ -31,7 +31,7 @@ std::cout<<"Real rand call"<<std::endl;
 //param: dimension of sphere
 std::vector<double> RandOnSphere(const int dim){
 //debug
-std::cout<<"randonsphere call"<<std::endl;
+//std::cout<<"randonsphere call"<<std::endl;
     boost::random::uniform_on_sphere<> dist(dim);
     return dist(gen);
 }
