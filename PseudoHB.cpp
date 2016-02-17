@@ -196,12 +196,28 @@ cout<<"Modell randominit call"<<endl;
     }
 
 //ASSIGNMENT
-//Modell& operator=(const Modell&);
+Modell& Modell::operator=(const Modell& frommodell){
+    if(this!=&frommodell){
+        //debug
+        cout<<"modell assignment call"<<endl;
+        grid=frommodell.grid;
+        su3staple=frommodell.su3staple;
+        su2staple=frommodell.su2staple;
+        su2strootdet=frommodell.su2strootdet;
+    }
+return *this;
 
-    //COPY
-    //Modell(const Modell&);
-    //get beta
-   // static const double GetBeta();
+}
+
+//COPY
+Modell::Modell(const Modell& mymodell):grid(4){
+    *this=mymodell;
+}
+
+//get beta
+const double Modell::GetBeta(){
+    return beta;
+}
 
     //write Modell to os
     //void writeModell( std::ostream& )const;
@@ -655,7 +671,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=20;
+const double Modell::beta=6;
 const int SU3Grid::dim=2;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
