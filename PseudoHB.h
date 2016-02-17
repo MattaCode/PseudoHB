@@ -105,6 +105,12 @@ class Modell{
     //assumes calls with existing indices idx-y-z-k and i-j
     void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
 
+    //count action for a plaquett up
+    const double CountSpUp(const arma::cx_mat & );
+
+    //AVG for plaquetts
+    const double PlaquettAVG();
+
     //count forward staple (plaquett without the selected link)
     //result initialized as Identity
     void TriplUForw(const unsigned int, const unsigned int, int, int, int, int, arma::cx_mat &);

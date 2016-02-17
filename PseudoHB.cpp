@@ -231,10 +231,14 @@ const double Modell::GetBeta(){
     //read Modell from file
     //void readFromFileModell( const char* );
 
-    //count plaquett at idx, for two selected direction i,j
-    //up initialized as Identity
-    //assumes calls with existing indices idx-y-z-k and i-j
-    //void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
+//count plaquett at idx, for two selected direction i,j
+//result initialized as Identity
+//assumes calls with existing indices idx-y-z-k and i-j
+void CountUp(int idx,int idy,int idz,int idk,const unsigned int grididx1, const unsigned int grididx2,arma::cx_mat & result){
+    //just in case
+        //up=(grid(i).GetGrid())(idx,idy,idz,idk)*up;
+        //up=(grid(i).GetGrid())(idx,idy,idz,idk)*up;
+}
 
 //count forward staple (plaquett without the selected link)
 //result initialized as Identity
@@ -331,8 +335,14 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
 }
 
+//count action for a plaquett up
+const double CountSpUp(const cx_mat & plaquett){
+
+}
+
 //count backward staple (plaquett without the selected link)
 //result initialized as Identity
+//except when count plaquett - in this case it is the actual link variable
 void Modell::TriplURev(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
@@ -672,7 +682,7 @@ Modell::~Modell(){}
 /****************************************************************/
 
 const double Modell::beta=6;
-const int SU3Grid::dim=2;
+const int SU3Grid::dim=4;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
