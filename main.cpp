@@ -72,19 +72,19 @@ resultfile.close();
 
 int main(){
 
-const int mcmaxtime=600;
+const int mcmaxtime=10;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 Modell mymodell(id3d);
 
 string dir="./";
 
 //reach eq.
-//Monte Carlo Run - 200 sweep
-for(int mcrun=0;mcrun<600;mcrun++){
-    mymodell.HeatBathSweep();
-}
+//Monte Carlo Run - 400 sweep
+//for(int mcrun=0;mcrun<400;mcrun++){
+//    mymodell.HeatBathSweep();
+//}
 
-//after 200 sweep we measure mcmaxtime step
+//after 400 sweep we measure mcmaxtime step
 
 //AutoCorrMain(mymodell,mcmaxtime,dir);
 
@@ -94,14 +94,40 @@ for(int mcrun=0;mcrun<600;mcrun++){
 std::ofstream resultfile;
 resultfile.precision(6);
 resultfile.open("REALofPolyaAVG.dat",std::ios::out);
+
+std::ofstream energyout;
+energyout.precision(6);
+energyout.open("MeanOfPlaqEn.dat",std::ios::out);
+
+std::ofstream configuration;
+configuration.precision(6);
+configuration.open("Configuration.dat",std::ios::out);
+
 complex<double> result=0;
 for(int t=0;t<mcmaxtime;t++){
-    mymodell.HeatBathSweep();
+
     result=mymodell.PolyakovLoopAVG();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens()<<endl;
+    arma::cx_mat config(3,3,arma::fill::eye);
+for(int i=0;i<4;i++){
+    configuration<<(mymodell.GetModellGrid())(0).GetGrid()(i,0,0,0)<<endl;
+    config*=(mymodell.GetModellGrid())(0).GetGrid()(i,0,0,0);
+}
+
+configuration<<trace(config)<<endl;
+        mymodell.HeatBathSweep();
 
 }
 resultfile.close();
+energyout.close();
+
+
+
+
+
+configuration.close();
+
 return 0;
 }

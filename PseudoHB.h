@@ -106,10 +106,10 @@ class Modell{
     void CountUp(int ,int ,int ,int ,const unsigned int , const unsigned int ,arma::cx_mat & );
 
     //count action for a plaquett up
-    const double CountSpUp(const arma::cx_mat & );
+     double CountPlaqEnergy(const arma::cx_mat & );
+    //count mean for plaquett energy on lattice
+     double CountMeanEnergyDens();
 
-    //AVG for plaquetts
-    const double PlaquettAVG();
 
     //count forward staple (plaquett without the selected link)
     //result initialized as Identity

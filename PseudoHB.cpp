@@ -231,17 +231,11 @@ const double Modell::GetBeta(){
     //read Modell from file
     //void readFromFileModell( const char* );
 
-//count plaquett at idx, for two selected direction i,j
-//result initialized as Identity
-//assumes calls with existing indices idx-y-z-k and i-j
-void CountUp(int idx,int idy,int idz,int idk,const unsigned int grididx1, const unsigned int grididx2,arma::cx_mat & result){
-    //just in case
-        //up=(grid(i).GetGrid())(idx,idy,idz,idk)*up;
-        //up=(grid(i).GetGrid())(idx,idy,idz,idk)*up;
-}
+
 
 //count forward staple (plaquett without the selected link)
 //result initialized as Identity
+//OR: HELPER FOR PLAQUETT COUNTER - INITED AS THE SELECTED LINK
 void Modell::TriplUForw(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
@@ -335,9 +329,53 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
 }
 
-//count action for a plaquett up
-const double CountSpUp(const cx_mat & plaquett){
+//count plaquett at idx, for two selected direction i,j
+//result initialized as Identity
+//assumes calls with existing indices idx-y-z-k and i-j
+void Modell::CountUp(int idx,int idy,int idz,int idk,const unsigned int grididx1, const unsigned int grididx2,arma::cx_mat & result){
+    //result should be initialized as Identity
+    result.eye();
+    //result is the selected link
+    result=(grid(grididx1).GetGrid())(idx,idy,idz,idk)*result;
+    //multiplication with the other 3 links
+    TriplUForw(grididx1,grididx2,idx,idy,idz,idk,result);
 
+}
+
+//count action for a plaquett up
+ double Modell::CountPlaqEnergy(const cx_mat & plaquett){
+        double spup;
+        spup=(1-1/3.0*real(trace(plaquett)));
+        return spup;
+}
+
+//count mean for plaquett energy on lattice
+double Modell::CountMeanEnergyDens(){
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
+    double meanEDens=0;
+    cx_mat plaquett(3,3,fill::eye);
+    int counter=0;
+    //evergy plaquett counted 4 times!!!
+    //cycle on selected links, select all links
+    for(int grid=0;grid<4;grid++){
+     for(int grid2=grid+1;grid2<4;grid2++){
+        for(int i=0;i<timedim;i++){
+            for(int j=0;j<spacedim;j++){
+                for(int k=0;k<spacedim;k++){
+                    for(int l=0;l<spacedim;l++){
+                        CountUp(i,j,k,l,grid,grid2,plaquett);
+                        meanEDens+=CountPlaqEnergy(plaquett);
+                        counter++;
+                    }//for l
+                }//for k
+            }//for j
+        }//for i
+     }//grid2
+    }//for grid
+
+    meanEDens/=counter;
+    return meanEDens;
 }
 
 //count backward staple (plaquett without the selected link)
@@ -347,6 +385,8 @@ void Modell::TriplURev(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
 //cout<<"Modell triplurev call"<<endl;
+//just in case - reinit.
+result.eye();
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -431,8 +471,12 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
         TriplUForw(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
         result.eye();
+        //debug
+        //cout<<result<<endl;
         TriplURev(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
+        //debug
+        //cout<<"su3staple"<<su3staple<<endl;
     }
 }
 
@@ -456,7 +500,7 @@ vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3sta
 double Modell::GenerateCoeff0(){
 //debug
 //cout<<"Modell gen.coeff0 call"<<endl;
-    double a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+    double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
     a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
 //debug
 //cout<<su2strootdet<<endl;
@@ -471,7 +515,7 @@ int counter=1;
 //debug
 //cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
     while(!accept){
-        a0=GetRealRandom(exp(-2.*real(su2strootdet)),1);
+        a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
         a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
         accept=Flip(sqrt(1-a0*a0));
 //debug
@@ -480,7 +524,7 @@ counter++;
 //cout<<"num of trials: "<<counter<<endl;
     }
 //debug
-cout<<"num of trials: "<<counter<<endl;
+cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
 return a0;
 }
 
@@ -560,7 +604,7 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //debug
 //cout<<"generated su2 det "<<det(alphamat)<<endl;
     //transfom alpha
-    alphamat=alphamat*su2strootdet*inv(su2staple);
+    alphamat=alphamat*su2strootdet*su2staple.i();
 //debug
 //cout<<"generated transformed su2 det "<<det(alphamat)<<endl;
     //build refresher matrix
@@ -570,22 +614,25 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
     refresher(strowcol,strowcol+1)=alphamat(0,1);
     refresher(strowcol+1,strowcol+1)=alphamat(1,1);
 //debug
+//cout<<"alphamat: "<<alphamat<<endl;
+//debug
 //cout<<"refresher"<<refresher<<endl;
 //cout<<"refresher det"<<det(refresher)<<endl;
 
 //debug - original det
 //cout<<"orig. det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+//cout<<"orig matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
     //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
 cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
-
+//cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
 }
 
 //Modify the selected link
 void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const arma::cx_mat& newlink){
 //debug
-cout<<"modell modifylink call"<<endl;
+//cout<<"modell modifylink call"<<endl;
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=newlink;
 }
 
@@ -681,7 +728,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=6;
+const double Modell::beta=20;
 const int SU3Grid::dim=4;
 const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
