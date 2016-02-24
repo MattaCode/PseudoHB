@@ -50,7 +50,7 @@ complex<double> result=0;
 
 //Monte Carlo Run
 for(int mctime=0;mctime<maxstep;mctime++){
-    result=mymodell.PolyakovLoopAVG();
+//    result=mymodell.PolyakovLoopAVG();
     autcorr.InsertData(real(result));
     mymodell.HeatBathSweep();
 }
@@ -72,7 +72,7 @@ resultfile.close();
 
 int main(){
 
-const int mcmaxtime=10;
+const int mcmaxtime=40;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 Modell mymodell(id3d);
 
@@ -103,13 +103,25 @@ std::ofstream configuration;
 configuration.precision(6);
 configuration.open("Configuration.dat",std::ios::out);
 
+    ofstream polyaloop;
+    polyaloop.precision(6);
+
+    ofstream energydens;
+    energydens.precision(6);
+
+
 complex<double> result=0;
 for(int t=0;t<mcmaxtime;t++){
-
-    result=mymodell.PolyakovLoopAVG();
+    ostringstream convert;
+    convert<<t;
+    polyaloop.open("PolyaLOOP"+convert.str()+".dat",ios::out);
+    result=mymodell.PolyakovLoopAVG(polyaloop);
+    polyaloop.close();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens()<<endl;
+    energydens.open("EnergyDens"+convert.str()+".dat",ios::out);
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energydens.close();
     arma::cx_mat config(3,3,arma::fill::eye);
 for(int i=0;i<4;i++){
     configuration<<(mymodell.GetModellGrid())(0).GetGrid()(i,0,0,0)<<endl;
@@ -122,6 +134,7 @@ configuration<<trace(config)<<endl;
 }
 resultfile.close();
 energyout.close();
+
 
 
 

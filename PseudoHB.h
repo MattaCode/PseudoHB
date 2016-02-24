@@ -108,7 +108,7 @@ class Modell{
     //count action for a plaquett up
      double CountPlaqEnergy(const arma::cx_mat & );
     //count mean for plaquett energy on lattice
-     double CountMeanEnergyDens();
+     double CountMeanEnergyDens(std::ofstream &);
 
 
     //count forward staple (plaquett without the selected link)
@@ -158,7 +158,7 @@ class Modell{
     void PolyakovMatrix(const int,const int,const int,arma::cx_mat &);
 
     //Polyakov space avg
-    std::complex<double> PolyakovLoopAVG();
+    std::complex<double> PolyakovLoopAVG(std::ofstream &);
 
     //debug
     static void GetPauli();

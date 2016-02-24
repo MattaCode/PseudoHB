@@ -13,6 +13,7 @@ boost::mt19937 gen(time(NULL));
 bool Flip(const double accept){
 //debug
 //std::cout<<"Flip call"<<std::endl;
+//std::cout<<"accept prob.: "<<accept<<std::endl;
     boost::random::bernoulli_distribution<> dist(accept);
     return dist(gen);
 }
@@ -23,6 +24,7 @@ bool Flip(const double accept){
 double GetRealRandom(const double xmin,const double xmax){
 //debug
 //std::cout<<"Real rand call"<<std::endl;
+//std::cout<<"xmin: "<<xmin<<", xmax: "<<xmax<<std::endl;
 	boost::random::uniform_real_distribution<> dist(xmin, xmax);
 	return dist(gen);
 }

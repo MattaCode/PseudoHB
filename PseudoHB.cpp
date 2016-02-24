@@ -240,6 +240,10 @@ void Modell::TriplUForw(const unsigned int grididx, const unsigned int grididx2,
 int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //debug
 //cout<<"Modell tripluforw call"<<endl;
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
+//cout<<"result: "<<result<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -264,8 +268,13 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
+//debug
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
         //multipl by second edge (j) at index+ei*a
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
+//cout<<"result: "<<result<<endl;
         //step back along first direction
         switch(grididx){
         case 0:
@@ -304,8 +313,14 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
+//debug
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx).GetGrid())(idx,idy,idz,idk)<<endl;
+//cout<<"grid link matrix herm.adj: "<<(grid(grididx).GetGrid())(idx,idy,idz,idk).t()<<endl;
         //multipl by third edge at index+ej*a
         result=(grid(grididx).GetGrid())(idx,idy,idz,idk).t()*result;
+//cout<<"result: "<<result<<endl;
         //step back along second direction
         switch(grididx2){
         case 0:
@@ -325,8 +340,14 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
+//debug
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
+//cout<<"grid link matrix herm.adj: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()<<endl;
         //multipl by fourth edge at index - closing the cycle
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
+//cout<<"result: "<<result<<endl;
 }
 
 //count plaquett at idx, for two selected direction i,j
@@ -350,7 +371,7 @@ void Modell::CountUp(int idx,int idy,int idz,int idk,const unsigned int grididx1
 }
 
 //count mean for plaquett energy on lattice
-double Modell::CountMeanEnergyDens(){
+double Modell::CountMeanEnergyDens(ofstream & file){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     double meanEDens=0;
@@ -365,6 +386,7 @@ double Modell::CountMeanEnergyDens(){
                 for(int k=0;k<spacedim;k++){
                     for(int l=0;l<spacedim;l++){
                         CountUp(i,j,k,l,grid,grid2,plaquett);
+                        file<<grid<<'\t'<<grid2<<'\t'<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountPlaqEnergy(plaquett)<<endl;
                         meanEDens+=CountPlaqEnergy(plaquett);
                         counter++;
                     }//for l
@@ -387,6 +409,10 @@ int idx, int idy, int idz, int idk, arma::cx_mat & result){
 //cout<<"Modell triplurev call"<<endl;
 //just in case - reinit.
 result.eye();
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
+//cout<<"result: "<<result<<endl;
     //maxdim of SU3Grid
     const int maxdim=SU3Grid::GetDim();
     const int maxtdim=SU3Grid::GetTDim();
@@ -430,7 +456,11 @@ result.eye();
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk).t()*result;
+//cout<<"result: "<<result<<endl;
         //step back along first direction
         switch(grididx){
         case 0:
@@ -450,10 +480,14 @@ result.eye();
             idk=(idk+maxdim)%maxdim;
             break;
         }//switch
+//cout<<"grids: "<<grididx<<", "<<grididx2<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
+//cout<<"grid link matrix: "<<(grid(grididx2).GetGrid())(idx,idy,idz,idk)<<endl;
         result=(grid(grididx).GetGrid())(idx,idy,idz,idk).t()*result;
+//cout<<"result: "<<result<<endl;
 
         result=(grid(grididx2).GetGrid())(idx,idy,idz,idk)*result;
-
+//cout<<"result: "<<result<<endl;
 }
 
 //count all six staple for a selected link
@@ -464,17 +498,26 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
     int grididx2=grididx;
     su3staple.zeros();
     cx_mat result(3,3,fill::eye);
+//debug
+//cout<<"su3staple: "<<su3staple<<endl;
+//cout<<"result "<<result<<endl;
     for(int i=1;i<4;i++){
         grididx2=grididx+i;
         grididx2=(grididx2+4)%4;
         result.eye();
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
         TriplUForw(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
+//cout<<"result "<<result<<endl;
+//cout<<"su3staple: "<<su3staple<<endl;
         result.eye();
         //debug
         //cout<<result<<endl;
+//cout<<"idxs: "<<idx<<", "<<idy<<", "<<idz<<", "<<idk<<endl;
         TriplURev(grididx,grididx2,idx,idy,idz,idk,result);
         su3staple+=result;
+//cout<<"result "<<result<<endl;
+//cout<<"su3staple: "<<su3staple<<endl;
         //debug
         //cout<<"su3staple"<<su3staple<<endl;
     }
@@ -486,9 +529,14 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
 vector<double> Modell::CountCoeffs(const int strowcol){
 //debug
 //cout<<"Modell countcoeffs call"<<endl;
+//cout<<"iunit: "<<iunit<<endl;
+//cout<<"coeffs: "<<-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol)))<<", "
+ //               <<-real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1)))<<", "
+ //               <<-real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))<<endl;
 vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
                        -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
                        -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
+//cout<<"coeffs vector: "<<coeffs.front()<<", "<<coeffs[1]<<", "<<coeffs.back()<<endl;
 //debug
 //cout<<"coeff1"<<coeffs.front()<<endl;
 //cout<<"coeff2"<<coeffs[1]<<endl;
@@ -500,14 +548,19 @@ vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3sta
 double Modell::GenerateCoeff0(){
 //debug
 //cout<<"Modell gen.coeff0 call"<<endl;
-    double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
+//cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
+
+double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
     a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
+//cout<<"a0: "<<a0<<endl;
+
 //debug
 //cout<<su2strootdet<<endl;
 //cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
     //generate a_0
     //with accept-reject
     bool accept=Flip(sqrt(1-a0*a0));
+//cout<<"flip? "<<accept<<endl;
 //debug
 int counter=1;
 //debug
@@ -516,8 +569,11 @@ int counter=1;
 //cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
     while(!accept){
         a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
+//cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
         a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
+//cout<<"a0: "<<a0<<endl;
         accept=Flip(sqrt(1-a0*a0));
+//cout<<"flip? "<<accept<<endl;
 //debug
 counter++;
 //debug
@@ -534,9 +590,12 @@ std::vector<double> Modell::GenerateCoeffs(double a0){
 //cout<<"Modell gen.coeffs call"<<endl;
     vector<double> coeff3d=RandOnSphere(3);
     double factor=sqrt(1-a0*a0);
+//cout<<"generated vector: "<<coeff3d.front()<<", "<<coeff3d[1]<<", "<<coeff3d.back();
+//cout<<"factor: "<<factor<<endl;
     coeff3d[0]*=factor;
     coeff3d[1]*=factor;
     coeff3d[2]*=factor;
+//cout<<"generated vector: "<<coeff3d.front()<<", "<<coeff3d[1]<<", "<<coeff3d.back();
     return coeff3d;
 }
 
@@ -548,6 +607,7 @@ void Modell::BuildSU2(const double coeff0, const vector<double> & coeffs,cx_mat 
 //reinitialize su2staple
 //su2staple.zeros();
 su2.zeros(); //just in case
+//cout<<"su2 to build: "<<su2<<endl;
 if (coeffs.empty()) throw "BuildSU2staple fails! empty coeffs";
 if(coeffs.size()!=3) throw "Build SU2staple fails! wrong coeffs size";
 
@@ -581,6 +641,8 @@ su2+=iunit*coeffs.back()*pauli3;
 void Modell::BuildSU2staple(const int strowcol){
 //debug
 //cout<<"Modell buildsu2staple call"<<endl;
+//cout<<"strowcol: "<<strowcol<<endl;
+//cout<<"su2staple: "<<su2staple<<endl;
     BuildSU2(real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
     CountCoeffs(strowcol),su2staple);
     su2strootdet=sqrt(det(su2staple));
@@ -603,10 +665,16 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
     BuildSU2(a0,GenerateCoeffs(a0),alphamat);
 //debug
 //cout<<"generated su2 det "<<det(alphamat)<<endl;
+//cout<<"generated su2: "<<alphamat<<endl;
+//cout<<"su2staple: "<<su2staple<<endl;
+//cout<<"su2staple inv: "<<su2staple.i()<<endl;
+//cout<<"is this Id? "<<su2staple*su2staple.i()<<endl;
     //transfom alpha
     alphamat=alphamat*su2strootdet*su2staple.i();
+
 //debug
 //cout<<"generated transformed su2 det "<<det(alphamat)<<endl;
+//cout<<"gen.d transf.d. su2: "<<alphamat<<endl;
     //build refresher matrix
     cx_mat refresher(3,3,fill::eye);
     refresher(strowcol,strowcol)=alphamat(0,0);
@@ -622,11 +690,12 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //debug - original det
 //cout<<"orig. det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"orig matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
-    //modify link
+//    //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
 cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
+
 }
 
 //Modify the selected link
@@ -647,12 +716,18 @@ const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
 void Modell::HeatBathStep(const unsigned int grididx,int idx,int idy, int idz, int idk){
 //debug
 //cout<<"Modell heatbathstep call"<<endl;
+//cout<<"su3staple: "<<su3staple<<endl;
     //count staple
     Count6Staple(grididx,idx,idy,idz,idk);
     //for: fist and second sub SU2
     for(int strawcol=0;strawcol<2;strawcol++){
+//cout<<"strowcol: "<<strawcol<<endl;
+//cout<<"su2staple (old): "<<su2staple<<endl;
+//cout<<"su3staple: "<<su3staple<<endl;
+
         //build su2 analog matrix
         BuildSU2staple(strawcol);
+//cout<<"su2staple new: "<<su2staple<<endl;
         //generate coeffs and refresh
         RefreshLinkpart(grididx,idx,idy,idz,idk,strawcol);
     }
@@ -670,6 +745,12 @@ void Modell::HeatBathSweep(){
                 for(int k=0;k<dim;k++){
                     for(int l=0;l<dim;l++){
                         HeatBathStep(grididx,i,j,k,l);
+cout<<"*********************"<<endl;
+cout<<"****IS IT UNITARY?***"<<endl;
+cout<<"*********************"<<endl;
+cout<<grid(grididx).GetGrid()(i,j,k,l)*grid(grididx).GetGrid()(i,j,k,l).t()<<endl;
+//cout<<grid(grididx).GetGrid()(i,j,k,l).t()<<endl;
+//cout<<grid(grididx).GetGrid()(i,j,k,l).i()<<endl;
                     }//for space 3
                 }//for space 2
             }//for space1
@@ -687,8 +768,11 @@ void Modell::PolyakovMatrix(const int x,const int y,const int z,arma::cx_mat & r
 }
 
 //Polyakov space avg
-complex<double> Modell::PolyakovLoopAVG(){
+complex<double> Modell::PolyakovLoopAVG(std::ofstream & polyaloop){
     const int maxdim=SU3Grid::GetDim();
+
+
+
 //debug
 complex<double> cmplavg(0,0);
     cx_mat polyamatrix(3,3,fill::eye);
@@ -699,6 +783,7 @@ complex<double> cmplavg(0,0);
                 PolyakovMatrix(i,j,k,polyamatrix);
                 //polyakov loop trace is not real
                 //polyaavg+=real(trace(polyamatrix));
+                polyaloop<<i<<'\t'<<j<<'\t'<<k<<'\t'<<trace(polyamatrix)<<'\t'<<real(trace(polyamatrix))<<'\t'<<imag(trace(polyamatrix))<<endl;
                 cmplavg+=trace(polyamatrix);
 
             }//for k
@@ -728,9 +813,9 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=20;
-const int SU3Grid::dim=4;
-const int SU3Grid::tdim=4;
+const double Modell::beta=2;
+const int SU3Grid::dim=10;
+const int SU3Grid::tdim=10;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
 const arma::cx_mat Modell::pauli2={{{0,0},{0,-1}},{{0,1},{0,0}}};
