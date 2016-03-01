@@ -124,7 +124,7 @@ class Modell{
     void TriplURev(const unsigned int, const unsigned int, int, int, int, int, arma::cx_mat &);
 
     //find Pauli coefficients for 2x2 submatrix of su3staple
-    std::vector<double> CountCoeffs(const int);
+    std::vector<double> CountCoeffs(const int,const arma::cx_mat &);
 
     //generating new su2 matrix coeff0
     double GenerateCoeff0();
@@ -141,7 +141,7 @@ class Modell{
 
     //su2staple
     //and determinant
-    void BuildSU2staple(const int);
+    void BuildSU2staple(const int,const unsigned int ,const int ,const int ,const int ,const int );
 
     //Modify the selected link
     void ModifyLink(int, int, int, int, int, const arma::cx_mat& );

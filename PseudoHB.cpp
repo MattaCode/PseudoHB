@@ -526,16 +526,16 @@ void Modell::Count6Staple(const unsigned int grididx,int idx,int idy,int idz,int
 //find Pauli coefficients for 2x2 submatrix of su3staple
 //strowcol: first row and column idx of submatrix
 //negative sign because different way for building SU2 staple matrix as opposed to other su2 matrix
-vector<double> Modell::CountCoeffs(const int strowcol){
+vector<double> Modell::CountCoeffs(const int strowcol,const cx_mat & ustaple){
 //debug
 //cout<<"Modell countcoeffs call"<<endl;
 //cout<<"iunit: "<<iunit<<endl;
 //cout<<"coeffs: "<<-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol)))<<", "
  //               <<-real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1)))<<", "
  //               <<-real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))<<endl;
-vector<double> coeffs={-real((1./2)*iunit*(su3staple(strowcol,strowcol+1)+su3staple(strowcol+1,strowcol))),
-                       -real((1./2)*(su3staple(strowcol+1,strowcol)-su3staple(strowcol,strowcol+1))),
-                       -real((1./2)*iunit*(su3staple(strowcol,strowcol)-su3staple(strowcol+1,strowcol+1)))};
+vector<double> coeffs={-real((1./2)*iunit*(ustaple(strowcol,strowcol+1)+ustaple(strowcol+1,strowcol))),
+                       -real((1./2)*(ustaple(strowcol+1,strowcol)-ustaple(strowcol,strowcol+1))),
+                       -real((1./2)*iunit*(ustaple(strowcol,strowcol)-ustaple(strowcol+1,strowcol+1)))};
 //cout<<"coeffs vector: "<<coeffs.front()<<", "<<coeffs[1]<<", "<<coeffs.back()<<endl;
 //debug
 //cout<<"coeff1"<<coeffs.front()<<endl;
@@ -550,8 +550,8 @@ double Modell::GenerateCoeff0(){
 //cout<<"Modell gen.coeff0 call"<<endl;
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
 
-double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
-    a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
+double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
+    a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 
 //debug
@@ -568,9 +568,9 @@ int counter=1;
 //debug
 //cout<<"su2strootdet"<<real(su2strootdet)<<"lower lim: "<<exp(-2.*real(su2strootdet))<<endl;
     while(!accept){
-        a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)),1);
+        a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
-        a0=1+1./(Modell::beta*real(su2strootdet))*log(a0);
+        a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
         accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
@@ -638,13 +638,17 @@ su2+=iunit*coeffs.back()*pauli3;
 
 //su2staple
 //and determinant
-void Modell::BuildSU2staple(const int strowcol){
+void Modell::BuildSU2staple(const int strowcol,const unsigned int grididx,const int idx,const int idy,const int idz,const int idk){
 //debug
 //cout<<"Modell buildsu2staple call"<<endl;
 //cout<<"strowcol: "<<strowcol<<endl;
 //cout<<"su2staple: "<<su2staple<<endl;
-    BuildSU2(real(1./2*(su3staple(strowcol,strowcol)+su3staple(strowcol+1,strowcol+1))),
-    CountCoeffs(strowcol),su2staple);
+
+//in the SU3 case instead of S_l one need U_l*S_l
+cx_mat ustaple=(grid(grididx).GetGrid())(idx,idy,idz,idk)*su3staple;
+
+    BuildSU2(real(1./2*(ustaple(strowcol,strowcol)+ustaple(strowcol+1,strowcol+1))),
+    CountCoeffs(strowcol,ustaple),su2staple);
     su2strootdet=sqrt(det(su2staple));
 //debug
 //cout<<"su2staple"<<su2staple<<endl;
@@ -671,6 +675,7 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //cout<<"is this Id? "<<su2staple*su2staple.i()<<endl;
     //transfom alpha
     alphamat=alphamat*su2strootdet*su2staple.i();
+
 
 //debug
 //cout<<"generated transformed su2 det "<<det(alphamat)<<endl;
@@ -726,7 +731,7 @@ void Modell::HeatBathStep(const unsigned int grididx,int idx,int idy, int idz, i
 //cout<<"su3staple: "<<su3staple<<endl;
 
         //build su2 analog matrix
-        BuildSU2staple(strawcol);
+        BuildSU2staple(strawcol,grididx,idx,idy,idz,idk);
 //cout<<"su2staple new: "<<su2staple<<endl;
         //generate coeffs and refresh
         RefreshLinkpart(grididx,idx,idy,idz,idk,strawcol);
@@ -813,7 +818,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=2;
+const double Modell::beta=6;
 const int SU3Grid::dim=10;
 const int SU3Grid::tdim=10;
 const std::complex<double> Modell::iunit(0,1);
