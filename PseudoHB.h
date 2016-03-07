@@ -98,7 +98,7 @@ class Modell{
     void readModell( std::istream& );
 
     //read Modell from file
-    void readFromFileModell( const char* );
+    //void readFromFileModell( const char* );
 
     //count plaquett at idx, for two selected direction i,j
     //result initialized as Identity

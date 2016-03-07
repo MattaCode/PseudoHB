@@ -149,10 +149,32 @@ cout<<"Modell ctr from rand"<<endl;
     RandomInit();
 }
 
-//TO DO
-    //construct from file
-    //Modell(const char* );
-    //SU3Grid(std::istream&);
+//construct from file
+Modell::Modell(const char* filename):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
+
+std::ifstream inputfile;
+inputfile.open(filename,std::ios::in);
+int tgridmax=SU3Grid::GetTDim();
+int gridmax=SU3Grid::GetDim();
+    //sweep cycle
+        for(int ei=0;ei<4;ei++){
+            for(int i=0;i<tgridmax;i++){
+                for(int j=0;j<gridmax;j++){
+                    for(int k=0;k<gridmax;k++){
+                        for(int l=0;l<gridmax;l++){
+                            inputfile>>grid(ei).ModifyGrid()(i,j,k,l);
+                        }//for l
+                    }
+                }//for j
+            }//for timelike
+        }//for grid
+inputfile.close();
+
+}
+
+
+
+//SU3Grid(std::istream&);
 
 //Matrix Init
 void Modell::MatrixInit(arma::cx_mat & initmatrix){
@@ -813,6 +835,37 @@ return cmplavg;
         cout<<"Pauli3"<<endl;
         cout<<Modell::pauli3<<endl;
     }
+
+//write to os
+void Modell::writeModell(ostream & os){
+int tgridmax=SU3Grid::GetTDim();
+int gridmax=SU3Grid::GetDim();
+    //sweep cycle
+        for(int ei=0;ei<4;ei++){
+            for(int i=0;i<tgridmax;i++){
+                for(int j=0;j<gridmax;j++){
+                    for(int k=0;k<gridmax;k++){
+                        for(int l=0;l<gridmax;l++){
+                            os<<grid(ei).GetGrid()(i,j,k,l);
+                        }//for l
+                    }
+                }//for j
+            }//for timelike
+        }//for grid
+}
+
+//write to file
+void Modell::writeToFileModell(const char * filename){
+
+std::ofstream outfile;
+outfile.precision(6);
+outfile.open(filename,std::ios::out);
+
+writeModell(outfile);
+
+outfile.close();
+
+}
 
 Modell::~Modell(){}
 
