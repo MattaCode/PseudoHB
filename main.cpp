@@ -72,16 +72,18 @@ resultfile.close();
 
 int main(){
 
-const int mcmaxtime=200;
+const int mcmaxtime=2;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 try{
 Modell mymodell(id3d);
 
 string dir="./";
 
+mymodell.writeToFileModell((dir+"initconfig").c_str());
+
 //reach eq.
 //Monte Carlo Run - 400 sweep
-for(int mcrun=0;mcrun<600;mcrun++){
+for(int mcrun=0;mcrun<2;mcrun++){
     mymodell.HeatBathSweep();
 }
 
@@ -136,10 +138,33 @@ configuration<<trace(config)<<endl;
 resultfile.close();
 energyout.close();
 
+cin.ignore();
+cin.get();
+
+mymodell.writeToFileModell((dir+"midconfig").c_str());
+
+cin.ignore();
+cin.get();
 
 
+Modell mymod2((dir+"midconfig").c_str());
+mymod2.writeToFileModell((dir+"afterreadconfig").c_str());
+
+cin.ignore();
+cin.get();
 
 
+//reach eq.
+//Monte Carlo Run - 400 sweep
+for(int mcrun=0;mcrun<2;mcrun++){
+    mymod2.HeatBathSweep();
+    cin.ignore();
+cin.get();
+    mymodell.HeatBathSweep();
+}
+
+mymod2.writeToFileModell((dir+"finalconfig").c_str());
+mymodell.writeToFileModell((dir+"originfinalconfig").c_str());
 
 configuration.close();
 

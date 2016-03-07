@@ -182,7 +182,7 @@ if(inputbeta!=Modell::GetBeta()){
                 for(int j=0;j<gridmax;j++){
                     for(int k=0;k<gridmax;k++){
                         for(int l=0;l<gridmax;l++){
-                            grid(ei).ModifyGrid()(i,j,k,l).load(inputfile);
+                            grid(ei).ModifyGrid()(i,j,k,l).load(inputfile,arma_ascii);
                         }//for l
                     }
                 }//for j
@@ -866,7 +866,7 @@ int gridmax=SU3Grid::GetDim();
                 for(int j=0;j<gridmax;j++){
                     for(int k=0;k<gridmax;k++){
                         for(int l=0;l<gridmax;l++){
-                            os<<grid(ei).GetGrid()(i,j,k,l);
+                            grid(ei).GetGrid()(i,j,k,l).save(os,arma_ascii);
                         }//for l
                     }
                 }//for j
@@ -878,7 +878,7 @@ int gridmax=SU3Grid::GetDim();
 void Modell::writeToFileModell(const char * filename)const{
 
 std::ofstream outfile;
-outfile.precision(6);
+outfile.precision(20);
 outfile.open(filename,std::ios::out);
 outfile<<SU3Grid::GetTDim()<<endl;
 outfile<<SU3Grid::GetDim()<<endl;
@@ -894,8 +894,8 @@ Modell::~Modell(){}
 /****************************************************************/
 
 const double Modell::beta=8;
-const int SU3Grid::dim=10;
-const int SU3Grid::tdim=10;
+const int SU3Grid::dim=2;
+const int SU3Grid::tdim=4;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
 const arma::cx_mat Modell::pauli2={{{0,0},{0,-1}},{{0,1},{0,0}}};
