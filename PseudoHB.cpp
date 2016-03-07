@@ -750,10 +750,10 @@ void Modell::HeatBathSweep(){
                 for(int k=0;k<dim;k++){
                     for(int l=0;l<dim;l++){
                         HeatBathStep(grididx,i,j,k,l);
-cout<<"*********************"<<endl;
-cout<<"****IS IT UNITARY?***"<<endl;
-cout<<"*********************"<<endl;
-cout<<grid(grididx).GetGrid()(i,j,k,l)*grid(grididx).GetGrid()(i,j,k,l).t()<<endl;
+//cout<<"*********************"<<endl;
+//cout<<"****IS IT UNITARY?***"<<endl;
+//cout<<"*********************"<<endl;
+//cout<<grid(grididx).GetGrid()(i,j,k,l)*grid(grididx).GetGrid()(i,j,k,l).t()<<endl;
 //cout<<grid(grididx).GetGrid()(i,j,k,l).t()<<endl;
 //cout<<grid(grididx).GetGrid()(i,j,k,l).i()<<endl;
                     }//for space 3
@@ -818,7 +818,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=6;
+const double Modell::beta=8;
 const int SU3Grid::dim=10;
 const int SU3Grid::tdim=10;
 const std::complex<double> Modell::iunit(0,1);
