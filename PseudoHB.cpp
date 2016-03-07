@@ -169,7 +169,7 @@ inputfile>>inputbeta;
 if(inputbeta!=Modell::GetBeta()){
     std::cout<<"Beta not equal. Terminate? <y,n>: "<<endl;
     char terminate='y';
-    cin.ignore();
+
     cin>>terminate;
 
     if(terminate=='y') throw "beta not equal so terminate";

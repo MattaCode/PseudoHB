@@ -102,9 +102,6 @@ std::ofstream energyout;
 energyout.precision(6);
 energyout.open("MeanOfPlaqEn.dat",std::ios::out);
 
-std::ofstream configuration;
-configuration.precision(6);
-configuration.open("Configuration.dat",std::ios::out);
 
     ofstream polyaloop;
     polyaloop.precision(6);
@@ -125,48 +122,14 @@ for(int t=0;t<mcmaxtime;t++){
     energydens.open("EnergyDens"+convert.str()+".dat",ios::out);
     energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
     energydens.close();
-    arma::cx_mat config(3,3,arma::fill::eye);
-for(int i=0;i<4;i++){
-    configuration<<(mymodell.GetModellGrid())(0).GetGrid()(i,0,0,0)<<endl;
-    config*=(mymodell.GetModellGrid())(0).GetGrid()(i,0,0,0);
-}
 
-configuration<<trace(config)<<endl;
         mymodell.HeatBathSweep();
 
 }
 resultfile.close();
 energyout.close();
 
-cin.ignore();
-cin.get();
 
-mymodell.writeToFileModell((dir+"midconfig").c_str());
-
-cin.ignore();
-cin.get();
-
-
-Modell mymod2((dir+"midconfig").c_str());
-mymod2.writeToFileModell((dir+"afterreadconfig").c_str());
-
-cin.ignore();
-cin.get();
-
-
-//reach eq.
-//Monte Carlo Run - 400 sweep
-for(int mcrun=0;mcrun<2;mcrun++){
-    mymod2.HeatBathSweep();
-    cin.ignore();
-cin.get();
-    mymodell.HeatBathSweep();
-}
-
-mymod2.writeToFileModell((dir+"finalconfig").c_str());
-mymodell.writeToFileModell((dir+"originfinalconfig").c_str());
-
-configuration.close();
 
 }catch(const char * a){
     std::cerr<<"error detected: "<<a<<endl;
