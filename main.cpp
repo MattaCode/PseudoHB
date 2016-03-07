@@ -74,6 +74,7 @@ int main(){
 
 const int mcmaxtime=200;
 arma::cx_mat id3d(3,3,arma::fill::eye);
+try{
 Modell mymodell(id3d);
 
 string dir="./";
@@ -141,6 +142,13 @@ energyout.close();
 
 
 configuration.close();
+
+}catch(const char * a){
+    std::cerr<<"error detected: "<<a<<endl;
+    cin.ignore();
+    cin.get();
+
+}
 
 return 0;
 }

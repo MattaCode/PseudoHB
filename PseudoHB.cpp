@@ -156,13 +156,33 @@ std::ifstream inputfile;
 inputfile.open(filename,std::ios::in);
 int tgridmax=SU3Grid::GetTDim();
 int gridmax=SU3Grid::GetDim();
+
+int inputtdim;
+int inputdim;
+double inputbeta;
+inputfile>>inputtdim;
+if(inputtdim!=tgridmax) throw "time-dim not equal error";
+inputfile>>inputdim;
+if(inputdim!=gridmax) throw "space-dim not equal error";
+
+inputfile>>inputbeta;
+if(inputbeta!=Modell::GetBeta()){
+    std::cout<<"Beta not equal. Terminate? <y,n>: "<<endl;
+    char terminate='y';
+    cin.ignore();
+    cin>>terminate;
+
+    if(terminate=='y') throw "beta not equal so terminate";
+
+}
+
     //sweep cycle
         for(int ei=0;ei<4;ei++){
             for(int i=0;i<tgridmax;i++){
                 for(int j=0;j<gridmax;j++){
                     for(int k=0;k<gridmax;k++){
                         for(int l=0;l<gridmax;l++){
-                            inputfile>>grid(ei).ModifyGrid()(i,j,k,l);
+                            grid(ei).ModifyGrid()(i,j,k,l).load(inputfile);
                         }//for l
                     }
                 }//for j
@@ -837,7 +857,7 @@ return cmplavg;
     }
 
 //write to os
-void Modell::writeModell(ostream & os){
+void Modell::writeModell(ostream & os)const{
 int tgridmax=SU3Grid::GetTDim();
 int gridmax=SU3Grid::GetDim();
     //sweep cycle
@@ -855,12 +875,14 @@ int gridmax=SU3Grid::GetDim();
 }
 
 //write to file
-void Modell::writeToFileModell(const char * filename){
+void Modell::writeToFileModell(const char * filename)const{
 
 std::ofstream outfile;
 outfile.precision(6);
 outfile.open(filename,std::ios::out);
-
+outfile<<SU3Grid::GetTDim()<<endl;
+outfile<<SU3Grid::GetDim()<<endl;
+outfile<<Modell::GetBeta()<<endl;
 writeModell(outfile);
 
 outfile.close();
