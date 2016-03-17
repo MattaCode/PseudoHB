@@ -72,7 +72,7 @@ resultfile.close();
 
 int main(){
 
-const int mcmaxtime=2;
+const int mcmaxtime=200;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 try{
 Modell mymodell(id3d);
@@ -83,9 +83,11 @@ mymodell.writeToFileModell((dir+"initconfig").c_str());
 
 //reach eq.
 //Monte Carlo Run - 400 sweep
-for(int mcrun=0;mcrun<2;mcrun++){
-    mymodell.HeatBathSweep();
-}
+//for(int mcrun=0;mcrun<600;mcrun++){
+//    mymodell.HeatBathSweep();
+//}
+
+//mymodell.writeToFileModell((dir+"p600config").c_str());
 
 //after 400 sweep we measure mcmaxtime step
 
@@ -111,7 +113,35 @@ energyout.open("MeanOfPlaqEn.dat",std::ios::out);
 
 
 complex<double> result=0;
-for(int t=0;t<mcmaxtime;t++){
+for(int t=0;t<200;t++){
+    ostringstream convert;
+    convert<<t;
+    polyaloop.open("PolyaLOOP"+convert.str()+".dat",ios::out);
+    result=mymodell.PolyakovLoopAVG(polyaloop);
+    polyaloop.close();
+    cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
+    resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
+    energydens.open("EnergyDens"+convert.str()+".dat",ios::out);
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energydens.close();
+
+        mymodell.HeatBathSweep();
+
+}
+
+
+mymodell.writeToFileModell((dir+"200config").c_str());
+
+//reach eq.
+//Monte Carlo Run - 400 sweep
+for(int mcrun=0;mcrun<400;mcrun++){
+    mymodell.HeatBathSweep();
+}
+
+mymodell.writeToFileModell((dir+"p600config").c_str());
+
+result=0;
+for(int t=600;t<800;t++){
     ostringstream convert;
     convert<<t;
     polyaloop.open("PolyaLOOP"+convert.str()+".dat",ios::out);
@@ -129,6 +159,7 @@ for(int t=0;t<mcmaxtime;t++){
 resultfile.close();
 energyout.close();
 
+mymodell.writeToFileModell((dir+"finalonfig").c_str());
 
 
 }catch(const char * a){
