@@ -287,8 +287,27 @@ for(int i=0;i<T;i++){
     timeline=mymodell.GetModellGrid()(0).GetGrid()(actidt-i,actidx,actidy,actidz).t()*timeline;
 }
 }
+void ScaleSetV::CountSpaceLine0(arma::cx_mat & spaceline){
+    spaceline.eye();
+    for(int i=0;i<R;i++){
+        spaceline=spacelike_0(i)*spaceline;
+    }
+}
+void ScaleSetV::CountSpaceLineT(arma::cx_mat & spaceline){
+    spaceline.eye();
+    for(int i=0;i<R;i++){
+        spaceline=spacelike_T(R-1-i).t()*spaceline;
+    }
+}
+void ScaleSetV::BuildCorrelM(){
 
+for(int i=0;i<maxsmearlevel;i++){
+    InitSpaceLikeT(0,spacelike_0);
+    for(int j=0;j<maxsmearlevel;j++){
+        correlT(i,j);
 
-void BuildCorrelM(){
+    }//for j smear
+
+}//for i smear
 
 }

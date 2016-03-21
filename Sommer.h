@@ -48,7 +48,8 @@ void SmearingT();
 
 void CountTimeLineUp(arma::cx_mat &,const int,const int,const int,const int);
 void CountTimeLineDown(arma::cx_mat &,const int,const int,const int,const int);
-
+void CountSpaceLine0(arma::cx_mat &);
+void CountSpaceLineT(arma::cx_mat &);
 void BuildCorrelM();
 
 void CorrelMAVG();
