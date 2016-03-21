@@ -16,6 +16,7 @@ const int inity;
 const int initz;
 const int spacegrididx; //spacelike direction of Wilson loop
 const double alpha; //smear parameter
+const int maxsmearlevel;
 
 Array::array1<arma::cx_mat> spacelike_0; //smeared spacelike edges at t=0
 Array::array1<arma::cx_mat> spacelike_T; //smeared spacelike edges at t=T-1
@@ -44,6 +45,10 @@ void SmearPt1(arma::cx_mat &,int,int,int,const int);
 void SmearPt2(arma::cx_mat &);
 void Smearing0();
 void SmearingT();
+
+void CountTimeLineUp(arma::cx_mat &,const int,const int,const int,const int);
+void CountTimeLineDown(arma::cx_mat &,const int,const int,const int,const int);
+
 void BuildCorrelM();
 
 void CorrelMAVG();

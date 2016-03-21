@@ -31,8 +31,8 @@ ScaleSetV::ScaleSetV(Modell & mymodell,
 const int r,const int t,const int tidx,
 const int xidx,const int yidx,const int zidx,const int grididx):
 mymodell(mymodell),R(r),T(t),initt(tidx),initx(xidx),inity(yidx),
-initz(zidx),spacegrididx(grididx),alpha(0.5),spacelike_0(R),spacelike_T(R),
-correlT(3,3,arma::fill::zeros),correlT1(3,3,arma::fill::zeros){
+initz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(5),spacelike_0(R),spacelike_T(R),
+correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
 
 InitSpaceLikeT(0,spacelike_0);
 InitSpaceLikeT(T-1,spacelike_T);
@@ -271,4 +271,24 @@ void ScaleSetV::SmearingT(){
             break;
         }//switch
     }
+}
+
+void ScaleSetV::CountTimeLineUp(arma::cx_mat & timeline,const int actidx,const int actidy,const int actidz,const int actidt){
+timeline.eye();
+for(int i=0;i<T;i++){
+    timeline=mymodell.GetModellGrid()(0).GetGrid()(actidt+i,actidx,actidy,actidz)*timeline;
+}
+
+}
+
+void ScaleSetV::CountTimeLineDown(arma::cx_mat & timeline,const int actidx,const int actidy,const int actidz,const int actidt){
+timeline.eye();
+for(int i=0;i<T;i++){
+    timeline=mymodell.GetModellGrid()(0).GetGrid()(actidt-i,actidx,actidy,actidz).t()*timeline;
+}
+}
+
+
+void BuildCorrelM(){
+
 }
