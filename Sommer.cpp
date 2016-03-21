@@ -35,7 +35,7 @@ initz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(5),spacelike_0(R),spa
 correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
 
 InitSpaceLikeT(0,spacelike_0);
-InitSpaceLikeT(T-1,spacelike_T);
+InitSpaceLikeT(T,spacelike_T);
 
 }
 
@@ -336,6 +336,18 @@ for(int i=0;i<maxsmearlevel;i++){
         CountSpaceLine0(spline0);
         CountSpaceLineT(splineT);
         correlT(i,j)=trace(spline0*tlineup*splineT*tlinedown);
+        Smearing0();
+
+    }//for j smear
+    SmearingT();
+}//for i smear
+
+InitSpaceLikeT(T+1,spacelike_T);
+for(int i=0;i<maxsmearlevel;i++){
+    InitSpaceLikeT(0,spacelike_0);
+    for(int j=0;j<maxsmearlevel;j++){
+        CountSpaceLine0(spline0);
+        CountSpaceLineT(splineT);
         correlT1(i,j)=trace(spline0*tlineupplus*splineT*tlinedownplus);
         Smearing0();
 
