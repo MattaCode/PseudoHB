@@ -1,3 +1,4 @@
+#include<cmath>
 #include"Sommer.h"
 
 void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> matarray){
@@ -153,3 +154,78 @@ void ScaleSetV::SmearPt1(arma::cx_mat & link,int actidx,int actidy,int actidz,co
     }//for spacedim.s
 
 }
+//project back to su3
+void SmearPt2(arma::cx_mat link){
+    double value=real(trace(link*link.t()));
+    double newvalue=0;
+    arma::cx_mat tmp(3,3,arma::fill::zeros);
+    arma::cx_mat subsu3(2,2,arma::fill::zeros);
+
+    //initialize tmp as link
+    for(int i=0;i<3;i++){
+        for(int j=0;j<3;j++){
+            tmp(i,j)=link(i,j);
+        }
+    }
+    int counter=0;
+    do{
+        counter++;
+        //firts subgroup
+        subsu3(0,0)=link(0,0);
+        subsu3(1,0)=link(1,0);
+        subsu3(0,1)=link(0,1);
+        subsu3(1,1)=link(1,1);
+        subsu3=subsu3/det(subsu3);
+        tmp(0,0)=subsu3(0,0);
+        tmp(1,0)=subsu3(1,0);
+        tmp(0,1)=subsu3(0,1);
+        tmp(1,1)=subsu3(1,1);
+        newvalue=real(trace(tmp*link.t()));
+        link(0,0)=tmp(0,0);
+        link(1,0)=tmp(1,0);
+        link(0,1)=tmp(0,1);
+        link(1,1)=tmp(1,1);
+        if(newvalue<value){}
+        else{
+            value=newvalue;
+            //second subgroup
+        subsu3(0,0)=link(1,1);
+        subsu3(1,0)=link(2,1);
+        subsu3(0,1)=link(1,2);
+        subsu3(1,1)=link(2,2);
+        subsu3=subsu3/det(subsu3);
+        tmp(1,1)=subsu3(0,0);
+        tmp(2,1)=subsu3(1,0);
+        tmp(1,2)=subsu3(0,1);
+        tmp(2,2)=subsu3(1,1);
+        newvalue=real(trace(tmp*link.t()));
+        link(1,1)=tmp(1,1);
+        link(2,1)=tmp(2,1);
+        link(1,2)=tmp(1,2);
+        link(2,2)=tmp(2,2);
+            if(newvalue<value){}
+            else{
+            value=newvalue;
+            //second subgroup
+            subsu3(0,0)=link(0,0);
+            subsu3(1,0)=link(3,0);
+            subsu3(0,1)=link(0,3);
+            subsu3(1,1)=link(3,3);
+            subsu3=subsu3/det(subsu3);
+            tmp(0,0)=subsu3(0,0);
+            tmp(3,0)=subsu3(1,0);
+            tmp(0,3)=subsu3(0,1);
+            tmp(3,3)=subsu3(1,1);
+            newvalue=real(trace(tmp*link.t()));
+            link(0,0)=tmp(0,0);
+            link(3,0)=tmp(3,0);
+            link(0,3)=tmp(0,3);
+            link(3,3)=tmp(3,3);
+            }
+        }
+        }while(newvalue>value);
+        //debug
+        std::cout<<"number of iterations: "<<counter<<std::endl;
+
+}
+
