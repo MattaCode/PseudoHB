@@ -15,6 +15,7 @@ const int initx;
 const int inity;
 const int initz;
 const int spacegrididx; //spacelike direction of Wilson loop
+const double alpha; //smear parameter
 
 Array::array1<arma::cx_mat> spacelike_0; //smeared spacelike edges at t=0
 Array::array1<arma::cx_mat> spacelike_T; //smeared spacelike edges at t=T-1
@@ -35,9 +36,11 @@ ScaleSetV(Modell &,const int,const int,const int,const int,const int,const int,c
 //to do
 //assignment
 
+//helper for ctr
 void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> );
 
-void SmearPt1(arma::cx_mat);
+//for one link
+void SmearPt1(arma::cx_mat &,int,int,int,const int);
 void SmearPt2(arma::cx_mat);
 void Smearing0();
 void SmearingT();
