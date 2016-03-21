@@ -155,7 +155,7 @@ void ScaleSetV::SmearPt1(arma::cx_mat & link,int actidx,int actidy,int actidz,co
 
 }
 //project back to su3
-void SmearPt2(arma::cx_mat link){
+void ScaleSetV::SmearPt2(arma::cx_mat & link){
     double value=real(trace(link*link.t()));
     double newvalue=0;
     arma::cx_mat tmp(3,3,arma::fill::zeros);
@@ -223,9 +223,52 @@ void SmearPt2(arma::cx_mat link){
             link(3,3)=tmp(3,3);
             }
         }
+                std::cout<<"number of iterations: "<<counter<<std::endl;
+
         }while(newvalue>value);
         //debug
-        std::cout<<"number of iterations: "<<counter<<std::endl;
+        std::cout<<"final number of iterations: "<<counter<<std::endl;
 
 }
 
+void ScaleSetV::Smearing0(){
+
+    for(int i=0;i<R;i++){
+        //smearing a link
+        switch(spacegrididx){
+        case 1:
+            SmearPt1(spacelike_0(i),initx+i,inity,initz,initt);
+            SmearPt2(spacelike_0(i));
+            break;
+        case 2:
+            SmearPt1(spacelike_0(i),initx,inity+i,initz,initt);
+            SmearPt2(spacelike_0(i));
+            break;
+        case 3:
+            SmearPt1(spacelike_0(i),initx,inity,initz+i,initt);
+            SmearPt2(spacelike_0(i));
+            break;
+        }//switch
+    }
+}
+
+void ScaleSetV::SmearingT(){
+
+    for(int i=0;i<R;i++){
+        //smearing a link
+        switch(spacegrididx){
+        case 1:
+            SmearPt1(spacelike_T(i),initx+i,inity,initz,initt);
+            SmearPt2(spacelike_T(i));
+            break;
+        case 2:
+            SmearPt1(spacelike_T(i),initx,inity+i,initz,initt);
+            SmearPt2(spacelike_T(i));
+            break;
+        case 3:
+            SmearPt1(spacelike_T(i),initx,inity,initz+i,initt);
+            SmearPt2(spacelike_T(i));
+            break;
+        }//switch
+    }
+}

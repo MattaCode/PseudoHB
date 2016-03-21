@@ -41,7 +41,7 @@ void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> );
 
 //for one link
 void SmearPt1(arma::cx_mat &,int,int,int,const int);
-void SmearPt2(arma::cx_mat);
+void SmearPt2(arma::cx_mat &);
 void Smearing0();
 void SmearingT();
 void BuildCorrelM();
