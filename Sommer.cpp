@@ -273,17 +273,19 @@ void ScaleSetV::SmearingT(){
     }
 }
 
-void ScaleSetV::CountTimeLineUp(arma::cx_mat & timeline,const int actidx,const int actidy,const int actidz,const int actidt){
+void ScaleSetV::CountTimeLineUp(arma::cx_mat & timeline,
+const int actidx,const int actidy,const int actidz,const int actidt,const int maxtime){
 timeline.eye();
-for(int i=0;i<T;i++){
+for(int i=0;i<maxtime;i++){
     timeline=mymodell.GetModellGrid()(0).GetGrid()(actidt+i,actidx,actidy,actidz)*timeline;
 }
 
 }
 
-void ScaleSetV::CountTimeLineDown(arma::cx_mat & timeline,const int actidx,const int actidy,const int actidz,const int actidt){
+void ScaleSetV::CountTimeLineDown(arma::cx_mat & timeline,
+const int actidx,const int actidy,const int actidz,const int actidt,const int maxtime){
 timeline.eye();
-for(int i=0;i<T;i++){
+for(int i=0;i<maxtime;i++){
     timeline=mymodell.GetModellGrid()(0).GetGrid()(actidt-i,actidx,actidy,actidz).t()*timeline;
 }
 }
@@ -300,14 +302,45 @@ void ScaleSetV::CountSpaceLineT(arma::cx_mat & spaceline){
     }
 }
 void ScaleSetV::BuildCorrelM(){
+arma::cx_mat spline0(3,3,arma::fill::eye);
+arma::cx_mat splineT(3,3,arma::fill::eye);
+arma::cx_mat tlineup(3,3,arma::fill::eye);
+arma::cx_mat tlinedown(3,3,arma::fill::eye);
+arma::cx_mat tlineupplus(3,3,arma::fill::eye);
+arma::cx_mat tlinedownplus(3,3,arma::fill::eye);
+CountTimeLineDown(tlinedown,initx,inity,initz,initt+T-1,T);
+CountTimeLineDown(tlinedownplus,initx,inity,initz,initt+T,T+1);
+
+switch(spacegrididx){
+case 1:
+    CountTimeLineUp(tlineup,initx+R,inity,initz,initt,T);
+        CountTimeLineUp(tlineupplus,initx+R,inity,initz,initt,T+1);
+    break;
+case 2:
+    CountTimeLineUp(tlineup,initx,inity+R,initz,initt,T);
+        CountTimeLineUp(tlineupplus,initx,inity+R,initz,initt,T+1);
+
+    break;
+case 3:
+    CountTimeLineUp(tlineup,initx,inity,initz+R,initt,T);
+        CountTimeLineUp(tlineupplus,initx,inity,initz+R,initt,T+1);
+
+    break;
+
+}//switch
+
 
 for(int i=0;i<maxsmearlevel;i++){
     InitSpaceLikeT(0,spacelike_0);
     for(int j=0;j<maxsmearlevel;j++){
-        correlT(i,j);
+        CountSpaceLine0(spline0);
+        CountSpaceLineT(splineT);
+        correlT(i,j)=trace(spline0*tlineup*splineT*tlinedown);
+        correlT1(i,j)=trace(spline0*tlineupplus*splineT*tlinedownplus);
+        Smearing0();
 
     }//for j smear
-
+    SmearingT();
 }//for i smear
 
 }
