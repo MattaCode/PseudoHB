@@ -38,7 +38,7 @@ ScaleSetV(Modell &,const int,const int,const int,const int,const int,const int,c
 //assignment
 
 //helper for ctr
-void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> );
+void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> &);
 
 //for one link
 void SmearPt1(arma::cx_mat &,int,int,int,const int);
@@ -52,7 +52,7 @@ void CountSpaceLine0(arma::cx_mat &);
 void CountSpaceLineT(arma::cx_mat &);
 void BuildCorrelM();
 
-void CorrelMAVG();
+void CorrelMAVG(const int);
 
 double CountV();
 

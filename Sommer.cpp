@@ -1,7 +1,7 @@
 #include<cmath>
 #include"Sommer.h"
 
-void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> matarray){
+void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> & matarray){
 const int maxdim=SU3Grid::GetDim();
 for(int i=0;i<R;i++){
 
@@ -329,13 +329,13 @@ case 3:
 
 }//switch
 
-
+InitSpaceLikeT(T,spacelike_T);
 for(int i=0;i<maxsmearlevel;i++){
     InitSpaceLikeT(0,spacelike_0);
     for(int j=0;j<maxsmearlevel;j++){
         CountSpaceLine0(spline0);
         CountSpaceLineT(splineT);
-        correlT(i,j)=trace(spline0*tlineup*splineT*tlinedown);
+        correlT(i,j)+=trace(spline0*tlineup*splineT*tlinedown);
         Smearing0();
 
     }//for j smear
@@ -348,11 +348,23 @@ for(int i=0;i<maxsmearlevel;i++){
     for(int j=0;j<maxsmearlevel;j++){
         CountSpaceLine0(spline0);
         CountSpaceLineT(splineT);
-        correlT1(i,j)=trace(spline0*tlineupplus*splineT*tlinedownplus);
+        correlT1(i,j)+=trace(spline0*tlineupplus*splineT*tlinedownplus);
         Smearing0();
 
     }//for j smear
     SmearingT();
 }//for i smear
 
+}
+
+void ScaleSetV::CorrelMAVG(const int num){
+    for(int i=0;i<num;i++){
+        BuildCorrelM();
+        for(int j=0;j<10;j++){
+            mymodell.HeatBathSweep();
+        }
+
+    }
+    correlT1/=num;
+    correlT/=num;
 }
