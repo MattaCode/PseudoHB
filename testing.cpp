@@ -2,8 +2,10 @@
 #include"testing.h"
 #include"PseudoHB.h"
 #include"HBRandom.h"
+#include"Sommer.h"
 
 using namespace std;
+
 
 //basic test
 void test1(){
@@ -62,5 +64,19 @@ for(int i=0;i<10;i++){
         cout<<*it<<endl;
     }
 }
+
+}
+
+void testsymmcorrelM(){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell mymodell(id3d);
+    //reach eq.
+    //Monte Carlo Run - 400 sweep
+    for(int mcrun=0;mcrun<200;mcrun++){
+        mymodell.HeatBathSweep();
+    }
+    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+    scaler.isitsymm();
+    scaler.CorrelMAVG(20);
 
 }

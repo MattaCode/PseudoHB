@@ -158,80 +158,121 @@ void ScaleSetV::SmearPt1(arma::cx_mat & link,int actidx,int actidy,int actidz,co
 
 }
 //project back to su3
+//void ScaleSetV::SmearPt2(arma::cx_mat & link){
+//    double value=real(trace(link*link.t()));
+//    double newvalue=0;
+//    arma::cx_mat tmp(3,3,arma::fill::zeros);
+//    arma::cx_mat subsu3(2,2,arma::fill::zeros);
+//    std::cout<<"original link: "<<std::endl;
+//    std::cout<<link<<std::endl;
+//    //initialize tmp as link
+//    for(int i=0;i<3;i++){
+//        for(int j=0;j<3;j++){
+//            tmp(i,j)=link(i,j);
+//        }
+//    }
+//    int counter=0;
+//    do{
+//        counter++;
+//        //firts subgroup
+//        subsu3(0,0)=link(0,0);
+//        subsu3(1,0)=link(1,0);
+//        subsu3(0,1)=link(0,1);
+//        subsu3(1,1)=link(1,1);
+//        subsu3=subsu3/det(subsu3);
+//        tmp(0,0)=subsu3(0,0);
+//        tmp(1,0)=subsu3(1,0);
+//        tmp(0,1)=subsu3(0,1);
+//        tmp(1,1)=subsu3(1,1);
+//        newvalue=real(trace(tmp*link.t()));
+//        link(0,0)=tmp(0,0);
+//        link(1,0)=tmp(1,0);
+//        link(0,1)=tmp(0,1);
+//        link(1,1)=tmp(1,1);
+//        if(newvalue<value){
+//            std::cout<<"first sub."<<std::endl;
+//            std::cout<<"val: "<<value<<" newval: "<<newvalue<<std::endl;
+//            std::cout<<"no more task"<<std::endl;
+//        }
+//        else{
+//            value=newvalue;
+//            //second subgroup
+//        subsu3(0,0)=link(1,1);
+//        subsu3(1,0)=link(2,1);
+//        subsu3(0,1)=link(1,2);
+//        subsu3(1,1)=link(2,2);
+//        subsu3=subsu3/det(subsu3);
+//        tmp(1,1)=subsu3(0,0);
+//        tmp(2,1)=subsu3(1,0);
+//        tmp(1,2)=subsu3(0,1);
+//        tmp(2,2)=subsu3(1,1);
+//        newvalue=real(trace(tmp*link.t()));
+//        link(1,1)=tmp(1,1);
+//        link(2,1)=tmp(2,1);
+//        link(1,2)=tmp(1,2);
+//        link(2,2)=tmp(2,2);
+//            if(newvalue<value){
+//                std::cout<<"second sub."<<std::endl;
+//                std::cout<<"val: "<<value<<" newval: "<<newvalue<<std::endl;
+//                std::cout<<"no more task"<<std::endl;
+//            }
+//            else{
+//            value=newvalue;
+//            //second subgroup
+//            subsu3(0,0)=link(0,0);
+//            subsu3(1,0)=link(2,0);
+//            subsu3(0,1)=link(0,2);
+//            subsu3(1,1)=link(2,2);
+//            subsu3=subsu3/det(subsu3);
+//            tmp(0,0)=subsu3(0,0);
+//            tmp(2,0)=subsu3(1,0);
+//            tmp(0,2)=subsu3(0,1);
+//            tmp(2,2)=subsu3(1,1);
+//            newvalue=real(trace(tmp*link.t()));
+//            link(0,0)=tmp(0,0);
+//            link(2,0)=tmp(2,0);
+//            link(0,2)=tmp(0,2);
+//            link(2,2)=tmp(2,2);
+//            std::cout<<"third sub."<<std::endl;
+//            std::cout<<"val: "<<value<<" newval: "<<newvalue<<std::endl;
+//            }//
+//        }//
+//                std::cout<<"act number of iterations: "<<counter<<std::endl;
+//
+//        }while(newvalue>value);
+//        //debug
+//        std::cout<<"final number of iterations: "<<counter<<std::endl;
+//    std::cout<<"final link: "<<std::endl;
+//    std::cout<<link<<std::endl;
+//    std::cout<<"is it identity?"<<std::endl;
+//    std::cout<<link*link.t()<<std::endl;
+//    std::cout<<"det: "<<arma::det(link)<<std::endl;
+//}
+
+//project back to su3
 void ScaleSetV::SmearPt2(arma::cx_mat & link){
-    double value=real(trace(link*link.t()));
-    double newvalue=0;
-    arma::cx_mat tmp(3,3,arma::fill::zeros);
-    arma::cx_mat subsu3(2,2,arma::fill::zeros);
-
-    //initialize tmp as link
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            tmp(i,j)=link(i,j);
-        }
-    }
-    int counter=0;
-    do{
-        counter++;
-        //firts subgroup
-        subsu3(0,0)=link(0,0);
-        subsu3(1,0)=link(1,0);
-        subsu3(0,1)=link(0,1);
-        subsu3(1,1)=link(1,1);
-        subsu3=subsu3/det(subsu3);
-        tmp(0,0)=subsu3(0,0);
-        tmp(1,0)=subsu3(1,0);
-        tmp(0,1)=subsu3(0,1);
-        tmp(1,1)=subsu3(1,1);
-        newvalue=real(trace(tmp*link.t()));
-        link(0,0)=tmp(0,0);
-        link(1,0)=tmp(1,0);
-        link(0,1)=tmp(0,1);
-        link(1,1)=tmp(1,1);
-        if(newvalue<value){}
-        else{
-            value=newvalue;
-            //second subgroup
-        subsu3(0,0)=link(1,1);
-        subsu3(1,0)=link(2,1);
-        subsu3(0,1)=link(1,2);
-        subsu3(1,1)=link(2,2);
-        subsu3=subsu3/det(subsu3);
-        tmp(1,1)=subsu3(0,0);
-        tmp(2,1)=subsu3(1,0);
-        tmp(1,2)=subsu3(0,1);
-        tmp(2,2)=subsu3(1,1);
-        newvalue=real(trace(tmp*link.t()));
-        link(1,1)=tmp(1,1);
-        link(2,1)=tmp(2,1);
-        link(1,2)=tmp(1,2);
-        link(2,2)=tmp(2,2);
-            if(newvalue<value){}
-            else{
-            value=newvalue;
-            //second subgroup
-            subsu3(0,0)=link(0,0);
-            subsu3(1,0)=link(3,0);
-            subsu3(0,1)=link(0,3);
-            subsu3(1,1)=link(3,3);
-            subsu3=subsu3/det(subsu3);
-            tmp(0,0)=subsu3(0,0);
-            tmp(3,0)=subsu3(1,0);
-            tmp(0,3)=subsu3(0,1);
-            tmp(3,3)=subsu3(1,1);
-            newvalue=real(trace(tmp*link.t()));
-            link(0,0)=tmp(0,0);
-            link(3,0)=tmp(3,0);
-            link(0,3)=tmp(0,3);
-            link(3,3)=tmp(3,3);
-            }
-        }
-                std::cout<<"number of iterations: "<<counter<<std::endl;
-
-        }while(newvalue>value);
-        //debug
-        std::cout<<"final number of iterations: "<<counter<<std::endl;
-
+    arma::cx_mat diagonal(3,3,arma::fill::eye);
+    arma::cx_mat eigvecs;
+    arma::vec eigvals;
+    arma::eig_sym(eigvals,eigvecs,link.t()*link,"std");
+    diagonal(0,0)=eigvals(0)*diagonal(0,0);
+    diagonal(1,1)=eigvals(1)*diagonal(1,1);
+    diagonal(2,2)=eigvals(2)*diagonal(2,2);
+    std::cout<<"eigvals"<<std::endl;
+    std::cout<<eigvals<<std::endl;
+    std::cout<<"eigvecs"<<std::endl;
+    std::cout<<eigvecs<<std::endl;
+    std::cout<<"diagonal"<<std::endl;
+    std::cout<<diagonal<<std::endl;
+    arma::cx_mat sqrtmatrix=eigvecs*sqrt(diagonal)*eigvecs.i();
+    std::cout<<"original link"<<std::endl;
+    std::cout<<link<<std::endl;
+    link=link*sqrtmatrix.i()*pow(arma::det(link.i()*link.t()),1./6);
+    std::cout<<"new link"<<std::endl;
+    std::cout<<link<<std::endl;
+    std::cout<<"is it identity?"<<std::endl;
+    std::cout<<link.t()*link<<std::endl;
+    std::cout<<arma::det(link)<<std::endl;
 }
 
 void ScaleSetV::Smearing0(){
@@ -389,6 +430,8 @@ void ScaleSetV::CorrelMAVG(const int num){
     }
     correlT1/=num;
     correlT/=num;
+    std::cout<<"after avg:"<<std::endl;
+    std::cout<<correlT<<std::endl;
 }
 
 void ScaleSetV::isitsymm(){
@@ -420,3 +463,4 @@ void ScaleSetV::isitsymm(){
 //    value=log(eig1/eig2);
 //    return value;
 //}
+ScaleSetV::~ScaleSetV(){}
