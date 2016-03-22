@@ -69,12 +69,10 @@ resultfile.close();
 
 }
 
-
-int main(){
-
-const int mcmaxtime=200;
+void MeasureHistosPolya(){
+    const int mcmaxtime=200;
 arma::cx_mat id3d(3,3,arma::fill::eye);
-try{
+
 Modell mymodell(id3d);
 
 string dir="./";
@@ -160,6 +158,11 @@ resultfile.close();
 energyout.close();
 
 mymodell.writeToFileModell((dir+"finalonfig").c_str());
+}
+
+int main(){
+try{
+
 
 
 }catch(const char * a){
