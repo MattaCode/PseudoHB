@@ -23,7 +23,7 @@ Array::array1<arma::cx_mat> spacelike_T; //smeared spacelike edges at t=T-1
 
 arma::cx_mat correlT; //correl matrix at T (and fix R)
 arma::cx_mat correlT1;//correl matrix at T+1 (and fix R)
-
+arma::cx_mat correl0;//correl matrix at t0+1
 
 
 public:
@@ -56,7 +56,7 @@ void CorrelMAVG(const int);
 
 double CountV();
 
-
+void isitsymm();
 
 
 ~ScaleSetV();

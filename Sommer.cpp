@@ -1,4 +1,6 @@
 #include<cmath>
+#include<armadillo>
+#include<complex>
 #include"Sommer.h"
 
 void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> & matarray){
@@ -32,7 +34,8 @@ const int r,const int t,const int tidx,
 const int xidx,const int yidx,const int zidx,const int grididx):
 mymodell(mymodell),R(r),T(t),initt(tidx),initx(xidx),inity(yidx),
 initz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(5),spacelike_0(R),spacelike_T(R),
-correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
+correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros),
+correl0(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
 
 InitSpaceLikeT(0,spacelike_0);
 InitSpaceLikeT(T,spacelike_T);
@@ -308,23 +311,26 @@ arma::cx_mat tlineup(3,3,arma::fill::eye);
 arma::cx_mat tlinedown(3,3,arma::fill::eye);
 arma::cx_mat tlineupplus(3,3,arma::fill::eye);
 arma::cx_mat tlinedownplus(3,3,arma::fill::eye);
+arma::cx_mat tlineup1(3,3,arma::fill::eye);
+arma::cx_mat tlinedown1(3,3,arma::fill::eye);
 CountTimeLineDown(tlinedown,initx,inity,initz,initt+T-1,T);
 CountTimeLineDown(tlinedownplus,initx,inity,initz,initt+T,T+1);
-
+tlinedown1=mymodell.GetModellGrid()(0).GetGrid()(initt,initx,inity,initz).t();
 switch(spacegrididx){
 case 1:
     CountTimeLineUp(tlineup,initx+R,inity,initz,initt,T);
-        CountTimeLineUp(tlineupplus,initx+R,inity,initz,initt,T+1);
+    CountTimeLineUp(tlineupplus,initx+R,inity,initz,initt,T+1);
+    tlineup1=mymodell.GetModellGrid()(0).GetGrid()(initt,initx+R,inity,initz);
     break;
 case 2:
     CountTimeLineUp(tlineup,initx,inity+R,initz,initt,T);
-        CountTimeLineUp(tlineupplus,initx,inity+R,initz,initt,T+1);
-
+    CountTimeLineUp(tlineupplus,initx,inity+R,initz,initt,T+1);
+    tlineup1=mymodell.GetModellGrid()(0).GetGrid()(initt,initx,inity+R,initz);
     break;
 case 3:
     CountTimeLineUp(tlineup,initx,inity,initz+R,initt,T);
-        CountTimeLineUp(tlineupplus,initx,inity,initz+R,initt,T+1);
-
+    CountTimeLineUp(tlineupplus,initx,inity,initz+R,initt,T+1);
+    tlineup1=mymodell.GetModellGrid()(0).GetGrid()(initt,initx,inity,initz+R);
     break;
 
 }//switch
@@ -355,9 +361,25 @@ for(int i=0;i<maxsmearlevel;i++){
     SmearingT();
 }//for i smear
 
+InitSpaceLikeT(1,spacelike_T);
+for(int i=0;i<maxsmearlevel;i++){
+    InitSpaceLikeT(0,spacelike_0);
+    for(int j=0;j<maxsmearlevel;j++){
+        CountSpaceLine0(spline0);
+        CountSpaceLineT(splineT);
+        correl0(i,j)+=trace(spline0*tlineup1*splineT*tlinedown1);
+        Smearing0();
+
+    }//for j smear
+    SmearingT();
+}//for i smear
+
 }
 
 void ScaleSetV::CorrelMAVG(const int num){
+    correl0.zeros();
+    correlT1.zeros();
+    correlT.zeros();
     for(int i=0;i<num;i++){
         BuildCorrelM();
         for(int j=0;j<10;j++){
@@ -368,3 +390,33 @@ void ScaleSetV::CorrelMAVG(const int num){
     correlT1/=num;
     correlT/=num;
 }
+
+void ScaleSetV::isitsymm(){
+    correl0.zeros();
+    correlT1.zeros();
+    correlT.zeros();
+    BuildCorrelM();
+    std::cout<<"is it symmetric? "<<std::endl;
+    std::cout<<correl0<<std::endl;
+    std::cout<<correlT<<std::endl;
+    std::cout<<correlT1<<std::endl;
+
+}
+
+//double ScaleSetV::CountV(){
+//    double value=0;
+//    CorrelMAVG(15);
+//not works in debian testing
+//    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
+//    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
+//
+//    arma::cx_vec eigvals;
+//    arma::eig_gen(eigvals,t0t);
+//    std::complex<double> maxeigt0t=eigvals.max();
+//    double eig1=real(maxeigt0t);
+//    arma::eig_gen(eigvals,t0t1);
+//    std::complex<double> maxeigt0t1=eigvals.max();
+//    double eig2=real(maxeigt0t1);
+//    value=log(eig1/eig2);
+//    return value;
+//}
