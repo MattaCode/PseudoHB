@@ -3,5 +3,7 @@
 
 void test1();
 void testsymmcorrelM();
-
+void testsmear();
+void correltest();
+void WilsonAVGtest();
 #endif // TESTING_H
