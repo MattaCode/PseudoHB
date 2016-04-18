@@ -75,6 +75,7 @@ const Array::array1<arma::cx_mat> & GetSpaceTGrid()const;
 Array::array1<arma::cx_mat> & ModSpace0Grid();
 Array::array1<arma::cx_mat> & ModSpaceTGrid();
 
+const arma::cx_mat & GetCorrelT()const;
 
 ~ScaleSetV();
 

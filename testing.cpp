@@ -163,3 +163,22 @@ for(int i=0;i<2;i++){
 std::cout<<correl<<std::endl;
 
 }
+
+void WilsonPot(){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell mymodell(id3d);
+    for(int mcrun=0;mcrun<200;mcrun++){
+        mymodell.HeatBathSweep();
+    }
+
+    for(int i=1;i<8;i++){
+        ScaleSetV scaler(mymodell,3,i,0,0,0,0,1);
+        scaler.BuildCorrelM();
+        std::cout<<scaler.GetCorrelT()<<std::endl;
+        std::cin.ignore();
+        std::cin.get();
+    }
+
+
+
+}

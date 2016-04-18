@@ -6,4 +6,5 @@ void testsymmcorrelM();
 void testsmear();
 void correltest();
 void WilsonAVGtest();
+void WilsonPot();
 #endif // TESTING_H

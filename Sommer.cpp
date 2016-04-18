@@ -60,7 +60,7 @@ ScaleSetV::ScaleSetV(Modell & mymodell,
 const int r,const int t,const int tidx,
 const int xidx,const int yidx,const int zidx,const int grididx):
 mymodell(mymodell),R(r),T(t),oinitt(tidx),oinitx(xidx),oinity(yidx),
-oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(2),spacelike_0(R),spacelike_T(R),
+oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(1),spacelike_0(R),spacelike_T(R),
 correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros),
 correl0(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
 initt=tidx;
@@ -627,5 +627,10 @@ Array::array1<arma::cx_mat> & ScaleSetV::ModSpace0Grid(){
 Array::array1<arma::cx_mat> & ScaleSetV::ModSpaceTGrid(){
     return spacelike_T;
 }
+
+const arma::cx_mat & ScaleSetV::GetCorrelT()const{
+return correlT;
+}
+
 
 ScaleSetV::~ScaleSetV(){}
