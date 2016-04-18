@@ -163,7 +163,7 @@ mymodell.writeToFileModell((dir+"finalonfig").c_str());
 int main(){
 try{
 
-
+wilsontest2();
 
 }catch(const char * a){
     std::cerr<<"error detected: "<<a<<endl;

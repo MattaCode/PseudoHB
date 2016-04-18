@@ -3,4 +3,7 @@
 
 void test1();
 
+void wilsontest();
+void wilsontest2();
+
 #endif // TESTING_H
