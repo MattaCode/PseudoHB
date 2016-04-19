@@ -2,6 +2,7 @@
 #define SOMMER_H
 #include<complex>
 #include<armadillo>
+#include<string>
 #include"fftw++-1.13/Array.h"
 #include"PseudoHB.h"
 
@@ -63,7 +64,8 @@ void CountSpaceLine0(arma::cx_mat &);
 void CountSpaceLineT(arma::cx_mat &);
 void BuildCorrelM();
 
-void CorrelMAVG(const int);
+void CorrelMAVG(const int,arma::cx_mat &,arma::cx_mat &,arma::cx_mat &,std::string);
+void WilsonAVG(std::ofstream &,std::ofstream &,std::ofstream &);
 void WilsonAVG();
 
 double CountV();

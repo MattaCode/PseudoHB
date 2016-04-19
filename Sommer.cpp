@@ -1,6 +1,7 @@
 #include<cmath>
 #include<armadillo>
 #include<complex>
+#include<string>
 #include"Sommer.h"
 
 void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> & matarray){
@@ -60,7 +61,7 @@ ScaleSetV::ScaleSetV(Modell & mymodell,
 const int r,const int t,const int tidx,
 const int xidx,const int yidx,const int zidx,const int grididx):
 mymodell(mymodell),R(r),T(t),oinitt(tidx),oinitx(xidx),oinity(yidx),
-oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(1),spacelike_0(R),spacelike_T(R),
+oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(2),spacelike_0(R),spacelike_T(R),
 correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros),
 correl0(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
 initt=tidx;
@@ -261,17 +262,17 @@ void ScaleSetV::SmearPt2(arma::cx_mat & link){
 //    std::cout<<eigvals<<std::endl;
 //    std::cout<<"eigvecs"<<std::endl;
 //    std::cout<<eigvecs<<std::endl;
-    std::cout<<"diagonal"<<std::endl;
-    std::cout<<diagonal<<std::endl;
+//    std::cout<<"diagonal"<<std::endl;
+//    std::cout<<diagonal<<std::endl;
     arma::cx_mat sqrtmatrix=eigvecs*sqrt(diagonal)*eigvecs.i();
 //    std::cout<<"original link"<<std::endl;
 //    std::cout<<link<<std::endl;
     link=link*sqrtmatrix.i()*pow(arma::det(link.i()*link.t()),1./6);
-    std::cout<<"new link"<<std::endl;
-    std::cout<<link<<std::endl;
-    std::cout<<"is it identity?"<<std::endl;
-    std::cout<<link.t()*link<<std::endl;
-    std::cout<<arma::det(link)<<std::endl;
+//    std::cout<<"new link"<<std::endl;
+//    std::cout<<link<<std::endl;
+//    std::cout<<"is it identity?"<<std::endl;
+//    std::cout<<link.t()*link<<std::endl;
+//    std::cout<<arma::det(link)<<std::endl;
 }
 
 void ScaleSetV::Smearing0(){
@@ -505,36 +506,60 @@ for(int i=0;i<maxsmearlevel;i++){
 }
 
 
-void ScaleSetV::CorrelMAVG(const int num){
+void ScaleSetV::CorrelMAVG(const int num,arma::cx_mat & rescorr0,arma::cx_mat & rescorrT,arma::cx_mat & rescorrT1,std::string dir){
     correl0.zeros();
     correlT1.zeros();
     correlT.zeros();
+
+     rescorr0.zeros();
+     rescorrT.zeros();
+     rescorrT1.zeros();
+std::ofstream outcorr0;
+outcorr0.precision(6);
+outcorr0.open((dir+"outcorr0.dat").c_str(),std::ios::out);
+
+std::ofstream outcorrT;
+outcorrT.precision(6);
+outcorrT.open((dir+"outcorrT.dat").c_str(),std::ios::out);
+
+std::ofstream outcorrT1;
+outcorrT1.precision(6);
+outcorrT1.open((dir+"outcorrT1.dat").c_str(),std::ios::out);
+
+    int counter=0;
     for(int i=0;i<num;i++){
-        BuildCorrelM();
-    std::cout<<"after: "<<i<<" avg"<<std::endl;
-    std::cout<<correlT/(i+1.0)<<std::endl;
-    std::cout<<"is it id?"<<std::endl;
-    std::cout<<(correlT/(i+1.0)).t()*(correlT/(i+1.0)).i()<<std::endl;
-    std::cin.ignore();
-    std::cin.get();
+        this->WilsonAVG(outcorr0,outcorrT,outcorrT1);
+        rescorr0+=correl0;
+        rescorrT+=correlT;
+        rescorrT1+=correlT1;
+        counter++;
         for(int j=0;j<10;j++){
             mymodell.HeatBathSweep();
         }
 
-    }
-    correlT1/=num;
-    correlT/=num;
+    }//for i
+
+    rescorr0/=counter;
+    rescorrT/=counter;
+    rescorrT1/=counter;
+
+outcorr0.close();
+outcorrT.close();
+outcorrT1.close();
+
     std::cout<<"after avg:"<<std::endl;
-    std::cout<<correlT<<std::endl;
+    std::cout<<rescorrT<<std::endl;
     std::cout<<"is it identity?"<<std::endl;
-    std::cout<<correlT.t()*correlT.i()<<std::endl;
-    std::cout<<"it is identity"<<std::endl;
-    std::cout<<correlT*correlT.i()<<std::endl;
+    std::cout<<rescorrT.t()*rescorrT.i()<<std::endl;
     std::cin.ignore();
     std::cin.get();
 }
 
-void ScaleSetV::WilsonAVG(){
+void ScaleSetV::WilsonAVG(std::ofstream & outcorrel0,std::ofstream & outcorrelT,std::ofstream & outcorrelT1){
+if(!outcorrel0.is_open()) throw "outcorrel0 file is not open";
+if(!outcorrelT.is_open()) throw "outcorrelT file is not open";
+if(!outcorrelT1.is_open()) throw "outcorrelT1 file is not open";
+
 int maxspacedim=SU3Grid::GetDim();
 int maxtimedim=SU3Grid::GetTDim();
 
@@ -554,6 +579,79 @@ initt=(oinitt+i+maxtimedim)%maxtimedim;
             initz=(oinitz+l+maxspacedim)%maxspacedim;
                 BuildCorrelM();
                 counter++;
+                //std::cout<<real(correlT(0,0))/counter<<std::endl;
+            }//for z
+        }//for y
+    }//for x
+
+
+}//for i time
+
+initt=oinitt;
+initx=oinitx;
+inity=oinity;
+initz=oinitz;
+
+//avg-ing
+correl0/=counter;
+correlT/=counter;
+correlT1/=counter;
+
+outcorrel0<<real(correl0(0,0))<<'\t'
+          <<real(correl0(0,1))<<'\t'
+          <<real(correl0(1,0))<<'\t'
+          <<real(correl0(1,1))<<'\t'
+          <<imag(correl0(0,0))<<'\t'
+          <<imag(correl0(0,1))<<'\t'
+          <<imag(correl0(1,0))<<'\t'
+          <<imag(correl0(1,1))<<std::endl;
+outcorrelT<<real(correlT(0,0))<<'\t'
+          <<real(correlT(0,1))<<'\t'
+          <<real(correlT(1,0))<<'\t'
+          <<real(correlT(1,1))<<'\t'
+          <<imag(correlT(0,0))<<'\t'
+          <<imag(correlT(0,1))<<'\t'
+          <<imag(correlT(1,0))<<'\t'
+          <<imag(correlT(1,1))<<std::endl;
+outcorrelT1<<real(correlT1(0,0))<<'\t'
+          <<real(correlT1(0,1))<<'\t'
+          <<real(correlT1(1,0))<<'\t'
+          <<real(correlT1(1,1))<<'\t'
+          <<imag(correlT1(0,0))<<'\t'
+          <<imag(correlT1(0,1))<<'\t'
+          <<imag(correlT1(1,0))<<'\t'
+          <<imag(correlT1(1,1))<<std::endl;
+
+//debug
+//std::cout<<"avg-ed for wilson loops"<<std::endl;
+//std::cout<<correlT<<std::endl;
+//std::cout<<"is it id?"<<std::endl;
+//std::cout<<correlT.t()*correlT.i()<<std::endl;
+
+}
+
+void ScaleSetV::WilsonAVG(){
+
+int maxspacedim=SU3Grid::GetDim();
+int maxtimedim=SU3Grid::GetTDim();
+
+    correl0.zeros();
+    correlT1.zeros();
+    correlT.zeros();
+
+int counter=0;
+
+for(int i=0;i<maxtimedim;i++){
+initt=(oinitt+i+maxtimedim)%maxtimedim;
+    for(int j=0;j<maxspacedim;j++){
+    initx=(oinitx+j+maxspacedim)%maxspacedim;
+        for(int k=0;k<maxspacedim;k++){
+        inity=(oinity+k+maxspacedim)%maxspacedim;
+            for(int l=0;l<maxspacedim;l++){
+            initz=(oinitz+l+maxspacedim)%maxspacedim;
+                BuildCorrelM();
+                counter++;
+                //std::cout<<real(correlT(0,0))/counter<<std::endl;
             }//for z
         }//for y
     }//for x
@@ -572,10 +670,10 @@ correlT/=counter;
 correlT1/=counter;
 
 //debug
-std::cout<<"avg-ed for wilson loops"<<std::endl;
-std::cout<<correlT<<std::endl;
-std::cout<<"is it id?"<<std::endl;
-std::cout<<correlT.t()*correlT.i()<<std::endl;
+//std::cout<<"avg-ed for wilson loops"<<std::endl;
+//std::cout<<correlT<<std::endl;
+//std::cout<<"is it id?"<<std::endl;
+//std::cout<<correlT.t()*correlT.i()<<std::endl;
 
 }
 
@@ -584,14 +682,14 @@ void ScaleSetV::isitsymm(){
     correlT1.zeros();
     correlT.zeros();
     BuildCorrelM();
-    std::cout<<"is it symmetric? "<<std::endl;
-    std::cout<<correl0<<std::endl;
-    std::cout<<correlT<<std::endl;
-    std::cout<<correlT1<<std::endl;
-    std::cin.ignore();
-    std::cin.get();
-    std::cout<<"is it identity?"<<std::endl;
-    std::cout<<correlT.t()*correlT.i()<<std::endl;
+//    std::cout<<"is it symmetric? "<<std::endl;
+//    std::cout<<correl0<<std::endl;
+//    std::cout<<correlT<<std::endl;
+//    std::cout<<correlT1<<std::endl;
+//    std::cin.ignore();
+//    std::cin.get();
+//    std::cout<<"is it identity?"<<std::endl;
+//    std::cout<<correlT.t()*correlT.i()<<std::endl;
 
 }
 

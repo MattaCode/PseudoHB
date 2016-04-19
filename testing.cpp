@@ -67,26 +67,26 @@ for(int i=0;i<10;i++){
 
 }
 
-void testsymmcorrelM(){
-    arma::cx_mat id3d(3,3,arma::fill::eye);
-    Modell mymodell(id3d);
-    //reach eq.
-    //Monte Carlo Run - 400 sweep
-    for(int mcrun=0;mcrun<1;mcrun++){
-        mymodell.HeatBathSweep();
-    }
-    ScaleSetV scaler(mymodell,1,1,0,0,0,0,1);
-    scaler.isitsymm();
-    std::cin.ignore();
-    std::cin.get();
-
-    for(int mcrun=0;mcrun<50;mcrun++){
-        mymodell.HeatBathSweep();
-    }
-
-    scaler.CorrelMAVG(30);
-
-}
+//void testsymmcorrelM(){
+//    arma::cx_mat id3d(3,3,arma::fill::eye);
+//    Modell mymodell(id3d);
+//    //reach eq.
+//    //Monte Carlo Run - 400 sweep
+//    for(int mcrun=0;mcrun<1;mcrun++){
+//        mymodell.HeatBathSweep();
+//    }
+//    ScaleSetV scaler(mymodell,1,1,0,0,0,0,1);
+//    scaler.isitsymm();
+//    std::cin.ignore();
+//    std::cin.get();
+//
+//    for(int mcrun=0;mcrun<50;mcrun++){
+//        mymodell.HeatBathSweep();
+//    }
+//
+//    scaler.CorrelMAVG(30);
+//
+//}
 
 void testsmear(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -117,14 +117,50 @@ mymodell.HeatBathSweep();
 
 void WilsonAVGtest(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
-    Modell mymodell(id3d);
-    for(int mcrun=0;mcrun<200;mcrun++){
+    Modell mymodell("p400config");
+
+    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+
+    std::ofstream resultfile;
+    resultfile.precision(6);
+    resultfile.open("wilsonloopAVGsomm.dat",std::ios::out);
+
+    std::ofstream resultidfile;
+    resultidfile.precision(6);
+    resultidfile.open("isitid.dat",std::ios::out);
+
+    for(int i=0;i<150;i++){
+        scaler.WilsonAVG();
+        arma::cx_mat isitid=(scaler.GetCorrelT().t()*scaler.GetCorrelT().i());
+        resultfile<<real(scaler.GetCorrelT()(0,0))<<'\t'
+                  <<real(scaler.GetCorrelT()(0,1))<<'\t'
+                  <<real(scaler.GetCorrelT()(1,0))<<'\t'
+                  <<real(scaler.GetCorrelT()(1,1))<<endl;
+        resultidfile<<real(isitid(0,0))<<'\t'
+                  <<real(isitid(0,1))<<'\t'
+                  <<real(isitid(1,0))<<'\t'
+                  <<real(isitid(1,1))<<endl;
+
         mymodell.HeatBathSweep();
     }
-    ScaleSetV scaler(mymodell,1,1,0,0,0,0,1);
-    scaler.WilsonAVG();
-    std::cin.ignore();
-    std::cin.get();
+    resultfile.close();
+    resultidfile.close();
+   // std::cin.ignore();
+    //std::cin.get();
+
+}
+
+void CorrelAVGtest(){
+
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    arma::cx_mat rescorr0(2,2,arma::fill::zeros);
+    arma::cx_mat rescorrT(2,2,arma::fill::zeros);
+    arma::cx_mat rescorrT1(2,2,arma::fill::zeros);
+
+    Modell mymodell("p400config");
+
+    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+    scaler.CorrelMAVG(50,rescorr0,rescorrT,rescorrT1,"./");
 
 }
 
