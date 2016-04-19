@@ -442,7 +442,7 @@ for(int i=0;i<maxsmearlevel;i++){
         temp=tlinedown*temp;
 //        std::cout<<"correl before"<<std::endl;
 //        std::cout<<correlT<<std::endl;
-        correlT(i,j)+=real(trace(temp));
+        correlT(i,j)+=trace(temp);
 //        std::cout<<"correl after"<<std::endl;
 //        std::cout<<correlT<<std::endl;
         //correlT(i,j)+=real(trace(spline0*tlineup*splineT*tlinedown));
@@ -476,7 +476,7 @@ for(int i=0;i<maxsmearlevel;i++){
         temp=tlineup*temp;
         temp=splineT*temp;
         temp=tlinedown*temp;
-        correlT1(i,j)+=real(trace(temp));
+        correlT1(i,j)+=trace(temp);
         //correlT1(i,j)+=real(trace(spline0*tlineupplus*splineT*tlinedownplus));
         Smearing0();
 
@@ -495,7 +495,7 @@ for(int i=0;i<maxsmearlevel;i++){
         temp=tlineup*temp;
         temp=splineT*temp;
         temp=tlinedown*temp;
-        correl0(i,j)+=real(trace(temp));
+        correl0(i,j)+=trace(temp);
         //correl0(i,j)+=real(trace(spline0*tlineup1*splineT*tlinedown1));
         Smearing0();
 
