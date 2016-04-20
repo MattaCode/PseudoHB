@@ -214,7 +214,17 @@ void WilsonPot(){
         std::cin.ignore();
         std::cin.get();
     }
+}
 
-
-
+void TestPot(){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell mymodell("p400config");
+    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+    double potential=0;
+    potential=scaler.CountV();
+    std::ofstream resultfile;
+    resultfile.precision(6);
+    resultfile.open("potential.dat",std::ios::out);
+    resultfile<<potential<<std::endl;
+    resultfile.close();
 }

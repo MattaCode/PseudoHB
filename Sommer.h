@@ -72,6 +72,8 @@ double CountV();
 
 void isitsymm();
 
+void Symmetrize(arma::mat &);
+
 const Array::array1<arma::cx_mat> & GetSpace0Grid()const;
 const Array::array1<arma::cx_mat> & GetSpaceTGrid()const;
 Array::array1<arma::cx_mat> & ModSpace0Grid();

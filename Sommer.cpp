@@ -473,9 +473,9 @@ for(int i=0;i<maxsmearlevel;i++){
         CountSpaceLineT(splineT);
         temp.eye();
         temp=spline0*temp;
-        temp=tlineup*temp;
+        temp=tlineupplus*temp;
         temp=splineT*temp;
-        temp=tlinedown*temp;
+        temp=tlinedownplus*temp;
         correlT1(i,j)+=trace(temp);
         //correlT1(i,j)+=real(trace(spline0*tlineupplus*splineT*tlinedownplus));
         Smearing0();
@@ -492,9 +492,9 @@ for(int i=0;i<maxsmearlevel;i++){
         CountSpaceLineT(splineT);
         temp.eye();
         temp=spline0*temp;
-        temp=tlineup*temp;
+        temp=tlineup1*temp;
         temp=splineT*temp;
-        temp=tlinedown*temp;
+        temp=tlinedown1*temp;
         correl0(i,j)+=trace(temp);
         //correl0(i,j)+=real(trace(spline0*tlineup1*splineT*tlinedown1));
         Smearing0();
@@ -677,6 +677,10 @@ correlT1/=counter;
 
 }
 
+void ScaleSetV::Symmetrize(arma::mat & matrix){
+    matrix=(matrix+matrix.t())/2;
+}
+
 void ScaleSetV::isitsymm(){
     correl0.zeros();
     correlT1.zeros();
@@ -693,23 +697,55 @@ void ScaleSetV::isitsymm(){
 
 }
 
-//double ScaleSetV::CountV(){
-//    double value=0;
-//    CorrelMAVG(15);
+double ScaleSetV::CountV(){
+    double value=0;
+    arma::cx_mat rescorr0(2,2,arma::fill::zeros);
+    arma::cx_mat rescorrT(2,2,arma::fill::zeros);
+    arma::cx_mat rescorrT1(2,2,arma::fill::zeros);
+
+    CorrelMAVG(10,rescorr0,rescorrT,rescorrT1,"./");
 //not works in debian testing
 //    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
 //    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
-//
-//    arma::cx_vec eigvals;
-//    arma::eig_gen(eigvals,t0t);
-//    std::complex<double> maxeigt0t=eigvals.max();
-//    double eig1=real(maxeigt0t);
-//    arma::eig_gen(eigvals,t0t1);
-//    std::complex<double> maxeigt0t1=eigvals.max();
-//    double eig2=real(maxeigt0t1);
-//    value=log(eig1/eig2);
-//    return value;
-//}
+
+    arma::mat realrescorr0=real(rescorr0);
+    arma::mat realrescorrT=real(rescorrT);
+    arma::mat realrescorrT1=real(rescorrT1);
+
+    Symmetrize(realrescorr0);
+    Symmetrize(realrescorrT);
+    Symmetrize(realrescorrT1);
+    //Diagonalize c(t0) aka realrescorr0
+    arma::vec eigval0;
+    arma::mat eigvec0;
+    eig_sym(eigval0, eigvec0, realrescorr0);
+    arma::cx_mat diag0mat(maxsmearlevel,maxsmearlevel,arma::fill::eye);
+    std::cout<<"eigval: "<<eigval0<<std::endl;
+    std::cout<<"eigvec: "<<eigvec0<<std::endl;
+    //build sqrtmat
+    arma::cx_vec cpleigval0(maxsmearlevel);
+    for(int i=0;i<maxsmearlevel;i++){
+        cpleigval0(i)=eigval0(i);
+        diag0mat(i,i)*=sqrt(cpleigval0(i));
+    }
+    arma::cx_mat sqrt0mat=eigvec0*diag0mat*eigvec0.i();
+    std::cout<<"sqrtmat: "<<sqrt0mat<<std::endl;
+
+    //find eigvals of sqrtinv*c*sqrtinv
+    arma::cx_vec eigvals;
+    arma::eig_gen(eigvals,sqrt0mat.i()*realrescorrT*sqrt0mat.i());
+    std::cout<<"eigvals! "<<eigvals<<std::endl;
+    double maxeigt0t=real(eigvals.max());
+    std::cout<<eigvals.max()<<std::endl;
+    arma::cx_vec eigvals2;
+    arma::eig_gen(eigvals2,sqrt0mat.i()*realrescorrT1*sqrt0mat.i());
+    double maxeigt0t1=real(eigvals2.max());
+    std::cout<<eigvals2.max()<<std::endl;
+    std::cin.ignore();
+    std::cin.get();
+    value=log(maxeigt0t/maxeigt0t1);
+    return value;
+}
 
 const Array::array1<arma::cx_mat> & ScaleSetV::GetSpace0Grid()const{
     return spacelike_0;
