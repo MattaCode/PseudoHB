@@ -672,13 +672,13 @@ int maxtimedim=SU3Grid::GetTDim();
 
 int counter=0;
 
-for(int i=0;i<7;i++){
+for(int i=0;i<maxtimedim;i++){
 initt=(oinitt+i+maxtimedim)%maxtimedim;
-    for(int j=0;j<7;j++){
+    for(int j=0;j<maxspacedim;j++){
     initx=(oinitx+j+maxspacedim)%maxspacedim;
-        for(int k=0;k<7;k++){
+        for(int k=0;k<maxspacedim;k++){
         inity=(oinity+k+maxspacedim)%maxspacedim;
-            for(int l=0;l<7;l++){
+            for(int l=0;l<maxspacedim;l++){
             initz=(oinitz+l+maxspacedim)%maxspacedim;
                 BuildCorrelM();
                 counter++;
@@ -806,7 +806,7 @@ double ScaleSetV::CountV(){
     arma::cx_mat rescorrT(2,2,arma::fill::zeros);
     arma::cx_mat rescorrT1(2,2,arma::fill::zeros);
 
-    CorrelMAVG(5,rescorr0,rescorrT,rescorrT1,"./");
+    CorrelMAVG(20,rescorr0,rescorrT,rescorrT1,"./");
 //not works in debian testing
 //    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
 //    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
