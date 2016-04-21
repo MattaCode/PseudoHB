@@ -23,16 +23,18 @@ const int spacegrididx; //spacelike direction of Wilson loop
 const double alpha; //smear parameter
 const int maxsmearlevel;
 
-Array::array1<arma::cx_mat> spacelike_0; //smeared spacelike edges at t=0
+//Array::array1<arma::cx_mat> spacelike_0; //smeared spacelike edges at t=0
 /****/
 /*inverse-aka-.t() links*/
 /****/
-Array::array1<arma::cx_mat> spacelike_T; //smeared spacelike edges at t=T-1
+//Array::array1<arma::cx_mat> spacelike_T; //smeared spacelike edges at t=T-1
 
 arma::cx_mat correlT; //correl matrix at T (and fix R)
 arma::cx_mat correlT1;//correl matrix at T+1 (and fix R)
 arma::cx_mat correl0;//correl matrix at t0+1
 
+Array::array2<SU3Grid> smeared;
+Array::array2<SU3Grid> smearedinv;
 
 public:
 
@@ -46,22 +48,27 @@ ScaleSetV(Modell &,const int,const int,const int,const int,const int,const int,c
 //assignment
 
 //helper for ctr
-void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> &);
-void InitSpaceLikeTInv(const int,Array::array1<arma::cx_mat> & );
+//void InitSpaceLikeT(const int,Array::array1<arma::cx_mat> &);
+//void InitSpaceLikeTInv(const int,Array::array1<arma::cx_mat> & );
 
-void TriplForw(arma::cx_mat &,int,int,int,const int,const int);
-void TriplBack(arma::cx_mat &,int,int,int,const int,const int);
+void InitSm();
+
+
+
+void TriplForw(arma::cx_mat &,int,int,int,const int,const int,const int,const int);
+void TriplBack(arma::cx_mat &,int,int,int,const int,const int,const int,const int);
 //for one link
-void SmearPt1Forw(arma::cx_mat &,int,int,int,const int);
-void SmearPt1Back(arma::cx_mat &,int,int,int,const int);
+void SmearPt1Forw(arma::cx_mat &,int,int,int,const int,const int,const int);
+void SmearPt1Back(arma::cx_mat &,int,int,int,const int,const int,const int);
 void SmearPt2(arma::cx_mat &);
-void Smearing0();
-void SmearingT(const int);
+//void Smearing0();
+//void SmearingT(const int);
+void Smear();
 
 void CountTimeLineUp(arma::cx_mat &,const int,const int,const int,const int,const int);
 void CountTimeLineDown(arma::cx_mat &,const int,const int,const int,const int,const int);
-void CountSpaceLine0(arma::cx_mat &);
-void CountSpaceLineT(arma::cx_mat &);
+void CountSpaceLine0(arma::cx_mat &,const int);
+void CountSpaceLineT(arma::cx_mat &,const int,const int);
 void BuildCorrelM();
 
 void CorrelMAVG(const int,arma::cx_mat &,arma::cx_mat &,arma::cx_mat &,std::string);

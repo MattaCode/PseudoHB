@@ -4,55 +4,77 @@
 #include<string>
 #include"Sommer.h"
 
-void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> & matarray){
-const int maxdim=SU3Grid::GetDim();
-const int maxtdim=SU3Grid::GetTDim();
-for(int i=0;i<R;i++){
+//void ScaleSetV::InitSpaceLikeT(const int time,Array::array1<arma::cx_mat> & matarray){
+//const int maxdim=SU3Grid::GetDim();
+//const int maxtdim=SU3Grid::GetTDim();
+//for(int i=0;i<R;i++){
+//
+//
+//    switch(spacegrididx){
+//        case 1:
+//            {int idx=(initx+i+maxdim)%maxdim;
+//            matarray(i)=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,idx,inity,initz);}
+//            break;
+//        case 2:
+//            {int idy=(inity+i+maxdim)%maxdim;
+//            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,idy,initz);}
+//            break;
+//        case 3:
+//            {int idz=(initz+i+maxdim)%maxdim;
+//            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,inity,idz);}
+//            break;
+//    }//switch
+//
+//
+//}//for
+//
+//}
+//
+//void ScaleSetV::InitSpaceLikeTInv(const int time,Array::array1<arma::cx_mat> & matarray){
+//const int maxdim=SU3Grid::GetDim();
+//const int maxtdim=SU3Grid::GetTDim();
+//for(int i=0;i<R;i++){
+//
+//
+//    switch(spacegrididx){
+//        case 1:
+//            {int idx=(initx+i+maxdim)%maxdim;
+//            matarray(i)=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,idx,inity,initz).t();}
+//            break;
+//        case 2:
+//            {int idy=(inity+i+maxdim)%maxdim;
+//            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,idy,initz).t();}
+//            break;
+//        case 3:
+//            {int idz=(initz+i+maxdim)%maxdim;
+//            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,inity,idz).t();}
+//            break;
+//    }//switch
+//
+//
+//}//for
+//
+//}
 
-
-    switch(spacegrididx){
-        case 1:
-            {int idx=(initx+i+maxdim)%maxdim;
-            matarray(i)=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,idx,inity,initz);}
-            break;
-        case 2:
-            {int idy=(inity+i+maxdim)%maxdim;
-            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,idy,initz);}
-            break;
-        case 3:
-            {int idz=(initz+i+maxdim)%maxdim;
-            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,inity,idz);}
-            break;
-    }//switch
-
-
-}//for
-
-}
-
-void ScaleSetV::InitSpaceLikeTInv(const int time,Array::array1<arma::cx_mat> & matarray){
-const int maxdim=SU3Grid::GetDim();
-const int maxtdim=SU3Grid::GetTDim();
-for(int i=0;i<R;i++){
-
-
-    switch(spacegrididx){
-        case 1:
-            {int idx=(initx+i+maxdim)%maxdim;
-            matarray(i)=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,idx,inity,initz).t();}
-            break;
-        case 2:
-            {int idy=(inity+i+maxdim)%maxdim;
-            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,idy,initz).t();}
-            break;
-        case 3:
-            {int idz=(initz+i+maxdim)%maxdim;
-            matarray=this->mymodell.GetModellGrid()(spacegrididx).GetGrid()((initt+time+maxtdim)%maxtdim,initx,inity,idz).t();}
-            break;
-    }//switch
-
-
-}//for
+void ScaleSetV::InitSm(){
+int maxtdim=SU3Grid::GetTDim();
+int maxdim=SU3Grid::GetDim();
+for(int i=0;i<maxtdim;i++){
+    for(int j=0;j<maxdim;j++){
+        for(int k=0;k<maxdim;k++){
+            for(int l=0;l<maxdim;l++){
+                smeared(0,0).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(0).GetGrid()(i,j,k,l);
+                smeared(0,1).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(1).GetGrid()(i,j,k,l);
+                smeared(0,2).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(2).GetGrid()(i,j,k,l);
+                smeared(0,3).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(3).GetGrid()(i,j,k,l);
+                smearedinv(0,0).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(0).GetGrid()(i,j,k,l).t();
+                smearedinv(0,1).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(1).GetGrid()(i,j,k,l).t();
+                smearedinv(0,2).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(2).GetGrid()(i,j,k,l).t();
+                smearedinv(0,3).ModifyGrid()(i,j,k,l)=mymodell.GetModellGrid()(3).GetGrid()(i,j,k,l).t();
+            }//for l
+        }//for k
+    }//for j
+}//for i
 
 }
 
@@ -61,24 +83,25 @@ ScaleSetV::ScaleSetV(Modell & mymodell,
 const int r,const int t,const int tidx,
 const int xidx,const int yidx,const int zidx,const int grididx):
 mymodell(mymodell),R(r),T(t),oinitt(tidx),oinitx(xidx),oinity(yidx),
-oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(2),spacelike_0(R),spacelike_T(R),
+oinitz(zidx),spacegrididx(grididx),alpha(0.5),maxsmearlevel(2),
 correlT(maxsmearlevel,maxsmearlevel,arma::fill::zeros),correlT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros),
-correl0(maxsmearlevel,maxsmearlevel,arma::fill::zeros){
+correl0(maxsmearlevel,maxsmearlevel,arma::fill::zeros),smeared(maxsmearlevel,4),smearedinv(maxsmearlevel,4){
 initt=tidx;
 initx=xidx;
 inity=yidx;
 initz=zidx;
-InitSpaceLikeT(0,spacelike_0);
-InitSpaceLikeTInv(T,spacelike_T);
+InitSm();
+Smear();
 
 }
 
 //smear pt1 helper
-void ScaleSetV::TriplForw(arma::cx_mat & produc,int actidx,int actidy,int actidz,const int timeidx,const int spacidx){
+void ScaleSetV::TriplForw(arma::cx_mat & produc,int actidx,int actidy,int actidz,const int timeidx,
+const int spacidx,const int wilspaceidx,const int actsmearlevel){
     produc.eye();
         const int maxdim=SU3Grid::GetDim();
-    if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
-        produc=mymodell.GetModellGrid()(spacidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
+    if(spacidx==wilspaceidx) throw "spacidx equals wilson space direction";
+        produc=smeared(actsmearlevel,spacidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
     //step along second direction
         switch(spacidx){
         case 1:
@@ -94,7 +117,7 @@ void ScaleSetV::TriplForw(arma::cx_mat & produc,int actidx,int actidy,int actidz
             actidz=(actidz+maxdim)%maxdim;
             break;
         }//switch
-        produc=mymodell.GetModellGrid()(spacegrididx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
+        produc=smeared(actsmearlevel,wilspaceidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
         //step back along second direction
         switch(spacidx){
         case 1:
@@ -125,10 +148,10 @@ void ScaleSetV::TriplForw(arma::cx_mat & produc,int actidx,int actidy,int actidz
             actidz=(actidz+maxdim)%maxdim;
             break;
         }//switch
-        produc=mymodell.GetModellGrid()(spacidx).GetGrid()(timeidx,actidx,actidy,actidz).t()*produc;
+        produc=smeared(actsmearlevel,spacidx).GetGrid()(timeidx,actidx,actidy,actidz).t()*produc;
 //restore indices to original
         //step back along first direction
-        switch(spacegrididx){
+        switch(wilspaceidx){
         case 1:
             actidx--;
             actidx=(actidx+maxdim)%maxdim;
@@ -144,10 +167,11 @@ void ScaleSetV::TriplForw(arma::cx_mat & produc,int actidx,int actidy,int actidz
         }//switch
 }
 
-void ScaleSetV::TriplBack(arma::cx_mat & produc,int actidx,int actidy,int actidz,const int timeidx,const int spacidx){
+void ScaleSetV::TriplBack(arma::cx_mat & produc,int actidx,int actidy,int actidz,const int timeidx,
+const int spacidx,const int wilspaceidx,const int actsmearlevel){
 produc.eye();
     const int maxdim=SU3Grid::GetDim();
-if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
+if(spacidx==wilspaceidx) throw "spacidx equals wilson space direction";
 
         //step back along second direction
         switch(spacidx){
@@ -164,10 +188,10 @@ if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
             actidz=(actidz+maxdim)%maxdim;
             break;
         }//switch
-            produc=mymodell.GetModellGrid()(spacidx).GetGrid()(timeidx,actidx,actidy,actidz).t()*produc;
-            produc=mymodell.GetModellGrid()(spacegrididx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
+            produc=smeared(actsmearlevel,spacidx).GetGrid()(timeidx,actidx,actidy,actidz).t()*produc;
+            produc=smeared(actsmearlevel,wilspaceidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
         //step along first direction
-        switch(spacegrididx){
+        switch(wilspaceidx){
         case 1:
             actidx++;
             actidx=(actidx+maxdim)%maxdim;
@@ -181,7 +205,7 @@ if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
             actidz=(actidz+maxdim)%maxdim;
             break;
         }//switch
-        produc=mymodell.GetModellGrid()(spacidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
+        produc=smeared(actsmearlevel,spacidx).GetGrid()(timeidx,actidx,actidy,actidz)*produc;
         //set back original indices
                 //step along second direction
         switch(spacidx){
@@ -199,7 +223,7 @@ if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
             break;
         }//switch
                 //step back along first direction
-        switch(spacegrididx){
+        switch(wilspaceidx){
         case 1:
             actidx--;
             actidx=(actidx+maxdim)%maxdim;
@@ -216,15 +240,16 @@ if(spacidx==spacegrididx) throw "spacidx equals wilson space direction";
 }
 
 //for one link
-void ScaleSetV::SmearPt1Forw(arma::cx_mat & link,int actidx,int actidy,int actidz,const int timeidx){
+void ScaleSetV::SmearPt1Forw(arma::cx_mat & link,int actidx,int actidy,int actidz,const int timeidx,
+const int wilspaceidx,const int actsmearlevel){
     arma::cx_mat produc(3,3,arma::fill::eye);
     //for space dim.s
     for(int i=1;i<4;i++){
         produc.eye();
-        if(i!=spacegrididx){
-           TriplForw(produc,actidx,actidy,actidz,timeidx,i);
+        if(i!=wilspaceidx){
+           TriplForw(produc,actidx,actidy,actidz,timeidx,i,wilspaceidx,actsmearlevel);
             link+=alpha*produc;
-            TriplBack(produc,actidx,actidy,actidz,timeidx,i);
+            TriplBack(produc,actidx,actidy,actidz,timeidx,i,wilspaceidx,actsmearlevel);
             link+=alpha*produc;
         }//if
         else{}
@@ -233,15 +258,16 @@ void ScaleSetV::SmearPt1Forw(arma::cx_mat & link,int actidx,int actidy,int actid
 }
 
 //for one link
-void ScaleSetV::SmearPt1Back(arma::cx_mat & link,int actidx,int actidy,int actidz,const int timeidx){
+void ScaleSetV::SmearPt1Back(arma::cx_mat & link,int actidx,int actidy,int actidz,const int timeidx,
+const int wilspaceidx,const int actsmearlevel){
     arma::cx_mat produc(3,3,arma::fill::eye);
     //for space dim.s
     for(int i=1;i<4;i++){
         produc.eye();
-        if(i!=spacegrididx){
-           TriplForw(produc,actidx,actidy,actidz,timeidx,i);
+        if(i!=wilspaceidx){
+           TriplForw(produc,actidx,actidy,actidz,timeidx,i,wilspaceidx,actsmearlevel);
             link+=(alpha*produc).i();
-            TriplBack(produc,actidx,actidy,actidz,timeidx,i);
+            TriplBack(produc,actidx,actidy,actidz,timeidx,i,wilspaceidx,actsmearlevel);
             link+=(alpha*produc).i();
         }//if
         else{}
@@ -275,48 +301,79 @@ void ScaleSetV::SmearPt2(arma::cx_mat & link){
 //    std::cout<<arma::det(link)<<std::endl;
 }
 
-void ScaleSetV::Smearing0(){
+void ScaleSetV::Smear(){
+int maxtdim=SU3Grid::GetTDim();
 int maxdim=SU3Grid::GetDim();
-    for(int i=0;i<R;i++){
-        //smearing a link
-        switch(spacegrididx){
-        case 1:
-            SmearPt1Forw(spacelike_0(i),(initx+i+maxdim)%maxdim,inity,initz,initt);
-            SmearPt2(spacelike_0(i));
-            break;
-        case 2:
-            SmearPt1Forw(spacelike_0(i),initx,(inity+i+maxdim)%maxdim,initz,initt);
-            SmearPt2(spacelike_0(i));
-            break;
-        case 3:
-            SmearPt1Forw(spacelike_0(i),initx,inity,(initz+i+maxdim)%maxdim,initt);
-            SmearPt2(spacelike_0(i));
-            break;
-        }//switch
-    }
+for(int actsmearlevel=0;actsmearlevel<(maxsmearlevel-1);actsmearlevel++){
+for(int grididx=1;grididx<4;grididx++){
+for(int i=0;i<maxtdim;i++){
+    for(int j=0;j<maxdim;j++){
+        for(int k=0;k<maxdim;k++){
+            for(int l=0;l<maxdim;l++){
+                //init actsmeared+1
+                smeared(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l)
+                    =smeared(actsmearlevel,grididx).GetGrid()(i,j,k,l);
+                //smear pt1
+                SmearPt1Forw(smeared(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l),j,k,l,i,grididx,actsmearlevel);
+                //smear pt2
+                SmearPt2(smeared(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l));
+                //init actsmeared+1
+                smearedinv(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l)
+                    =smearedinv(actsmearlevel,grididx).GetGrid()(i,j,k,l);
+                //smear pt1
+                SmearPt1Back(smearedinv(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l),j,k,l,i,grididx,actsmearlevel);
+                //smear pt2
+                SmearPt2(smearedinv(actsmearlevel+1,grididx).ModifyGrid()(i,j,k,l));
+            }//for l
+        }//for k
+    }//for j
+}//for i
+}//for grid
+}//for actsmearlevel
 }
 
-void ScaleSetV::SmearingT(const int tshift){
-int maxdim=SU3Grid::GetDim();
-int tidx=(initt+tshift+SU3Grid::GetTDim())%SU3Grid::GetTDim();
-    for(int i=0;i<R;i++){
-        //smearing a link
-        switch(spacegrididx){
-        case 1:
-            SmearPt1Back(spacelike_T(i),(initx+i+maxdim)%maxdim,inity,initz,tidx);
-            SmearPt2(spacelike_T(i));
-            break;
-        case 2:
-            SmearPt1Back(spacelike_T(i),initx,(inity+i+maxdim)%maxdim,initz,tidx);
-            SmearPt2(spacelike_T(i));
-            break;
-        case 3:
-            SmearPt1Back(spacelike_T(i),initx,inity,(initz+i+maxdim)%maxdim,tidx);
-            SmearPt2(spacelike_T(i));
-            break;
-        }//switch
-    }
-}
+//void ScaleSetV::Smearing0(){
+//int maxdim=SU3Grid::GetDim();
+//    for(int i=0;i<R;i++){
+//        //smearing a link
+//        switch(spacegrididx){
+//        case 1:
+//            SmearPt1Forw(spacelike_0(i),(initx+i+maxdim)%maxdim,inity,initz,initt);
+//            SmearPt2(spacelike_0(i));
+//            break;
+//        case 2:
+//            SmearPt1Forw(spacelike_0(i),initx,(inity+i+maxdim)%maxdim,initz,initt);
+//            SmearPt2(spacelike_0(i));
+//            break;
+//        case 3:
+//            SmearPt1Forw(spacelike_0(i),initx,inity,(initz+i+maxdim)%maxdim,initt);
+//            SmearPt2(spacelike_0(i));
+//            break;
+//        }//switch
+//    }
+//}
+
+//void ScaleSetV::SmearingT(const int tshift){
+//int maxdim=SU3Grid::GetDim();
+//int tidx=(initt+tshift+SU3Grid::GetTDim())%SU3Grid::GetTDim();
+//    for(int i=0;i<R;i++){
+//        //smearing a link
+//        switch(spacegrididx){
+//        case 1:
+//            SmearPt1Back(spacelike_T(i),(initx+i+maxdim)%maxdim,inity,initz,tidx);
+//            SmearPt2(spacelike_T(i));
+//            break;
+//        case 2:
+//            SmearPt1Back(spacelike_T(i),initx,(inity+i+maxdim)%maxdim,initz,tidx);
+//            SmearPt2(spacelike_T(i));
+//            break;
+//        case 3:
+//            SmearPt1Back(spacelike_T(i),initx,inity,(initz+i+maxdim)%maxdim,tidx);
+//            SmearPt2(spacelike_T(i));
+//            break;
+//        }//switch
+//    }
+//}
 
 void ScaleSetV::CountTimeLineUp(arma::cx_mat & timeline,
 const int actidx,const int actidy,const int actidz,const int actidt,const int maxtime){
@@ -336,23 +393,60 @@ for(int i=0;i<maxtime;i++){
     timeline=mymodell.GetModellGrid()(0).GetGrid()((actidt-i+sumaxtime)%sumaxtime,actidx,actidy,actidz).t()*timeline;
 }
 }
-void ScaleSetV::CountSpaceLine0(arma::cx_mat & spaceline){
+void ScaleSetV::CountSpaceLine0(arma::cx_mat & spaceline,const int actsmearlevel){
     spaceline.eye();
-    for(int i=0;i<R;i++){
-        spaceline=spacelike_0(i)*spaceline;
+    int maxdim=SU3Grid::GetDim();
+    switch(spacegrididx){
+        case 1:
+            for(int i=0;i<R;i++){
+                spaceline=smeared(actsmearlevel,spacegrididx).GetGrid()(initt,(initx+i+maxdim)%maxdim,inity,initz)*spaceline;
+            }
+        break;
+        case 2:
+            for(int i=0;i<R;i++){
+                spaceline=smeared(actsmearlevel,spacegrididx).GetGrid()(initt,initx,(inity+i+maxdim)%maxdim,initz)*spaceline;
+            }
+        break;
+        case 3:
+            for(int i=0;i<R;i++){
+                spaceline=smeared(actsmearlevel,spacegrididx).GetGrid()(initt,initx,inity,(initz+i+maxdim)%maxdim)*spaceline;
+            }
+        break;
+
     }
+
+
 }
-void ScaleSetV::CountSpaceLineT(arma::cx_mat & spaceline){
+void ScaleSetV::CountSpaceLineT(arma::cx_mat & spaceline,const int actsmearlevel,const int tshift){
     spaceline.eye();
-    for(int i=0;i<R;i++){
-        spaceline=spacelike_T(R-1-i)*spaceline;
+    int maxdim=SU3Grid::GetDim();
+    int maxtdim=SU3Grid::GetTDim();
+    switch(spacegrididx){
+        case 1:
+            for(int i=0;i<R;i++){
+                spaceline=smearedinv(actsmearlevel,spacegrididx).GetGrid()((initt+tshift+maxtdim)%maxtdim,(initx+R-1-i+maxdim)%maxdim,inity,initz)*spaceline;
+            }
+        break;
+        case 2:
+            for(int i=0;i<R;i++){
+                spaceline=smearedinv(actsmearlevel,spacegrididx).GetGrid()((initt+tshift+maxtdim)%maxtdim,initx,(inity+R-1-i+maxdim)%maxdim,initz)*spaceline;
+            }
+        break;
+        case 3:
+            for(int i=0;i<R;i++){
+                spaceline=smearedinv(actsmearlevel,spacegrididx).GetGrid()((initt+tshift+maxtdim)%maxtdim,initx,inity,(initz+R-1-i+maxdim)%maxdim)*spaceline;
+            }
+        break;
+
     }
+
 }
+
 void ScaleSetV::BuildCorrelM(){
 int maxtimedim=SU3Grid::GetTDim();
 int maxspacedim=SU3Grid::GetDim();
 int TplusOne=(T+1+maxtimedim)%maxtimedim;
-InitSpaceLikeTInv(T,spacelike_T);
+//InitSpaceLikeTInv(T,spacelike_T);
 //debug
 //for(int i=0;i<spacelike_T.Nx();i++){
 //std::cout<<"spacelikeT"<<std::endl;
@@ -364,7 +458,7 @@ InitSpaceLikeTInv(T,spacelike_T);
 //std::cin.get();
 //}
 
-InitSpaceLikeT(0,spacelike_0);
+//InitSpaceLikeT(0,spacelike_0);
 //debug
 //for(int i=0;i<spacelike_T.Nx();i++){
 //std::cout<<"spacelike0"<<std::endl;
@@ -424,12 +518,12 @@ case 3:
 }//switch
 
 arma::cx_mat temp(3,3,arma::fill::eye);
-InitSpaceLikeTInv(T,spacelike_T);
+//InitSpaceLikeTInv(T,spacelike_T);
 for(int i=0;i<maxsmearlevel;i++){
-    InitSpaceLikeT(0,spacelike_0);
+//    InitSpaceLikeT(0,spacelike_0);
     for(int j=0;j<maxsmearlevel;j++){
-        CountSpaceLine0(spline0);
-        CountSpaceLineT(splineT);
+        CountSpaceLine0(spline0,i);
+        CountSpaceLineT(splineT,j,T);
         temp.eye();
         //debug
 //        std::cout<<"spline0"<<std::endl;
@@ -446,7 +540,7 @@ for(int i=0;i<maxsmearlevel;i++){
 //        std::cout<<"correl after"<<std::endl;
 //        std::cout<<correlT<<std::endl;
         //correlT(i,j)+=real(trace(spline0*tlineup*splineT*tlinedown));
-        Smearing0();
+//        Smearing0();
         //debug
 //for(int k=0;k<spacelike_T.Nx();k++){
 //std::cout<<"spacelike0"<<std::endl;
@@ -462,15 +556,15 @@ for(int i=0;i<maxsmearlevel;i++){
 //std::cin.get();
 //}
     }//for j smear
-    SmearingT(T);
+//    SmearingT(T);
 }//for i smear
 
-InitSpaceLikeTInv(TplusOne,spacelike_T);
+//InitSpaceLikeTInv(TplusOne,spacelike_T);
 for(int i=0;i<maxsmearlevel;i++){
-    InitSpaceLikeT(0,spacelike_0);
+//    InitSpaceLikeT(0,spacelike_0);
     for(int j=0;j<maxsmearlevel;j++){
-        CountSpaceLine0(spline0);
-        CountSpaceLineT(splineT);
+        CountSpaceLine0(spline0,i);
+        CountSpaceLineT(splineT,j,TplusOne);
         temp.eye();
         temp=spline0*temp;
         temp=tlineupplus*temp;
@@ -478,18 +572,18 @@ for(int i=0;i<maxsmearlevel;i++){
         temp=tlinedownplus*temp;
         correlT1(i,j)+=trace(temp);
         //correlT1(i,j)+=real(trace(spline0*tlineupplus*splineT*tlinedownplus));
-        Smearing0();
+//        Smearing0();
 
     }//for j smear
-    SmearingT(TplusOne);
+//    SmearingT(TplusOne);
 }//for i smear
 
-InitSpaceLikeTInv(1,spacelike_T);
+//InitSpaceLikeTInv(1,spacelike_T);
 for(int i=0;i<maxsmearlevel;i++){
-    InitSpaceLikeT(0,spacelike_0);
+//    InitSpaceLikeT(0,spacelike_0);
     for(int j=0;j<maxsmearlevel;j++){
-        CountSpaceLine0(spline0);
-        CountSpaceLineT(splineT);
+        CountSpaceLine0(spline0,i);
+        CountSpaceLineT(splineT,j,1);
         temp.eye();
         temp=spline0*temp;
         temp=tlineup1*temp;
@@ -497,10 +591,10 @@ for(int i=0;i<maxsmearlevel;i++){
         temp=tlinedown1*temp;
         correl0(i,j)+=trace(temp);
         //correl0(i,j)+=real(trace(spline0*tlineup1*splineT*tlinedown1));
-        Smearing0();
+//        Smearing0();
 
     }//for j smear
-    SmearingT(1);
+//    SmearingT(1);
 }//for i smear
 
 }
@@ -527,15 +621,22 @@ outcorrT1.precision(6);
 outcorrT1.open((dir+"outcorrT1.dat").c_str(),std::ios::out);
 
     int counter=0;
-    for(int i=0;i<num;i++){
         this->WilsonAVG(outcorr0,outcorrT,outcorrT1);
         rescorr0+=correl0;
         rescorrT+=correlT;
         rescorrT1+=correlT1;
         counter++;
+
+    for(int i=1;i<num;i++){
         for(int j=0;j<10;j++){
             mymodell.HeatBathSweep();
         }
+        this->WilsonAVG(outcorr0,outcorrT,outcorrT1);
+        rescorr0+=correl0;
+        rescorrT+=correlT;
+        rescorrT1+=correlT1;
+        counter++;
+
 
     }//for i
 
@@ -569,13 +670,13 @@ int maxtimedim=SU3Grid::GetTDim();
 
 int counter=0;
 
-for(int i=0;i<maxtimedim;i++){
+for(int i=0;i<7;i++){
 initt=(oinitt+i+maxtimedim)%maxtimedim;
-    for(int j=0;j<maxspacedim;j++){
+    for(int j=0;j<7;j++){
     initx=(oinitx+j+maxspacedim)%maxspacedim;
-        for(int k=0;k<maxspacedim;k++){
+        for(int k=0;k<7;k++){
         inity=(oinity+k+maxspacedim)%maxspacedim;
-            for(int l=0;l<maxspacedim;l++){
+            for(int l=0;l<7;l++){
             initz=(oinitz+l+maxspacedim)%maxspacedim;
                 BuildCorrelM();
                 counter++;
@@ -703,7 +804,7 @@ double ScaleSetV::CountV(){
     arma::cx_mat rescorrT(2,2,arma::fill::zeros);
     arma::cx_mat rescorrT1(2,2,arma::fill::zeros);
 
-    CorrelMAVG(10,rescorr0,rescorrT,rescorrT1,"./");
+    CorrelMAVG(5,rescorr0,rescorrT,rescorrT1,"./");
 //not works in debian testing
 //    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
 //    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
@@ -747,20 +848,20 @@ double ScaleSetV::CountV(){
     return value;
 }
 
-const Array::array1<arma::cx_mat> & ScaleSetV::GetSpace0Grid()const{
-    return spacelike_0;
-}
-
-const Array::array1<arma::cx_mat> & ScaleSetV::GetSpaceTGrid()const{
-    return spacelike_T;
-}
-
-Array::array1<arma::cx_mat> & ScaleSetV::ModSpace0Grid(){
-    return spacelike_0;
-}
-Array::array1<arma::cx_mat> & ScaleSetV::ModSpaceTGrid(){
-    return spacelike_T;
-}
+//const Array::array1<arma::cx_mat> & ScaleSetV::GetSpace0Grid()const{
+//    return spacelike_0;
+//}
+//
+//const Array::array1<arma::cx_mat> & ScaleSetV::GetSpaceTGrid()const{
+//    return spacelike_T;
+//}
+//
+//Array::array1<arma::cx_mat> & ScaleSetV::ModSpace0Grid(){
+//    return spacelike_0;
+//}
+//Array::array1<arma::cx_mat> & ScaleSetV::ModSpaceTGrid(){
+//    return spacelike_T;
+//}
 
 const arma::cx_mat & ScaleSetV::GetCorrelT()const{
 return correlT;

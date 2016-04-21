@@ -88,32 +88,32 @@ for(int i=0;i<10;i++){
 //
 //}
 
-void testsmear(){
-    arma::cx_mat id3d(3,3,arma::fill::eye);
-    Modell mymodell(id3d);
-mymodell.HeatBathSweep();
-    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
-    for(int smearlevel=0;smearlevel<10;smearlevel++){
-        std::cout<<"smear level: "<<smearlevel<<std::endl;
-        std::cout<<scaler.GetSpace0Grid()(0)<<std::endl;
-        std::cout<<scaler.GetSpaceTGrid()(0)<<std::endl;
-        std::cin.ignore();
-        std::cin.get();
-        scaler.Smearing0();
-       // scaler.SmearingT();
-        std::cin.ignore();
-        std::cin.get();
-        std::cout<<"scaler.getspacegrid:"<<std::endl;
-        std::cout<<scaler.GetSpace0Grid()(0)<<std::endl;
-        std::cout<<scaler.GetSpaceTGrid()(0)<<std::endl;
-        std::cin.ignore();
-        std::cin.get();
-        std::cout<<"mymodell element"<<std::endl;
-        std::cout<<mymodell.GetModellGrid()(1).GetGrid()(0,0,0,0)<<std::endl;
-
-    }
-
-}
+//void testsmear(){
+//    arma::cx_mat id3d(3,3,arma::fill::eye);
+//    Modell mymodell(id3d);
+//mymodell.HeatBathSweep();
+//    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+//    for(int smearlevel=0;smearlevel<10;smearlevel++){
+//        std::cout<<"smear level: "<<smearlevel<<std::endl;
+//        std::cout<<scaler.GetSpace0Grid()(0)<<std::endl;
+//        std::cout<<scaler.GetSpaceTGrid()(0)<<std::endl;
+//        std::cin.ignore();
+//        std::cin.get();
+//        scaler.Smearing0();
+//       // scaler.SmearingT();
+//        std::cin.ignore();
+//        std::cin.get();
+//        std::cout<<"scaler.getspacegrid:"<<std::endl;
+//        std::cout<<scaler.GetSpace0Grid()(0)<<std::endl;
+//        std::cout<<scaler.GetSpaceTGrid()(0)<<std::endl;
+//        std::cin.ignore();
+//        std::cin.get();
+//        std::cout<<"mymodell element"<<std::endl;
+//        std::cout<<mymodell.GetModellGrid()(1).GetGrid()(0,0,0,0)<<std::endl;
+//
+//    }
+//
+//}
 
 void WilsonAVGtest(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -163,42 +163,42 @@ void CorrelAVGtest(){
     scaler.CorrelMAVG(50,rescorr0,rescorrT,rescorrT1,"./");
 
 }
-
-void correltest(){
-    arma::cx_mat id3d(3,3,arma::fill::eye);
-    Modell mymodell(id3d);
-
-
-    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
-    arma::cx_mat correl(2,2,arma::fill::zeros);
-    mymodell.HeatBathSweep();
-    //for(int i=0;i<200;i++){
-
-    arma::cx_mat spline0(3,3,arma::fill::eye);
-    arma::cx_mat splineT(3,3,arma::fill::eye);
-    arma::cx_mat tlineup(3,3,arma::fill::eye);
-    arma::cx_mat tlinedown(3,3,arma::fill::eye);
-    scaler.CountTimeLineDown(tlinedown,0,0,0,0+3-1,3);
-    scaler.CountTimeLineUp(tlineup,0+3,0,0,0,3);
-    scaler.InitSpaceLikeTInv(3,scaler.ModSpaceTGrid());
-for(int i=0;i<2;i++){
-    scaler.InitSpaceLikeT(0,scaler.ModSpace0Grid());
-    for(int j=0;j<2;j++){
-        scaler.CountSpaceLine0(spline0);
-        scaler.CountSpaceLineT(splineT);
-        //IT should BE Changed!
-        correl(i,j)+=real(trace(spline0*tlineup*splineT*tlinedown));
-        scaler.Smearing0();
-
-    }//for j smear
-    scaler.SmearingT(3);
-}//for i smear
-//mymodell.HeatBathSweep();
+//
+//void correltest(){
+//    arma::cx_mat id3d(3,3,arma::fill::eye);
+//    Modell mymodell(id3d);
+//
+//
+//    ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
+//    arma::cx_mat correl(2,2,arma::fill::zeros);
+//    mymodell.HeatBathSweep();
+//    //for(int i=0;i<200;i++){
+//
+//    arma::cx_mat spline0(3,3,arma::fill::eye);
+//    arma::cx_mat splineT(3,3,arma::fill::eye);
+//    arma::cx_mat tlineup(3,3,arma::fill::eye);
+//    arma::cx_mat tlinedown(3,3,arma::fill::eye);
+//    scaler.CountTimeLineDown(tlinedown,0,0,0,0+3-1,3);
+//    scaler.CountTimeLineUp(tlineup,0+3,0,0,0,3);
+//    scaler.InitSpaceLikeTInv(3,scaler.ModSpaceTGrid());
+//for(int i=0;i<2;i++){
+//    scaler.InitSpaceLikeT(0,scaler.ModSpace0Grid());
+//    for(int j=0;j<2;j++){
+//        scaler.CountSpaceLine0(spline0);
+//        scaler.CountSpaceLineT(splineT);
+//        //IT should BE Changed!
+//        correl(i,j)+=real(trace(spline0*tlineup*splineT*tlinedown));
+//        scaler.Smearing0();
+//
+//    }//for j smear
+//    scaler.SmearingT(3);
+//}//for i smear
+////mymodell.HeatBathSweep();
+////}
+//
+//std::cout<<correl<<std::endl;
+//
 //}
-
-std::cout<<correl<<std::endl;
-
-}
 
 void WilsonPot(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
