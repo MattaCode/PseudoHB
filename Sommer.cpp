@@ -631,6 +631,8 @@ outcorrT1.open((dir+"outcorrT1.dat").c_str(),std::ios::out);
         for(int j=0;j<10;j++){
             mymodell.HeatBathSweep();
         }
+        InitSm();
+        Smear();
         this->WilsonAVG(outcorr0,outcorrT,outcorrT1);
         rescorr0+=correl0;
         rescorrT+=correlT;
