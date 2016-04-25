@@ -4,7 +4,7 @@
 #include"HBRandom.h"
 #include"testing.h"
 #include"algorithm.h"
-
+#include"Sommer.h"
 using namespace std;
 
 //AutoCorrMain
@@ -70,7 +70,7 @@ resultfile.close();
 }
 
 void MeasureHistosPolya(){
-    const int mcmaxtime=200;
+//    const int mcmaxtime=200;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 
 Modell mymodell(id3d);
@@ -160,10 +160,54 @@ energyout.close();
 mymodell.writeToFileModell((dir+"finalonfig").c_str());
 }
 
+//SommerScale potential
+void SommerPot(string dir,string initconfig,const int r,const int t,const int maxsmear){
+
+
+    Modell mymodell((dir+initconfig).c_str());
+    ScaleSetV scaler(mymodell,r,t,0,0,0,0,1,maxsmear);
+    double potential=0;
+    potential=scaler.CountV(dir);
+    std::ofstream resultfile;
+    resultfile.precision(6);
+    resultfile.open(dir+"potential.dat",std::ios::out);
+    resultfile<<potential<<std::endl;
+    resultfile.close();
+}
+void SommerPotMain(){
+string dir;
+string initconfig;
+int r=0;
+int t=0;
+int maxsmear=0;
+cout<<"kerem a konyvtarat: "<<endl;
+cin>>dir;
+cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+cin>>initconfig;
+cout<<"wilson loop terszeru hossza"<<endl;
+cin>>r;
+cout<<"wilson loop idoszeru hossza"<<endl;
+cin>>t;
+cout<<"maxsmear"<<endl;
+cin>>maxsmear;
+
+    std::ofstream infofile;
+    infofile.open(dir+"info.dat",std::ios::out);
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"wilson loop R: "<<r<<endl;
+    infofile<<"wilson loop T: "<<t<<endl;
+    infofile<<"maxsmear: "<<maxsmear<<endl;
+    infofile.close();
+
+}
+
 int main(){
 try{
 
-TestPot();
+SommerPotMain();
 
 }catch(const char * a){
     std::cerr<<"error detected: "<<a<<endl;

@@ -34,6 +34,7 @@ public:
 
 //ctr
 ScaleSetV(Modell &,const int,const int,const int,const int,const int,const int,const int);
+ScaleSetV(Modell &,const int,const int,const int,const int,const int,const int,const int,const int);
 
 //to do
 //copy
@@ -66,6 +67,7 @@ void WilsonAVG(std::ofstream &,std::ofstream &,std::ofstream &);
 void WilsonAVG();
 
 double CountV();
+double CountV(std::string);
 
 void isitsymm();
 
