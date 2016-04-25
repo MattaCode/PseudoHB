@@ -206,7 +206,15 @@ cin>>maxsmear;
 
 int main(){
 try{
+arma::cx_mat id3d(3,3,arma::fill::eye);
+Modell initmodell(id3d);
+//reach eq.
+//Monte Carlo Run - 400 sweep
+for(int mcrun=0;mcrun<400;mcrun++){
+    initmodell.HeatBathSweep();
+}
 
+initmodell.writeToFileModell("beta6_tdim20_dim10/p400config");
 SommerPotMain();
 
 }catch(const char * a){
