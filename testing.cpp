@@ -96,11 +96,13 @@ for(int mcrun=0;mcrun<400;mcrun++){
     resultfile<<real(wilson)<<'\t'<<imag(wilson)<<endl;
 
     complex<double> wilsonavg(0,0);
+    const int maxtdim=SU3Grid::GetTDim();
+    const int maxdim=SU3Grid::GetDim();
     int counter=0;
-    for(int i=0;i<7;i++){
-        for(int j=0;j<7;j++){
-            for(int k=0;k<7;k++){
-                for(int l=0;l<7;l++){
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
                     wilsonavg+=mymodell.WilsonLoop(3,3,i,j,k,l,1);
                     counter++;
                 }
