@@ -943,6 +943,26 @@ complex<double> Modell::WilsonLoop(const int r,const int t,int idx,int idy,int i
     return trace(resultmat);
 }
 
+//Wilson loop
+complex<double> Modell::WilsonAvg(const int r,const int t,int spacegrid){
+    complex<double> wilsonavg(0,0);
+    const int maxtdim=SU3Grid::GetTDim();
+    const int maxdim=SU3Grid::GetDim();
+    int counter=0;
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
+                    wilsonavg+=WilsonLoop(r,t,i,j,k,l,spacegrid);
+                    counter++;
+                }
+            }
+        }
+    }
+    wilsonavg/=counter;
+    return wilsonavg;
+}
+
 Modell::~Modell(){}
 
 /****************************************************************/

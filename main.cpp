@@ -160,6 +160,52 @@ energyout.close();
 mymodell.writeToFileModell((dir+"finalonfig").c_str());
 }
 
+void Wilson(){
+string dir;
+string initconfig;
+int r=0;
+int t=0;
+cout<<"kerem a konyvtarat: "<<endl;
+cin>>dir;
+cout<<dir<<endl;
+cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+cin>>initconfig;
+cout<<initconfig<<endl;
+cout<<"wilson loop terszeru hossza"<<endl;
+cin>>r;
+cout<<r<<endl;
+cout<<"wilson loop idoszeru hossza"<<endl;
+cin>>t;
+cout<<t<<endl;
+
+std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"wilson loop R: "<<r<<endl;
+    infofile<<"wilson loop T: "<<t<<endl;
+    infofile.close();
+
+    Modell mymodell((initconfig).c_str());
+    std::complex<double> wilsonavg;
+    std::ofstream resultfile;
+    resultfile.precision(6);
+    resultfile.open((dir+"wilsonavg.dat").c_str(),std::ios::out);
+    for(int i=0;i<20;i++){
+    wilsonavg=mymodell.WilsonAvg(r,t,1);
+    resultfile<<real(wilsonavg)<<'\t'<<imag(wilsonavg)<<std::endl;
+    for(int j=0;j<10;j++){
+        mymodell.HeatBathSweep();
+    }
+    }
+    resultfile.close();
+
+}
+
 int main(){
 try{
 
