@@ -31,10 +31,10 @@ cx_mat RandSU3(cx_mat su3){
     //let it be SU(3) instead of U(3)
     complex<double> determinant=det(su3);
 //debug
-cout<<"original det: "<<determinant<<endl;
+//cout<<"original det: "<<determinant<<endl;
     su3=su3/determinant;
 //debug
-cout<<"det: "<<det(su3)<<endl;
+//cout<<"det: "<<det(su3)<<endl;
     return su3;
 }
 
@@ -899,43 +899,43 @@ complex<double> Modell::WilsonLoop(const int r,const int t,int idx,int idy,int i
         switch(spacegrid){
         case 1:
             idy++;
-            (idy+maxdim)%maxdim;
+            idy=(idy+maxdim)%maxdim;
         break;
         case 2:
             idz++;
-            (idz+maxdim)%maxdim;
+            idz=(idz+maxdim)%maxdim;
         break;
         case 3:
             idk++;
-            (idk+maxdim)%maxdim;
+            idk=(idk+maxdim)%maxdim;
         break;
         }
     }
     for(int i=0;i<t;i++){
         resultmat=grid(0).GetGrid()(idx,idy,idz,idk)*resultmat;
         idx++;
-        (idx+maxtdim)%maxtdim;
+        idx=(idx+maxtdim)%maxtdim;
     }
     for(int i=0;i<r;i++){
         switch(spacegrid){
         case 1:
             idy--;
-            (idy+maxdim)%maxdim;
+            idy=(idy+maxdim)%maxdim;
         break;
         case 2:
             idz--;
-            (idz+maxdim)%maxdim;
+            idz=(idz+maxdim)%maxdim;
         break;
         case 3:
             idk--;
-            (idk+maxdim)%maxdim;
+            idk=(idk+maxdim)%maxdim;
         break;
         }
         resultmat=grid(spacegrid).GetGrid()(idx,idy,idz,idk).t()*resultmat;
     }
     for(int i=0;i<t;i++){
         idx--;
-        (idx+maxtdim)%maxtdim;
+        idx=(idx+maxtdim)%maxtdim;
         resultmat=grid(0).GetGrid()(idx,idy,idz,idk).t()*resultmat;
 
     }
@@ -953,7 +953,7 @@ complex<double> Modell::WilsonAvg(const int r,const int t,int spacegrid){
         for(int j=0;j<maxdim;j++){
             for(int k=0;k<maxdim;k++){
                 for(int l=0;l<maxdim;l++){
-                    wilsonavg+=WilsonLoop(r,t,i,j,k,l,spacegrid);
+                    wilsonavg+=this->WilsonLoop(r,t,i,j,k,l,spacegrid);
                     counter++;
                 }
             }
