@@ -160,7 +160,10 @@ int gridmax=SU3Grid::GetDim();
 int inputtdim;
 int inputdim;
 double inputbeta;
+
 inputfile>>inputtdim;
+std::cout<<inputtdim<<std::endl;
+std::cout<<tgridmax<<std::endl;
 if(inputtdim!=tgridmax) throw "time-dim not equal error";
 inputfile>>inputdim;
 if(inputdim!=gridmax) throw "space-dim not equal error";
@@ -622,7 +625,7 @@ counter++;
 //cout<<"num of trials: "<<counter<<endl;
     }
 //debug
-cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
+//cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
 return a0;
 }
 
@@ -740,7 +743,7 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //    //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
-cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+//cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
 
 }

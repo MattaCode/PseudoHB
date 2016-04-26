@@ -687,8 +687,8 @@ double ScaleSetV::CountV(std::string dir){
     arma::mat eigvec0;
     eig_sym(eigval0, eigvec0, realrescorr0);
     arma::cx_mat diag0mat(maxsmearlevel,maxsmearlevel,arma::fill::eye);
-    std::cout<<"eigval: "<<eigval0<<std::endl;
-    std::cout<<"eigvec: "<<eigvec0<<std::endl;
+    //std::cout<<"eigval: "<<eigval0<<std::endl;
+    //std::cout<<"eigvec: "<<eigvec0<<std::endl;
     //build sqrtmat
     arma::cx_vec cpleigval0(maxsmearlevel);
     for(int i=0;i<maxsmearlevel;i++){
@@ -696,20 +696,25 @@ double ScaleSetV::CountV(std::string dir){
         diag0mat(i,i)*=sqrt(cpleigval0(i));
     }
     arma::cx_mat sqrt0mat=eigvec0*diag0mat*eigvec0.i();
-    std::cout<<"sqrtmat: "<<sqrt0mat<<std::endl;
+    //std::cout<<"sqrtmat: "<<sqrt0mat<<std::endl;
 
     //find eigvals of sqrtinv*c*sqrtinv
     arma::cx_vec eigvals;
     arma::eig_gen(eigvals,sqrt0mat.i()*realrescorrT*sqrt0mat.i());
-    std::cout<<"eigvals! "<<eigvals<<std::endl;
+    //std::cout<<"eigvals! "<<eigvals<<std::endl;
     double maxeigt0t=real(eigvals.max());
-    std::cout<<eigvals.max()<<std::endl;
+    //std::cout<<eigvals.max()<<std::endl;
     arma::cx_vec eigvals2;
     arma::eig_gen(eigvals2,sqrt0mat.i()*realrescorrT1*sqrt0mat.i());
     double maxeigt0t1=real(eigvals2.max());
-    std::cout<<eigvals2.max()<<std::endl;
-    std::cin.ignore();
-    std::cin.get();
+    //std::cout<<eigvals2.max()<<std::endl;
+    //std::cin.ignore();
+    //std::cin.get();
+    std::ofstream eigs;
+    eigs.precision(6);
+    eigs.open((dir+"eigvals.dat").c_str(),std::ios::out);
+    eigs<<maxeigt0t<<'\t'<<maxeigt0t1<<std::endl;
+    eigs.close();
     value=log(maxeigt0t/maxeigt0t1);
     return value;
 }

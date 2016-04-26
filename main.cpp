@@ -114,12 +114,12 @@ complex<double> result=0;
 for(int t=0;t<200;t++){
     ostringstream convert;
     convert<<t;
-    polyaloop.open("PolyaLOOP"+convert.str()+".dat",ios::out);
+    polyaloop.open(("PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
     result=mymodell.PolyakovLoopAVG(polyaloop);
     polyaloop.close();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energydens.open("EnergyDens"+convert.str()+".dat",ios::out);
+    energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
     energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
     energydens.close();
 
@@ -142,12 +142,12 @@ result=0;
 for(int t=600;t<800;t++){
     ostringstream convert;
     convert<<t;
-    polyaloop.open("PolyaLOOP"+convert.str()+".dat",ios::out);
+    polyaloop.open(("PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
     result=mymodell.PolyakovLoopAVG(polyaloop);
     polyaloop.close();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energydens.open("EnergyDens"+convert.str()+".dat",ios::out);
+    energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
     energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
     energydens.close();
 
@@ -164,13 +164,13 @@ mymodell.writeToFileModell((dir+"finalonfig").c_str());
 void SommerPot(string dir,string initconfig,const int r,const int t,const int maxsmear){
 
 
-    Modell mymodell((dir+initconfig).c_str());
+    Modell mymodell((initconfig).c_str());
     ScaleSetV scaler(mymodell,r,t,0,0,0,0,1,maxsmear);
     double potential=0;
     potential=scaler.CountV(dir);
     std::ofstream resultfile;
     resultfile.precision(6);
-    resultfile.open(dir+"potential.dat",std::ios::out);
+    resultfile.open((dir+"potential.dat").c_str(),std::ios::out);
     resultfile<<potential<<std::endl;
     resultfile.close();
 }
@@ -182,17 +182,23 @@ int t=0;
 int maxsmear=0;
 cout<<"kerem a konyvtarat: "<<endl;
 cin>>dir;
+cout<<dir<<endl;
 cout<<"kerem a kezdeti konfiguraciot!"<<endl;
 cin>>initconfig;
+cout<<initconfig<<endl;
 cout<<"wilson loop terszeru hossza"<<endl;
 cin>>r;
+cout<<r<<endl;
 cout<<"wilson loop idoszeru hossza"<<endl;
 cin>>t;
+cout<<t<<endl;
 cout<<"maxsmear"<<endl;
 cin>>maxsmear;
-
+std::cout<<"maxsmear: "<<maxsmear<<std::endl;
+std::cout<<(dir+"info.dat").c_str()<<std::endl;
     std::ofstream infofile;
-    infofile.open(dir+"info.dat",std::ios::out);
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
     infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
     infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
     infofile<<"beta: "<<Modell::GetBeta()<<endl;
@@ -201,20 +207,13 @@ cin>>maxsmear;
     infofile<<"wilson loop T: "<<t<<endl;
     infofile<<"maxsmear: "<<maxsmear<<endl;
     infofile.close();
+    SommerPot(dir,initconfig,r,t,maxsmear);
 
 }
 
 int main(){
 try{
-arma::cx_mat id3d(3,3,arma::fill::eye);
-Modell initmodell(id3d);
-//reach eq.
-//Monte Carlo Run - 400 sweep
-for(int mcrun=0;mcrun<400;mcrun++){
-    initmodell.HeatBathSweep();
-}
 
-initmodell.writeToFileModell("beta6_tdim20_dim10/p400config");
 SommerPotMain();
 
 }catch(const char * a){
