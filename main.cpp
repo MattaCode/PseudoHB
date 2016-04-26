@@ -209,7 +209,7 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
 int main(){
 try{
 
-wilsontest2();
+Wilson();
 
 }catch(const char * a){
     std::cerr<<"error detected: "<<a<<endl;
