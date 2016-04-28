@@ -69,7 +69,7 @@ resultfile.close();
 
 }
 
-void MeasureHistosPolya(){
+void MeasureHistoPolya(){
 //    const int mcmaxtime=200;
 arma::cx_mat id3d(3,3,arma::fill::eye);
 
@@ -289,8 +289,8 @@ do{
 		cin.get();
 	break;
 	case 5:
-		AutoCorrMain();
-		cin.get();
+		//AutoCorrMain();
+		//cin.get();
 	break;
 	case 6:
 		MeasureHistoPolya();

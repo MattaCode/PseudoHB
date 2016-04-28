@@ -65,7 +65,7 @@ for(int i=0;i<10;i++){
     }
 }
 
-}
+}//test 1
 
 void WilsonAVGtest(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -100,7 +100,7 @@ void WilsonAVGtest(){
    // std::cin.ignore();
     //std::cin.get();
 
-}
+}//wilsonavg test
 
 void CorrelAVGtest(){
 
@@ -114,7 +114,7 @@ void CorrelAVGtest(){
     ScaleSetV scaler(mymodell,3,3,0,0,0,0,1);
     scaler.CorrelMAVG(50,rescorr0,rescorrT,rescorrT1,"./");
 
-}
+}//correlavg test
 
 
 void WilsonPot(){
@@ -131,7 +131,7 @@ void WilsonPot(){
         std::cin.ignore();
         std::cin.get();
     }
-}
+}//wilsonpot
 
 void TestPot(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -144,7 +144,7 @@ void TestPot(){
     resultfile.open("potential.dat",std::ios::out);
     resultfile<<potential<<std::endl;
     resultfile.close();
-}
+}//testpot
 
 void wilsontest(){
 arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -195,7 +195,7 @@ for(int mcrun=0;mcrun<400;mcrun++){
     mymodell.HeatBathSweep();
 }
 
-}
+}//wilsontest
 
 void wilsontest2(){
 arma::cx_mat id3d(3,3,arma::fill::eye);
@@ -244,4 +244,4 @@ for(int mcrun=0;mcrun<400;mcrun++){
     mymodell.HeatBathSweep();
 }
 
-}
+}//wilsontest2
