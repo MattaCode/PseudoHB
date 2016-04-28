@@ -205,16 +205,102 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
     infofile<<"initconfig: "<<initconfig<<endl;
     infofile<<"wilson loop R: "<<r<<endl;
     infofile<<"wilson loop T: "<<t<<endl;
-    infofile<<"maxsmear: "<<maxsmear<<endl;
+infofile<<"maxsmear: "<<maxsmear<<endl;
     infofile.close();
     SommerPot(dir,initconfig,r,t,maxsmear);
 
 }
 
+void Wilson(){
+string dir;
+string initconfig;
+int r=0;
+int t=0;
+
+cout<<"kerem a konyvtarat: "<<endl;
+cin>>dir;
+cout<<dir<<endl;
+cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+cin>>initconfig;
+cout<<initconfig<<endl;
+cout<<"wilson loop terszeru hossza"<<endl;
+cin>>r;
+cout<<r<<endl;
+cout<<"wilson loop idoszeru hossza"<<endl;
+cin>>t;
+cout<<t<<endl;
+
+std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"wilson loop R: "<<r<<endl;
+    infofile<<"wilson loop T: "<<t<<endl;
+    infofile.close();
+
+    Modell mymodell((initconfig).c_str());
+    std::complex<double> wilsonavg;
+    std::ofstream resultfile;
+    resultfile.precision(6);
+    resultfile.open((dir+"wilsonavg.dat").c_str(),std::ios::out);
+    for(int i=0;i<20;i++){
+    wilsonavg=mymodell.WilsonAvg(r,t,1);
+    resultfile<<real(wilsonavg)<<'\t'<<imag(wilsonavg)<<std::endl;
+    for(int j=0;j<10;j++){
+        mymodell.HeatBathSweep();
+    }
+    }
+    resultfile.close();
+
+}
+
 int main(){
 try{
+int switcher=0;
+//menu
+do{
+	cout<<"1: HeatBathRun from identity"<<endl;
+	cout<<"2: HeatBathRun from initconfig"<<endl;
+	cout<<"3: SommerPot run from initconfig"<<endl;
+	cout<<"4: WilsonPot run from initconfig"<<endl;
+	cout<<"5: AutoCorr"<<endl;
+	cout<<"6: MeasureHistoPolya"<<endl;
+	cout<<"7: exit"<<endl;
+	cout<<endl;
+	cout<<"Choose your destiny: "<<endl;
+	cin>>switcher;
+	switch(switcher){
+	case 1:
+	//TO DO
+	break;
+	case 2:
+	//TO DO
+	break;
+	case 3:
+		SommerPotMain();
+		cin.get();
+	break;
+	case 4:
+		Wilson();
+		cin.get();
+	break;
+	case 5:
+		AutoCorrMain();
+		cin.get();
+	break;
+	case 6:
+		MeasureHistoPolya();
+		cin.get();
+	break;
 
-SommerPotMain();
+	}//switch
+
+}while(switcher!=7);
+
 
 }catch(const char * a){
     std::cerr<<"error detected: "<<a<<endl;

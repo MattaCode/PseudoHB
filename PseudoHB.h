@@ -160,6 +160,10 @@ class Modell{
     //Polyakov space avg
     std::complex<double> PolyakovLoopAVG(std::ofstream &);
 
+    //Wilson loop
+    std::complex<double> WilsonLoop(const int,const int,int,int,int,int,int);
+    //wilson avg
+    std::complex<double> WilsonAvg(const int,const int,int);
     //debug
     static void GetPauli();
 

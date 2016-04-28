@@ -67,7 +67,6 @@ for(int i=0;i<10;i++){
 
 }
 
-
 void WilsonAVGtest(){
     arma::cx_mat id3d(3,3,arma::fill::eye);
     Modell mymodell("p400config");
@@ -145,4 +144,104 @@ void TestPot(){
     resultfile.open("potential.dat",std::ios::out);
     resultfile<<potential<<std::endl;
     resultfile.close();
+}
+
+void wilsontest(){
+arma::cx_mat id3d(3,3,arma::fill::eye);
+
+Modell mymodell(id3d);
+
+string dir="./";
+
+mymodell.writeToFileModell((dir+"initconfig").c_str());
+
+//reach eq.
+//Monte Carlo Run - 400 sweep
+for(int mcrun=0;mcrun<400;mcrun++){
+    mymodell.HeatBathSweep();
+}
+
+mymodell.writeToFileModell((dir+"p400config").c_str());
+
+std::ofstream resultfile;
+resultfile.precision(6);
+resultfile.open("wilsonloop.dat",std::ios::out);
+
+std::ofstream resultavgf;
+resultavgf.precision(6);
+resultavgf.open("wilsonloopAVGs.dat",std::ios::out);
+
+for(int mcrun=0;mcrun<400;mcrun++){
+    complex<double> wilson;
+    wilson=mymodell.WilsonLoop(3,3,0,0,0,0,1);
+    resultfile<<real(wilson)<<'\t'<<imag(wilson)<<endl;
+
+    complex<double> wilsonavg(0,0);
+    const int maxtdim=SU3Grid::GetTDim();
+    const int maxdim=SU3Grid::GetDim();
+    int counter=0;
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
+                    wilsonavg+=mymodell.WilsonLoop(3,3,i,j,k,l,1);
+                    counter++;
+                }
+            }
+        }
+    }
+    wilsonavg/=counter;
+    resultavgf<<real(wilsonavg)<<'\t'<<imag(wilsonavg)<<endl;
+    mymodell.HeatBathSweep();
+}
+
+}
+
+void wilsontest2(){
+arma::cx_mat id3d(3,3,arma::fill::eye);
+
+Modell mymodell("p400config");
+
+string dir="./";
+
+mymodell.writeToFileModell((dir+"initconfig").c_str());
+
+//reach eq.
+//Monte Carlo Run - 400 sweep
+//for(int mcrun=0;mcrun<400;mcrun++){
+//    mymodell.HeatBathSweep();
+//}
+
+//mymodell.writeToFileModell((dir+"p400config").c_str());
+
+std::ofstream resultfile;
+resultfile.precision(6);
+resultfile.open("wilsonloop.dat",std::ios::out);
+
+std::ofstream resultavgf;
+resultavgf.precision(6);
+resultavgf.open("wilsonloopAVGs.dat",std::ios::out);
+
+for(int mcrun=0;mcrun<400;mcrun++){
+    complex<double> wilson;
+    wilson=mymodell.WilsonLoop(3,3,0,0,0,0,1);
+    resultfile<<real(wilson)<<'\t'<<imag(wilson)<<endl;
+
+    complex<double> wilsonavg(0,0);
+    int counter=0;
+    for(int i=0;i<7;i++){
+        for(int j=0;j<7;j++){
+            for(int k=0;k<7;k++){
+                for(int l=0;l<7;l++){
+                    wilsonavg+=mymodell.WilsonLoop(3,3,i,j,k,l,1);
+                    counter++;
+                }
+            }
+        }
+    }
+    wilsonavg/=counter;
+    resultavgf<<real(wilsonavg)<<'\t'<<imag(wilsonavg)<<endl;
+    mymodell.HeatBathSweep();
+}
+
 }

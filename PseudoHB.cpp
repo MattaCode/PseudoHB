@@ -31,10 +31,10 @@ cx_mat RandSU3(cx_mat su3){
     //let it be SU(3) instead of U(3)
     complex<double> determinant=det(su3);
 //debug
-cout<<"original det: "<<determinant<<endl;
+//cout<<"original det: "<<determinant<<endl;
     su3=su3/determinant;
 //debug
-cout<<"det: "<<det(su3)<<endl;
+//cout<<"det: "<<det(su3)<<endl;
     return su3;
 }
 
@@ -890,6 +890,80 @@ writeModell(outfile);
 
 outfile.close();
 
+}
+
+//Wilson loop
+complex<double> Modell::WilsonLoop(const int r,const int t,int idx,int idy,int idz,int idk,int spacegrid){
+    arma::cx_mat resultmat(3,3,fill::eye);
+    const int maxdim=SU3Grid::GetDim();
+    const int maxtdim=SU3Grid::GetTDim();
+    for(int i=0;i<r;i++){
+        resultmat=grid(spacegrid).GetGrid()(idx,idy,idz,idk)*resultmat;
+        switch(spacegrid){
+        case 1:
+            idy++;
+            idy=(idy+maxdim)%maxdim;
+        break;
+        case 2:
+            idz++;
+            idz=(idz+maxdim)%maxdim;
+        break;
+        case 3:
+            idk++;
+            idk=(idk+maxdim)%maxdim;
+        break;
+        }
+    }
+    for(int i=0;i<t;i++){
+        resultmat=grid(0).GetGrid()(idx,idy,idz,idk)*resultmat;
+        idx++;
+        idx=(idx+maxtdim)%maxtdim;
+    }
+    for(int i=0;i<r;i++){
+        switch(spacegrid){
+        case 1:
+            idy--;
+            idy=(idy+maxdim)%maxdim;
+        break;
+        case 2:
+            idz--;
+            idz=(idz+maxdim)%maxdim;
+        break;
+        case 3:
+            idk--;
+            idk=(idk+maxdim)%maxdim;
+        break;
+        }
+        resultmat=grid(spacegrid).GetGrid()(idx,idy,idz,idk).t()*resultmat;
+    }
+    for(int i=0;i<t;i++){
+        idx--;
+        idx=(idx+maxtdim)%maxtdim;
+        resultmat=grid(0).GetGrid()(idx,idy,idz,idk).t()*resultmat;
+
+    }
+
+    return trace(resultmat);
+}
+
+//Wilson loop
+complex<double> Modell::WilsonAvg(const int r,const int t,int spacegrid){
+    complex<double> wilsonavg(0,0);
+    const int maxtdim=SU3Grid::GetTDim();
+    const int maxdim=SU3Grid::GetDim();
+    int counter=0;
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
+                    wilsonavg+=this->WilsonLoop(r,t,i,j,k,l,spacegrid);
+                    counter++;
+                }
+            }
+        }
+    }
+    wilsonavg/=counter;
+    return wilsonavg;
 }
 
 Modell::~Modell(){}

@@ -9,4 +9,7 @@ void WilsonAVGtest();
 void CorrelAVGtest();
 void WilsonPot();
 void TestPot();
+void wilsontest();
+void wilsontest2();
+
 #endif // TESTING_H
