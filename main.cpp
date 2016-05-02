@@ -258,7 +258,7 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
 
 }
 //Just HeatBath
-void HBR(){
+void HBRun(){
 string dir;
 string initconfig="none";
  string outconfig;
