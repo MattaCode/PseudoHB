@@ -257,14 +257,60 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
     resultfile.close();
 
 }
+//Just HeatBath
+void HBR(){
+string dir;
+string initconfig="none";
+ string outconfig;
+ int maxtime=400;
+ bool isIDconfig=false;
+cout<<"kerem a konyvtarat: "<<endl;
+cin>>dir;
+cout<<dir<<endl;
+ cout<<"identity init config? <1,0>"<<endl;
+ cin>>isIDconfig;
+ if(isIDconfig){
+   arma::cx_mat id3d(3,3,arma::fill::eye);
+   Modell initmodell(id3d);
+   initmodell.writeToFileModell((dir+"initIDconfig").c_str());
+   initconfig=(dir+"initIDconfig");
+}
+ else{
+cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+cin>>initconfig;
+ }
+cout<<initconfig<<endl;
+ cout<<"kerem a max idot"<<endl;
+ cin>>maxtime;
+ cout<<"veg konfig neve: "<<endl;
+ cin>>outconfig;
+
+std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"futasido: "<<maxtime<<endl;
+    infofile<<"outconfig: "<<outconfig<<endl;
+ infofile.close();
+
+    Modell mymodell((initconfig).c_str());
+ 
+    for(int i=0;i<maxtime;i++){
+        mymodell.HeatBathSweep();
+    }
+
+}
 
 int main(){
 try{
 int switcher=0;
 //menu
 do{
-	cout<<"1: HeatBathRun from identity"<<endl;
-	cout<<"2: HeatBathRun from initconfig"<<endl;
+	cout<<"1: HeatBathRun"<<endl;
 	cout<<"3: SommerPot run from initconfig"<<endl;
 	cout<<"4: WilsonPot run from initconfig"<<endl;
 	cout<<"5: AutoCorr"<<endl;
@@ -275,7 +321,9 @@ do{
 	cin>>switcher;
 	switch(switcher){
 	case 1:
-	//TO DO
+	  HBRun();
+	  cin.ignore();
+	  cin.get();
 	break;
 	case 2:
 	//TO DO
