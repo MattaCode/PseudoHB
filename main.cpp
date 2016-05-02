@@ -282,10 +282,12 @@ do{
 	break;
 	case 3:
 		SommerPotMain();
+        cin.ignore();
 		cin.get();
 	break;
 	case 4:
 		Wilson();
+		cin.ignore();
 		cin.get();
 	break;
 	case 5:
