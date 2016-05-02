@@ -302,7 +302,7 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
     for(int i=0;i<maxtime;i++){
         mymodell.HeatBathSweep();
     }
-
+   mymodell.writeToFileModell((dir+outconfig).c_str());
 }
 
 int main(){
