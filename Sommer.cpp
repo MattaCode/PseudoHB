@@ -621,7 +621,7 @@ double ScaleSetV::CountV(){
     arma::cx_mat rescorrT(maxsmearlevel,maxsmearlevel,arma::fill::zeros);
     arma::cx_mat rescorrT1(maxsmearlevel,maxsmearlevel,arma::fill::zeros);
 
-    CorrelMAVG(20,rescorr0,rescorrT,rescorrT1,"./");
+    CorrelMAVG(50,rescorr0,rescorrT,rescorrT1,"./");
 //not works in debian testing
 //    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
 //    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
