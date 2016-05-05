@@ -322,21 +322,17 @@ do{
 	switch(switcher){
 	case 1:
 	  HBRun();
-	  cin.ignore();
-	  cin.get();
+
 	break;
 	case 2:
 	//TO DO
 	break;
 	case 3:
 		SommerPotMain();
-        cin.ignore();
-		cin.get();
 	break;
 	case 4:
 		Wilson();
-		cin.ignore();
-		cin.get();
+
 	break;
 	case 5:
 		//AutoCorrMain();
@@ -344,9 +340,9 @@ do{
 	break;
 	case 6:
 		MeasureHistoPolya();
-		cin.get();
 	break;
-
+	case 7:
+	  break;
 	}//switch
 
 }while(switcher!=7);
