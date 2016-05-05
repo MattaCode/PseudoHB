@@ -537,22 +537,31 @@ correlT1/=counter;
 
 for(int mi=0;mi<maxsmearlevel;mi++){
 	for(int mj=0;mj<maxsmearlevel;mj++){
-		if((mi==(maxsmearlevel-1))&&(mj==(maxsmearlevel-1))){
-			outcorrel0<<real(correl0(mi,mj));
-			outcorrelT<<real(correlT(mi,mj));
-			outcorrelT1<<real(correlT1(mi,mj));
-		}//if
-		else{
+	       
 		outcorrel0<<real(correl0(mi,mj))<<'\t';
 		outcorrelT<<real(correlT(mi,mj))<<'\t';
 		outcorrelT1<<real(correlT1(mi,mj))<<'\t';
+		
+	}//for mj
+}//for mi
+
+for(int mi=0;mi<maxsmearlevel;mi++){
+	for(int mj=0;mj<maxsmearlevel;mj++){
+		if((mi==(maxsmearlevel-1))&&(mj==(maxsmearlevel-1))){
+			outcorrel0<<imag(correl0(mi,mj));
+			outcorrelT<<imag(correlT(mi,mj));
+			outcorrelT1<<imag(correlT1(mi,mj));
+		}//if
+		else{
+		outcorrel0<<imag(correl0(mi,mj))<<'\t';
+		outcorrelT<<imag(correlT(mi,mj))<<'\t';
+		outcorrelT1<<imag(correlT1(mi,mj))<<'\t';
 		}//else
 	}//for mj
 }//for mi
 outcorrel0<<std::endl;
 outcorrelT<<std::endl;
 outcorrelT1<<std::endl;
-
 	
 }
 
