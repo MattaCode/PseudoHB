@@ -970,7 +970,7 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=5;
+const double Modell::beta=5.5;
 const int SU3Grid::dim=10;
 const int SU3Grid::tdim=20;
 const std::complex<double> Modell::iunit(0,1);

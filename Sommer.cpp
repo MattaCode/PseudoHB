@@ -535,31 +535,25 @@ correl0/=counter;
 correlT/=counter;
 correlT1/=counter;
 
-outcorrel0<<real(correl0(0,0))<<'\t'
-          <<real(correl0(0,1))<<'\t'
-          <<real(correl0(1,0))<<'\t'
-          <<real(correl0(1,1))<<'\t'
-          <<imag(correl0(0,0))<<'\t'
-          <<imag(correl0(0,1))<<'\t'
-          <<imag(correl0(1,0))<<'\t'
-          <<imag(correl0(1,1))<<std::endl;
-outcorrelT<<real(correlT(0,0))<<'\t'
-          <<real(correlT(0,1))<<'\t'
-          <<real(correlT(1,0))<<'\t'
-          <<real(correlT(1,1))<<'\t'
-          <<imag(correlT(0,0))<<'\t'
-          <<imag(correlT(0,1))<<'\t'
-          <<imag(correlT(1,0))<<'\t'
-          <<imag(correlT(1,1))<<std::endl;
-outcorrelT1<<real(correlT1(0,0))<<'\t'
-          <<real(correlT1(0,1))<<'\t'
-          <<real(correlT1(1,0))<<'\t'
-          <<real(correlT1(1,1))<<'\t'
-          <<imag(correlT1(0,0))<<'\t'
-          <<imag(correlT1(0,1))<<'\t'
-          <<imag(correlT1(1,0))<<'\t'
-          <<imag(correlT1(1,1))<<std::endl;
+for(int mi=0;mi<maxsmearlevel;mi++){
+	for(int mj=0;mj<maxsmearlevel;mj++){
+		if((mi==(maxsmearlevel-1))&&(mj==(maxsmearlevel-1))){
+			outcorrel0<<real(correl0(mi,mj));
+			outcorrelT<<real(correlT(mi,mj));
+			outcorrelT1<<real(correlT1(mi,mj));
+		}//if
+		else{
+		outcorrel0<<real(correl0(mi,mj))<<'\t';
+		outcorrelT<<real(correlT(mi,mj))<<'\t';
+		outcorrelT1<<real(correlT1(mi,mj))<<'\t';
+		}//else
+	}//for mj
+}//for mi
+outcorrel0<<std::endl;
+outcorrelT<<std::endl;
+outcorrelT1<<std::endl;
 
+	
 }
 
 void ScaleSetV::WilsonAVG(){
