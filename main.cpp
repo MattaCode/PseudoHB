@@ -173,6 +173,7 @@ void SommerPot(string dir,string initconfig,const int r,const int t,const int ma
     resultfile.open((dir+"potential.dat").c_str(),std::ios::out);
     resultfile<<potential<<std::endl;
     resultfile.close();
+mymodell.writeToFileModell((dir+"Finalconfig").c_str());
 }
 void SommerPotMain(){
 string dir;
@@ -255,7 +256,7 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
     }
     }
     resultfile.close();
-
+mymodell.writeToFileModell((dir+"finalconfig").c_str());
 }
 //Just HeatBath
 void HBRun(){

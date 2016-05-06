@@ -678,6 +678,40 @@ double ScaleSetV::CountV(std::string dir){
 //    arma::cx_mat t0t=arma::sqrtmat(correl0).i()*correlT*arma::sqrtmat(correl0).i();
 //    arma::cx_mat t0t1=arma::sqrtmat(correl0).i()*correlT1*arma::sqrtmat(correl0).i();
 
+	//write out  time avg-ed matrix
+	std::ofstream outmatrix1;
+	outmatrix1.precision(6);
+	outmatrix1.open((dir+"avgedmatrix0.dat").c_str(),std::ios::out);
+	outmatrix1<<"corr0"<<std::endl;
+	std::ofstream outmatrix2;
+        outmatrix2.precision(6);
+        outmatrix2.open((dir+"avgedmatrixT.dat").c_str(),std::ios::out);
+        outmatrix2<<"corrT"<<std::endl;
+	std::ofstream outmatrix3;
+        outmatrix3.precision(6);
+        outmatrix3.open((dir+"avgedmatrixT1.dat").c_str(),std::ios::out);
+        outmatrix3<<"corrT1"<<std::endl;
+	for(int mi=0;mi<maxsmearlevel;mi++){
+		for(int mj=0;mj<maxsmearlevel;mj++){
+		outmatrix1<<real(rescorr0(mi,mj))<<'\t';
+		outmatrix2<<real(rescorrT(mi,mj))<<'\t';
+		outmatrix3<<real(rescorrT1(mi,mj))<<'\t';
+		}//for mj
+	}//for mi
+	for(int mi=0;mi<maxsmearlevel;mi++){
+                for(int mj=0;mj<maxsmearlevel;mj++){
+		if((mi==(maxsmearlevel-1)&&(mj==maxsmearlevel-1))){
+		outmatrix1<<imag(rescorr0(mi,mj))<<std::endl;
+                outmatrix2<<imag(rescorrT(mi,mj))<<std::endl;
+                outmatrix3<<imag(rescorrT1(mi,mj))<<std::endl;
+		}
+		else{
+                outmatrix1<<imag(rescorr0(mi,mj))<<'\t';
+                outmatrix2<<imag(rescorrT(mi,mj))<<'\t';
+                outmatrix3<<imag(rescorrT1(mi,mj))<<'\t';
+                }//else
+		}//for mj
+        }//for mi
     arma::mat realrescorr0=real(rescorr0);
     arma::mat realrescorrT=real(rescorrT);
     arma::mat realrescorrT1=real(rescorrT1);
@@ -685,6 +719,27 @@ double ScaleSetV::CountV(std::string dir){
     Symmetrize(realrescorr0);
     Symmetrize(realrescorrT);
     Symmetrize(realrescorrT1);
+	//write out symm matrix
+	outmatrix1<<"symm corr0"<<std::endl;
+	outmatrix2<<"symm corrT"<<std::endl;
+	outmatrix3<<"symm corrT1"<<std::endl;
+	for(int mi=0;mi<maxsmearlevel;mi++){
+                for(int mj=0;mj<maxsmearlevel;mj++){
+                if((mi==(maxsmearlevel-1)&&(mj==maxsmearlevel-1))){ 
+                outmatrix1<<realrescorr0(mi,mj)<<std::endl;
+                outmatrix2<<realrescorrT(mi,mj)<<std::endl;
+                outmatrix3<<realrescorrT1(mi,mj)<<std::endl;
+                }
+                else{
+                outmatrix1<<realrescorr0(mi,mj)<<'\t';
+                outmatrix2<<realrescorrT(mi,mj)<<'\t';
+                outmatrix3<<realrescorrT1(mi,mj)<<'\t';
+                }//else
+                }//for mj
+        }//for mi
+outmatrix1.close();
+outmatrix2.close();
+outmatrix3.close();
     //Diagonalize c(t0) aka realrescorr0
     arma::vec eigval0;
     arma::mat eigvec0;
