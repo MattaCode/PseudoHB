@@ -250,6 +250,8 @@ void isUnitary(){
 string config;
 cout<<"kerem a konfigfajlt"<<endl;
 cin>>config;
+ cout<<"valasztott konfigfajl: "<<endl;
+ cout<<config<<endl;
 Modell mymodell((config).c_str());
 int maxtdim=SU3Grid::GetTDim();
 int maxdim=SU3Grid::GetDim();
