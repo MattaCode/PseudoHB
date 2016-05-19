@@ -259,7 +259,7 @@ for(int g=0;g<4;g++){
             for(int k=0;k<maxdim;k++){
                 for(int l=0;l<maxdim;l++){
                     cout<<"is it Id?"<<endl;
-                    cout<<mymodell.GetLink(g,i,j,k,l)*mymodell.GetLink(g,i,j,k,l).t()<<endl;
+                    cout<<det(mymodell.GetLink(g,i,j,k,l)*mymodell.GetLink(g,i,j,k,l).t())<<endl;
                 }//for l space3
             }//for k space2
         }//for space (j)
