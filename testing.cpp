@@ -245,3 +245,26 @@ for(int mcrun=0;mcrun<400;mcrun++){
 }
 
 }//wilsontest2
+
+void isUnitary(){
+string config;
+cout<<"kerem a konfigfajlt"<<endl;
+cin>>config;
+Modell mymodell((config).c_str());
+int maxtdim=SU3Grid::GetTDim();
+int maxdim=SU3Grid::GetDim();
+for(int g=0;g<4;g++){
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
+                    cout<<"is it Id?"<<endl;
+                    cout<<mymodell.GetLink(g,i,j,k,l)*mymodell.GetLink(g,i,j,k,l).t()<<endl;
+                }//for l space3
+            }//for k space2
+        }//for space (j)
+    }//for time
+
+}//for grid
+
+}

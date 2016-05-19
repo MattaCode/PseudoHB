@@ -146,6 +146,9 @@ class Modell{
     //Modify the selected link
     void ModifyLink(int, int, int, int, int, const arma::cx_mat& );
 
+    //Get selected link
+    const arma::cx_mat&  GetLink(int, int, int, int, int)const;
+
     //access for reading
     const Array::array1<SU3Grid>& GetModellGrid()const;
 

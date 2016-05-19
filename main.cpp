@@ -299,7 +299,7 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
  infofile.close();
 
     Modell mymodell((initconfig).c_str());
- 
+
     for(int i=0;i<maxtime;i++){
         mymodell.HeatBathSweep();
     }
@@ -316,6 +316,7 @@ do{
 	cout<<"4: WilsonPot run from initconfig"<<endl;
 	cout<<"5: AutoCorr"<<endl;
 	cout<<"6: MeasureHistoPolya"<<endl;
+	cout<<"8: Is it Unitary?"<<endl;
 	cout<<"7: exit"<<endl;
 	cout<<endl;
 	cout<<"Choose your destiny: "<<endl;
@@ -344,6 +345,9 @@ do{
 	break;
 	case 7:
 	  break;
+    case 8:
+        isUnitary();
+    break;
 	}//switch
 
 }while(switcher!=7);
