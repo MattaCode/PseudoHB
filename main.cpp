@@ -299,11 +299,36 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
  infofile.close();
 
     Modell mymodell((initconfig).c_str());
- 
+
     for(int i=0;i<maxtime;i++){
         mymodell.HeatBathSweep();
     }
    mymodell.writeToFileModell((dir+outconfig).c_str());
+}
+
+void isUnitary(){
+string config;
+cout<<"kerem a konfigfajlt"<<endl;
+cin>>config;
+ cout<<"valasztott konfigfajl: "<<endl;
+ cout<<config<<endl;
+Modell mymodell((config).c_str());
+int maxtdim=SU3Grid::GetTDim();
+int maxdim=SU3Grid::GetDim();
+for(int g=0;g<4;g++){
+    for(int i=0;i<maxtdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                for(int l=0;l<maxdim;l++){
+                    cout<<"is it Id?"<<endl;
+                    cout<<det(mymodell.GetLink(g,i,j,k,l)*mymodell.GetLink(g,i,j,k,l).t())<<endl;
+                }//for l space3
+            }//for k space2
+        }//for space (j)
+    }//for time
+
+}//for grid
+
 }
 
 int main(){
@@ -316,6 +341,7 @@ do{
 	cout<<"4: WilsonPot run from initconfig"<<endl;
 	cout<<"5: AutoCorr"<<endl;
 	cout<<"6: MeasureHistoPolya"<<endl;
+	cout<<"8: Is it Unitary?"<<endl;
 	cout<<"7: exit"<<endl;
 	cout<<endl;
 	cout<<"Choose your destiny: "<<endl;
@@ -344,6 +370,9 @@ do{
 	break;
 	case 7:
 	  break;
+    case 8:
+        isUnitary();
+    break;
 	}//switch
 
 }while(switcher!=7);

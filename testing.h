@@ -11,5 +11,5 @@ void WilsonPot();
 void TestPot();
 void wilsontest();
 void wilsontest2();
-
+void isUnitary();
 #endif // TESTING_H

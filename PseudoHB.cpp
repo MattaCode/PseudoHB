@@ -755,6 +755,11 @@ void Modell::ModifyLink(int grididx, int idx, int idy, int idz, int idk, const a
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=newlink;
 }
 
+//Get selected link
+const arma::cx_mat& Modell::GetLink(int grididx, int idx, int idy, int idz, int idk)const{
+    return grid(grididx).GetGrid()(idx,idy,idz,idk);
+}
+
 //access for reading
 const Array::array1<SU3Grid>& Modell::GetModellGrid()const{
 //debug
