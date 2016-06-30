@@ -331,6 +331,75 @@ for(int g=0;g<4;g++){
 
 }
 
+void CoarseEnergyHist(){
+    string dir;
+    string initconfig="none";
+    string outconfig;
+    int maxtime=400;
+    bool isIDconfig=false;
+    cout<<"kerem a konyvtarat: "<<endl;
+    cin>>dir;
+    cout<<dir<<endl;
+    cout<<"identity init config? <1,0>"<<endl;
+    cin>>isIDconfig;
+    if(isIDconfig){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell initmodell(id3d);
+    initmodell.writeToFileModell((dir+"initIDconfig").c_str());
+    initconfig=(dir+"initIDconfig");
+    }
+    else{
+    cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+    cin>>initconfig;
+    }
+    cout<<initconfig<<endl;
+    cout<<"kerem a max idot"<<endl;
+    cin>>maxtime;
+    cout<<"veg konfig neve: "<<endl;
+    cin>>outconfig;
+
+    std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"BoxEnHist meres!"<<endl;
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"futasido: "<<maxtime<<endl;
+    infofile<<"outconfig: "<<outconfig<<endl;
+    infofile.close();
+
+    Modell mymodell((initconfig).c_str());
+
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
+    const int mindim=min(timedim,spacedim);
+    const int maxlimit=mindim/2+1;
+
+    std::ofstream energyout;
+    energyout.precision(6);
+
+
+for(int t=0;t<maxtime;t++){
+    ostringstream convert;
+    convert<<t;
+    for (int boxs=3;boxs<maxlimit;boxs++){
+    ostringstream conv2;
+    conv2<<boxs;
+    energyout.open("t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat",std::ios::out);
+    mymodell.BoxEnHisto(boxs,energyout);
+    energyout.close();
+    }
+    mymodell.HeatBathSweep();
+}
+
+    mymodell.writeToFileModell((dir+outconfig).c_str());
+
+}
+
+
 int main(){
 try{
 int switcher=0;
@@ -342,6 +411,7 @@ do{
 	cout<<"5: AutoCorr"<<endl;
 	cout<<"6: MeasureHistoPolya"<<endl;
 	cout<<"8: Is it Unitary?"<<endl;
+	cout<<"9: Box Histogram"<<endl;
 	cout<<"7: exit"<<endl;
 	cout<<endl;
 	cout<<"Choose your destiny: "<<endl;
@@ -372,6 +442,9 @@ do{
 	  break;
     case 8:
         isUnitary();
+    break;
+    case 9:
+        CoarseEnergyHist();
     break;
 	}//switch
 

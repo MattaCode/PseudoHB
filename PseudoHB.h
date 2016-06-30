@@ -109,7 +109,10 @@ class Modell{
      double CountPlaqEnergy(const arma::cx_mat & );
     //count mean for plaquett energy on lattice
      double CountMeanEnergyDens(std::ofstream &);
-
+    //count energy in a subsystem
+    double CountBoxEnergy(const int,const int,const int,const int,const int);
+    //count boxenergy histogram
+    void BoxEnHisto(const int,std::ofstream &);
 
     //count forward staple (plaquett without the selected link)
     //result initialized as Identity
