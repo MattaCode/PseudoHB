@@ -162,8 +162,8 @@ int inputdim;
 double inputbeta;
 
 inputfile>>inputtdim;
-std::cout<<inputtdim<<std::endl;
-std::cout<<tgridmax<<std::endl;
+//std::cout<<inputtdim<<std::endl;
+//std::cout<<tgridmax<<std::endl;
 if(inputtdim!=tgridmax) throw "time-dim not equal error";
 inputfile>>inputdim;
 if(inputdim!=gridmax) throw "space-dim not equal error";
@@ -484,16 +484,15 @@ double Modell::CountMeanEnergyDens(ofstream & file){
 void Modell::BoxEnHisto(const int boxsize,std::ofstream & file){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
-    const int boxmin1=boxsize-1;
     const int boxmin2=boxsize-2;
     const int tdimmax=timedim-boxmin2;
     const int sdimmax=spacedim-boxmin2;
     cx_mat plaquett(3,3,fill::eye);
     //cycle on lattice points
-        for(int i=0;i<tdimmax;i+=boxmin1){
-            for(int j=0;j<sdimmax;j+=boxmin1){
-                for(int k=0;k<sdimmax;k+=boxmin1){
-                    for(int l=0;l<sdimmax;l+=boxmin1){
+        for(int i=0;i<tdimmax;i++){
+            for(int j=0;j<sdimmax;j++){
+                for(int k=0;k<sdimmax;k++){
+                    for(int l=0;l<sdimmax;l++){
                         file<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountBoxEnergy(i,j,k,l,boxsize)<<endl;
                     }//for l
                 }//for k
@@ -1033,9 +1032,9 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=6;
-const int SU3Grid::dim=32;
-const int SU3Grid::tdim=64;
+const double Modell::beta=8;
+const int SU3Grid::dim=10;
+const int SU3Grid::tdim=20;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
 const arma::cx_mat Modell::pauli2={{{0,0},{0,-1}},{{0,1},{0,0}}};

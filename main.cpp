@@ -388,7 +388,7 @@ for(int t=0;t<maxtime;t++){
     for (int boxs=3;boxs<maxlimit;boxs++){
     ostringstream conv2;
     conv2<<boxs;
-    energyout.open("t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat",std::ios::out);
+    energyout.open((dir+"t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat").c_str(),std::ios::out);
     mymodell.BoxEnHisto(boxs,energyout);
     energyout.close();
     }
