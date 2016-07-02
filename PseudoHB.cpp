@@ -5,7 +5,7 @@
 #include<armadillo>
 #include"PseudoHB.h"
 #include "HBRandom.h"
-
+#include "latticeconfig.h"
 using namespace arma;
 using namespace std;
 
@@ -1032,9 +1032,6 @@ Modell::~Modell(){}
 
 /****************************************************************/
 
-const double Modell::beta=8;
-const int SU3Grid::dim=10;
-const int SU3Grid::tdim=20;
 const std::complex<double> Modell::iunit(0,1);
 const arma::cx_mat Modell::pauli1={{{0,0},{1,0}},{{1,0},{0,0}}};
 const arma::cx_mat Modell::pauli2={{{0,0},{0,-1}},{{0,1},{0,0}}};
