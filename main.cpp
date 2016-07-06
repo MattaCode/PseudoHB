@@ -381,17 +381,22 @@ void CoarseEnergyHist(){
     std::ofstream energyout;
     energyout.precision(6);
 
+std::ofstream energydens;
+energydens.precision(6);
 
 for(int t=0;t<maxtime;t++){
     ostringstream convert;
     convert<<t;
-    for (int boxs=3;boxs<maxlimit;boxs++){
+    for (int boxs=2;boxs<maxlimit;boxs++){
     ostringstream conv2;
     conv2<<boxs;
     energyout.open((dir+"t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat").c_str(),std::ios::out);
     mymodell.BoxEnHisto(boxs,energyout);
     energyout.close();
     }
+    energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energydens.close();
     mymodell.HeatBathSweep();
 }
 
