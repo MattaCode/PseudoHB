@@ -513,6 +513,7 @@ cout<<"boxendens after a cyc.: "<<BoxEnergyDens<<" counter: "<<counter<<endl;
         //evergy plaquett counted 1 times!!!
         //cycle on selected links, select all links
         for(int grididx=0;grididx<grididxmax;grididx++){
+        cout<<"grididx in boxen: "<<grididx<<endl;
             CountForGrididxBoxEnergy(boxidx,boxidy,boxidz,boxidk,boxsize,grididx,BoxEnergyDens,counter);
         }//for grid
 
