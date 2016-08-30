@@ -381,7 +381,7 @@ void CoarseEnergyHist(){
     const int spacedim=SU3Grid::GetDim();
     const int mindim=min(timedim,spacedim);
     //const int maxlimit=mindim/2+1;
-    const int maxlimit=2;
+    const int maxlimit=3;
     std::ofstream energyout;
     energyout.precision(6);
 
@@ -391,7 +391,7 @@ energydens.precision(6);
 for(int t=0;t<maxtime;t++){
     ostringstream convert;
     convert<<t;
-    for (int boxs=1;boxs<maxlimit;boxs++){
+    for (int boxs=2;boxs<maxlimit;boxs++){
     ostringstream conv2;
     conv2<<boxs;
     energyout.open((dir+"t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat").c_str(),std::ios::out);

@@ -481,10 +481,10 @@ cout<<"final counter endens: "<<counter<<endl;
                 for(int j=0;j<boxsize;j++){
                     for(int k=0;k<boxsize;k++){
                         for(int l=0;l<boxsize;l++){
-                            if((i==boxmin1)&&(grididx==0)){}
-                            else if((j==boxmin1)&&(grididx==1)){}
-                            else if((k==boxmin1)&&(grididx==2)){}
-                            else if((l==boxmin1)&&(grididx==3)){}
+                            if((i==boxmin1)&&(grididx==0 || grid2==0)){}
+                            else if((j==boxmin1)&&(grididx==1 || grid2==1)){}
+                            else if((k==boxmin1)&&(grididx==2 || grid2==2)){}
+                            else if((l==boxmin1)&&(grididx==3 || grid2==3)){}
                             else{
                                 CountUp((boxidx+i)%timedim,(boxidy+j)%spacedim,(boxidz+k)%spacedim,(boxidk+l)%spacedim,grididx,grid2,plaquett);
                                 BoxEnergyDens+=CountPlaqEnergy(plaquett);
