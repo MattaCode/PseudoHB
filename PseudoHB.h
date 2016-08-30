@@ -116,7 +116,7 @@ class Modell{
     //helper for CountBoxenergy but one grididx fixed
     void CountForGrididxBoxEnergy(const int,const int,const int,const int,const int,const int,double &,int &);
     //count boxenergy histogram
-    void BoxEnHisto(const int,std::ofstream &);
+    void BoxEnHisto(const int,std::ofstream &,bool);
 
     //count forward staple (plaquett without the selected link)
     //result initialized as Identity

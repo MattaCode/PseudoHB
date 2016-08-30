@@ -522,7 +522,7 @@ cout<<"final counter: "<<counter<<endl;
     }
 
 //count boxenergy histogram
-void Modell::BoxEnHisto(const int boxsize,std::ofstream & file){
+void Modell::BoxEnHisto(const int boxsize,std::ofstream & file,bool istimelike){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     const int boxmin2=boxsize-2;
@@ -534,7 +534,7 @@ void Modell::BoxEnHisto(const int boxsize,std::ofstream & file){
             for(int j=0;j<sdimmax;j++){
                 for(int k=0;k<sdimmax;k++){
                     for(int l=0;l<sdimmax;l++){
-                        file<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountBoxEnergy(i,j,k,l,boxsize,false)<<endl;
+                        file<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountBoxEnergy(i,j,k,l,boxsize,istimelike)<<endl;
                     }//for l
                 }//for k
             }//for j

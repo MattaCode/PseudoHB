@@ -395,11 +395,11 @@ for(int t=0;t<maxtime;t++){
     ostringstream conv2;
     conv2<<boxs;
     energyout.open((dir+"t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat").c_str(),std::ios::out);
-    mymodell.BoxEnHisto(boxs,energyout);
+    mymodell.BoxEnHisto(boxs,energyout,istimelike);
     energyout.close();
     }
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,istimelike)<<endl;
     energydens.close();
     mymodell.HeatBathSweep();
 }
