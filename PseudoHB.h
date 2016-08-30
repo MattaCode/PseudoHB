@@ -108,9 +108,13 @@ class Modell{
     //count action for a plaquett up
      double CountPlaqEnergy(const arma::cx_mat & );
     //count mean for plaquett energy on lattice
-     double CountMeanEnergyDens(std::ofstream &);
+     double CountMeanEnergyDens(std::ofstream &,const bool);
+     //helper for CountMeanEnergyDens but one grididx fixed
+     void CountForGrididxEnergyDens(const int,double &,int &,std::ofstream &);
     //count energy in a subsystem
-    double CountBoxEnergy(const int,const int,const int,const int,const int);
+    double CountBoxEnergy(const int,const int,const int,const int,const int,const bool);
+    //helper for CountBoxenergy but one grididx fixed
+    void CountForGrididxBoxEnergy(const int,const int,const int,const int,const int,const int,double &,int &);
     //count boxenergy histogram
     void BoxEnHisto(const int,std::ofstream &);
 

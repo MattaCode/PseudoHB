@@ -120,7 +120,7 @@ for(int t=0;t<200;t++){
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
     energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
     energydens.close();
 
         mymodell.HeatBathSweep();
@@ -148,7 +148,7 @@ for(int t=600;t<800;t++){
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
     energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
     energydens.close();
 
         mymodell.HeatBathSweep();
@@ -337,6 +337,7 @@ void CoarseEnergyHist(){
     string outconfig;
     int maxtime=400;
     bool isIDconfig=false;
+    bool istimelike=false;
     cout<<"kerem a konyvtarat: "<<endl;
     cin>>dir;
     cout<<dir<<endl;
@@ -357,6 +358,8 @@ void CoarseEnergyHist(){
     cin>>maxtime;
     cout<<"veg konfig neve: "<<endl;
     cin>>outconfig;
+    cout<<"timelike only? <y=1, n=0> "<<endl;
+    cin>>istimelike;
 
     std::cout<<(dir+"info.dat").c_str()<<std::endl;
     std::ofstream infofile;
@@ -369,6 +372,7 @@ void CoarseEnergyHist(){
     infofile<<"initconfig: "<<initconfig<<endl;
     infofile<<"futasido: "<<maxtime<<endl;
     infofile<<"outconfig: "<<outconfig<<endl;
+    infofile<<"istimelike: "<<istimelike<<endl;
     infofile.close();
 
     Modell mymodell((initconfig).c_str());
@@ -376,8 +380,8 @@ void CoarseEnergyHist(){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     const int mindim=min(timedim,spacedim);
-    const int maxlimit=mindim/2+1;
-
+    //const int maxlimit=mindim/2+1;
+    const int maxlimit=2;
     std::ofstream energyout;
     energyout.precision(6);
 
@@ -395,7 +399,7 @@ for(int t=0;t<maxtime;t++){
     energyout.close();
     }
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
     energydens.close();
     mymodell.HeatBathSweep();
 }
