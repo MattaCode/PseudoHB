@@ -381,7 +381,7 @@ void CoarseEnergyHist(){
     const int spacedim=SU3Grid::GetDim();
     const int mindim=min(timedim,spacedim);
     //const int maxlimit=mindim/2+1;
-    const int maxlimit=2;
+    const int maxlimit=3;
     std::ofstream energyout;
     energyout.precision(6);
 
