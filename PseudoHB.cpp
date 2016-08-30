@@ -459,7 +459,7 @@ double Modell::CountMeanEnergyDens(ofstream & file,bool istimelike){
     }//for grid
 
 //debug
-cout<<"final counter: "<<counter<<endl;
+cout<<"final counter endens: "<<counter<<endl;
     meanEDens/=counter;
     return meanEDens;
 }
@@ -517,7 +517,7 @@ cout<<"boxendens after a cyc.: "<<BoxEnergyDens<<" counter: "<<counter<<endl;
         }//for grid
 
 //debug
-cout<<"final counter: "<<counter<<endl;
+cout<<"final counter in boxen: "<<counter<<endl;
         return (BoxEnergyDens/=counter);
     }
 
