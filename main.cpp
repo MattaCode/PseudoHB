@@ -70,29 +70,50 @@ resultfile.close();
 }
 
 void MeasureHistoPolya(){
-//    const int mcmaxtime=200;
-arma::cx_mat id3d(3,3,arma::fill::eye);
+    string dir;
+    string initconfig="none";
+    string outconfig;
+    int maxtime=400;
+    bool isIDconfig=false;
+    cout<<"kerem a konyvtarat: "<<endl;
+    cin>>dir;
+    cout<<dir<<endl;
+    cout<<"identity init config? <1,0>"<<endl;
+    cin>>isIDconfig;
+    if(isIDconfig){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell initmodell(id3d);
+    initmodell.writeToFileModell((dir+"initIDconfig").c_str());
+    initconfig=(dir+"initIDconfig");
+    }
+    else{
+    cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+    cin>>initconfig;
+    }
+    cout<<initconfig<<endl;
+    cout<<"kerem a max idot"<<endl;
+    cin>>maxtime;
+    cout<<"veg konfig neve: "<<endl;
+    cin>>outconfig;
 
-Modell mymodell(id3d);
+    std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"EnHist és Polyaloopp meres!"<<endl;
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"futasido: "<<maxtime<<endl;
+    infofile<<"outconfig: "<<outconfig<<endl;
+    infofile.close();
 
-string dir="./";
+    Modell mymodell((initconfig).c_str());
 
-mymodell.writeToFileModell((dir+"initconfig").c_str());
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
 
-//reach eq.
-//Monte Carlo Run - 400 sweep
-//for(int mcrun=0;mcrun<600;mcrun++){
-//    mymodell.HeatBathSweep();
-//}
-
-//mymodell.writeToFileModell((dir+"p600config").c_str());
-
-//after 400 sweep we measure mcmaxtime step
-
-//AutoCorrMain(mymodell,mcmaxtime,dir);
-
-//debug
-//Modell::GetPauli();
 
 std::ofstream resultfile;
 resultfile.precision(6);
@@ -111,7 +132,7 @@ energyout.open("MeanOfPlaqEn.dat",std::ios::out);
 
 
 complex<double> result=0;
-for(int t=0;t<200;t++){
+for(int t=0;t<maxtime;t++){
     ostringstream convert;
     convert<<t;
     polyaloop.open(("PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
@@ -127,37 +148,13 @@ for(int t=0;t<200;t++){
 
 }
 
+    mymodell.writeToFileModell((dir+outconfig).c_str());
 
-mymodell.writeToFileModell((dir+"200config").c_str());
 
-//reach eq.
-//Monte Carlo Run - 400 sweep
-for(int mcrun=0;mcrun<400;mcrun++){
-    mymodell.HeatBathSweep();
-}
-
-mymodell.writeToFileModell((dir+"p600config").c_str());
-
-result=0;
-for(int t=600;t<800;t++){
-    ostringstream convert;
-    convert<<t;
-    polyaloop.open(("PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
-    result=mymodell.PolyakovLoopAVG(polyaloop);
-    polyaloop.close();
-    cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
-    resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
-    energydens.close();
-
-        mymodell.HeatBathSweep();
-
-}
 resultfile.close();
 energyout.close();
 
-mymodell.writeToFileModell((dir+"finalonfig").c_str());
+
 }
 
 //SommerScale potential
