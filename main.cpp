@@ -135,12 +135,12 @@ complex<double> result=0;
 for(int t=0;t<maxtime;t++){
     ostringstream convert;
     convert<<t;
-    polyaloop.open(("PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
+    polyaloop.open((dir+"PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
     result=mymodell.PolyakovLoopAVG(polyaloop);
     polyaloop.close();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energydens.open(("EnergyDens"+convert.str()+".dat").c_str(),ios::out);
+    energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
     energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
     energydens.close();
 
