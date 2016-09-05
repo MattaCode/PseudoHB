@@ -111,6 +111,11 @@ class Modell{
      double CountMeanEnergyDens(std::ofstream &,const bool);
      //helper for CountMeanEnergyDens but one grididx fixed
      void CountForGrididxEnergyDens(const int,double &,int &,std::ofstream &);
+    //count mean for plaquett energy on lattice without output
+     double CountMeanEnergyDens(const bool);
+     //helper for CountMeanEnergyDens but one grididx fixed without output
+     void CountForGrididxEnergyDens(const int,double &,int &);
+
     //count energy in a subsystem
     double CountBoxEnergy(const int,const int,const int,const int,const int,const bool);
     //helper for CountBoxenergy but one grididx fixed
@@ -169,6 +174,9 @@ class Modell{
 
     //Polyakov space avg
     std::complex<double> PolyakovLoopAVG(std::ofstream &);
+
+    //Polyakov space avg without output
+    std::complex<double> PolyakovLoopAVG();
 
     //Wilson loop
     std::complex<double> WilsonLoop(const int,const int,int,int,int,int,int);

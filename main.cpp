@@ -303,6 +303,84 @@ std::cout<<(dir+"info.dat").c_str()<<std::endl;
    mymodell.writeToFileModell((dir+outconfig).c_str());
 }
 
+//HB plus avg energy and polya
+void ExtraHBRun(){
+    string dir;
+    string initconfig="none";
+    string outconfig;
+    int maxtime=400;
+    bool isIDconfig=false;
+    cout<<"kerem a konyvtarat: "<<endl;
+    cin>>dir;
+    cout<<dir<<endl;
+    cout<<"identity init config? <1,0>"<<endl;
+    cin>>isIDconfig;
+    if(isIDconfig){
+    arma::cx_mat id3d(3,3,arma::fill::eye);
+    Modell initmodell(id3d);
+    initmodell.writeToFileModell((dir+"initIDconfig").c_str());
+    initconfig=(dir+"initIDconfig");
+    }
+    else{
+    cout<<"kerem a kezdeti konfiguraciot!"<<endl;
+    cin>>initconfig;
+    }
+    cout<<initconfig<<endl;
+    cout<<"kerem a max idot"<<endl;
+    cin>>maxtime;
+    cout<<"veg konfig neve: "<<endl;
+    cin>>outconfig;
+
+    std::cout<<(dir+"info.dat").c_str()<<std::endl;
+    std::ofstream infofile;
+    infofile.open((dir+"info.dat").c_str(),std::ios::out);
+    if(!infofile.is_open()) throw "can not open";
+    infofile<<"Mean plaq energy and (re) Polya loop!"<<endl;
+    infofile<<"tdim: "<<SU3Grid::GetTDim()<<endl;
+    infofile<<"space dim: "<<SU3Grid::GetDim()<<endl;
+    infofile<<"beta: "<<Modell::GetBeta()<<endl;
+    infofile<<"initconfig: "<<initconfig<<endl;
+    infofile<<"futasido: "<<maxtime<<endl;
+    infofile<<"outconfig: "<<outconfig<<endl;
+    infofile.close();
+
+    Modell mymodell((initconfig).c_str());
+
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
+
+
+std::ofstream resultfile;
+resultfile.precision(6);
+resultfile.open(dir+"REALofPolyaAVG.dat",std::ios::out);
+
+std::ofstream energyout;
+energyout.precision(6);
+energyout.open(dir+"MeanOfPlaqEn.dat",std::ios::out);
+
+
+
+complex<double> result=0;
+for(int t=0;t<maxtime;t++){
+    ostringstream convert;
+    convert<<t;
+    result=mymodell.PolyakovLoopAVG();
+    cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
+    resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(false)<<endl;
+        mymodell.HeatBathSweep();
+
+}
+
+    mymodell.writeToFileModell((dir+outconfig).c_str());
+
+
+resultfile.close();
+energyout.close();
+
+
+}
+
 void isUnitary(){
 string config;
 cout<<"kerem a konfigfajlt"<<endl;
@@ -412,6 +490,7 @@ int switcher=0;
 //menu
 do{
 	cout<<"1: HeatBathRun"<<endl;
+	cout<<"2: HBRun with mean energy and Polyakov loop"<<endl;
 	cout<<"3: SommerPot run from initconfig"<<endl;
 	cout<<"4: WilsonPot run from initconfig"<<endl;
 	cout<<"5: AutoCorr"<<endl;
@@ -428,7 +507,7 @@ do{
 
 	break;
 	case 2:
-	//TO DO
+        ExtraHBRun();
 	break;
 	case 3:
 		SommerPotMain();

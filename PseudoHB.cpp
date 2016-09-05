@@ -441,6 +441,31 @@ void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int 
 
 }
 
+//helper for plaquett energy on lattice one grididx fixed without output
+void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int & counter){
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
+    cx_mat plaquett(3,3,fill::eye);
+
+    //evergy plaquett counted 1 times!!!
+    //cycle on selected links, select all links
+
+     for(int grid2=grididx+1;grid2<4;grid2++){
+        for(int i=0;i<timedim;i++){
+            for(int j=0;j<spacedim;j++){
+                for(int k=0;k<spacedim;k++){
+                    for(int l=0;l<spacedim;l++){
+                        CountUp(i,j,k,l,grididx,grid2,plaquett);
+                        meanEDens+=CountPlaqEnergy(plaquett);
+                        counter++;
+                    }//for l
+                }//for k
+            }//for j
+        }//for i
+     }//grid2
+
+}
+
 //count mean for plaquett energy on lattice
 double Modell::CountMeanEnergyDens(ofstream & file,bool istimelike){
     const int timedim=SU3Grid::GetTDim();
@@ -456,6 +481,29 @@ double Modell::CountMeanEnergyDens(ofstream & file,bool istimelike){
     //cycle on selected links, select all links
     for(int grididx=0;grididx<grididxmax;grididx++){
         CountForGrididxEnergyDens(grididx,meanEDens,counter,file);
+    }//for grid
+
+//debug
+cout<<"final counter endens: "<<counter<<endl;
+    meanEDens/=counter;
+    return meanEDens;
+}
+
+//count mean for plaquett energy on lattice without output
+double Modell::CountMeanEnergyDens(bool istimelike){
+    const int timedim=SU3Grid::GetTDim();
+    const int spacedim=SU3Grid::GetDim();
+    double meanEDens=0;
+    cx_mat plaquett(3,3,fill::eye);
+    int counter=0;
+    int grididxmax=4;
+    if(istimelike){
+        grididxmax=1;
+    }
+    //evergy plaquett counted 1 times!!!
+    //cycle on selected links, select all links
+    for(int grididx=0;grididx<grididxmax;grididx++){
+        CountForGrididxEnergyDens(grididx,meanEDens,counter);
     }//for grid
 
 //debug
@@ -938,6 +986,35 @@ complex<double> cmplavg(0,0);
                 //polyakov loop trace is not real
                 //polyaavg+=real(trace(polyamatrix));
                 polyaloop<<i<<'\t'<<j<<'\t'<<k<<'\t'<<trace(polyamatrix)<<'\t'<<real(trace(polyamatrix))<<'\t'<<imag(trace(polyamatrix))<<endl;
+                cmplavg+=trace(polyamatrix);
+
+            }//for k
+        }//for j
+    }//for i
+    //polyaavg/=(maxdim*maxdim*maxdim);
+
+cmplavg/=(maxdim*maxdim*maxdim);
+//debug
+cout<<cmplavg<<endl;
+return cmplavg;
+}
+
+//Polyakov space avg without output
+complex<double> Modell::PolyakovLoopAVG(){
+    const int maxdim=SU3Grid::GetDim();
+
+
+
+//debug
+complex<double> cmplavg(0,0);
+    cx_mat polyamatrix(3,3,fill::eye);
+    //double polyaavg=0;
+    for(int i=0;i<maxdim;i++){
+        for(int j=0;j<maxdim;j++){
+            for(int k=0;k<maxdim;k++){
+                PolyakovMatrix(i,j,k,polyamatrix);
+                //polyakov loop trace is not real
+                //polyaavg+=real(trace(polyamatrix));
                 cmplavg+=trace(polyamatrix);
 
             }//for k
