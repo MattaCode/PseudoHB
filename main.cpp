@@ -117,11 +117,11 @@ void MeasureHistoPolya(){
 
 std::ofstream resultfile;
 resultfile.precision(6);
-resultfile.open("REALofPolyaAVG.dat",std::ios::out);
+resultfile.open(dir+"REALofPolyaAVG.dat",std::ios::out);
 
 std::ofstream energyout;
 energyout.precision(6);
-energyout.open("MeanOfPlaqEn.dat",std::ios::out);
+energyout.open(dir+"MeanOfPlaqEn.dat",std::ios::out);
 
 
     ofstream polyaloop;
