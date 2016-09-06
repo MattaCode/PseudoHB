@@ -463,6 +463,10 @@ void CoarseEnergyHist(){
 std::ofstream energydens;
 energydens.precision(6);
 
+std::ofstream energyavg;
+energyavg.precision(6);
+energyavg.open(dir+"MeanOfPlaqEn.dat",std::ios::out);
+
 for(int t=0;t<maxtime;t++){
     ostringstream convert;
     convert<<t;
@@ -474,11 +478,12 @@ for(int t=0;t<maxtime;t++){
     energyout.close();
     }
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,istimelike)<<endl;
+    mymodell.CountMeanEnergyDens(energydens,istimelike);
+    energyavg<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
     energydens.close();
     mymodell.HeatBathSweep();
 }
-
+    energyavg.close();
     mymodell.writeToFileModell((dir+outconfig).c_str());
 
 }
