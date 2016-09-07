@@ -108,20 +108,20 @@ class Modell{
     //count action for a plaquett up
      double CountPlaqEnergy(const arma::cx_mat & );
     //count mean for plaquett energy on lattice
-     double CountMeanEnergyDens(std::ofstream &,const bool);
+     double CountMeanEnergyDens(std::ofstream &,const bool,const int);
      //helper for CountMeanEnergyDens but one grididx fixed
-     void CountForGrididxEnergyDens(const int,double &,int &,std::ofstream &);
+     void CountForGrididxEnergyDens(const int,double &,int &,std::ofstream &,const bool);
     //count mean for plaquett energy on lattice without output
-     double CountMeanEnergyDens(const bool);
+     double CountMeanEnergyDens(const bool,const int);
      //helper for CountMeanEnergyDens but one grididx fixed without output
-     void CountForGrididxEnergyDens(const int,double &,int &);
+     void CountForGrididxEnergyDens(const int,double &,int &,const bool);
 
     //count energy in a subsystem
-    double CountBoxEnergy(const int,const int,const int,const int,const int,const bool);
+    double CountBoxEnergy(const int,const int,const int,const int,const int,const bool,const int);
     //helper for CountBoxenergy but one grididx fixed
-    void CountForGrididxBoxEnergy(const int,const int,const int,const int,const int,const int,double &,int &);
+    void CountForGrididxBoxEnergy(const int,const int,const int,const int,const int,const int,double &,int &,const bool);
     //count boxenergy histogram
-    void BoxEnHisto(const int,std::ofstream &,bool);
+    void BoxEnHisto(const int,std::ofstream &,const bool,const int);
 
     //count forward staple (plaquett without the selected link)
     //result initialized as Identity

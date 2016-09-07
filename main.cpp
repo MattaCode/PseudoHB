@@ -111,8 +111,6 @@ void MeasureHistoPolya(){
 
     Modell mymodell((initconfig).c_str());
 
-    const int timedim=SU3Grid::GetTDim();
-    const int spacedim=SU3Grid::GetDim();
 
 
 std::ofstream resultfile;
@@ -141,7 +139,7 @@ for(int t=0;t<maxtime;t++){
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false,0)<<endl;
     energydens.close();
 
         mymodell.HeatBathSweep();
@@ -346,8 +344,6 @@ void ExtraHBRun(){
 
     Modell mymodell((initconfig).c_str());
 
-    const int timedim=SU3Grid::GetTDim();
-    const int spacedim=SU3Grid::GetDim();
 
 
 std::ofstream resultfile;
@@ -367,7 +363,7 @@ for(int t=0;t<maxtime;t++){
     result=mymodell.PolyakovLoopAVG();
     cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
-    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(false)<<endl;
+    energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(false,0)<<endl;
         mymodell.HeatBathSweep();
 
 }
@@ -412,7 +408,8 @@ void CoarseEnergyHist(){
     string outconfig;
     int maxtime=400;
     bool isIDconfig=false;
-    bool istimelike=false;
+    bool isfixorient=false;
+    int orientation=0;
     cout<<"kerem a konyvtarat: "<<endl;
     cin>>dir;
     cout<<dir<<endl;
@@ -433,8 +430,12 @@ void CoarseEnergyHist(){
     cin>>maxtime;
     cout<<"veg konfig neve: "<<endl;
     cin>>outconfig;
-    cout<<"timelike only? <y=1, n=0> "<<endl;
-    cin>>istimelike;
+    cout<<"only fix orientation? <y=1, n=0> "<<endl;
+    cin>>isfixorient;
+    if(isfixorient){
+		cout<<"orientation: <0..3> "<<endl;
+		cin>>orientation;
+		}
 
     std::cout<<(dir+"info.dat").c_str()<<std::endl;
     std::ofstream infofile;
@@ -447,14 +448,19 @@ void CoarseEnergyHist(){
     infofile<<"initconfig: "<<initconfig<<endl;
     infofile<<"futasido: "<<maxtime<<endl;
     infofile<<"outconfig: "<<outconfig<<endl;
-    infofile<<"istimelike: "<<istimelike<<endl;
+    if(isfixorient){
+		infofile<<"fix orientation: "<<orientation<<endl;
+		}
+	else{
+		infofile<<"all orientation"<<endl;
+	}
     infofile.close();
 
     Modell mymodell((initconfig).c_str());
 
-    const int timedim=SU3Grid::GetTDim();
-    const int spacedim=SU3Grid::GetDim();
-    const int mindim=min(timedim,spacedim);
+    //const int timedim=SU3Grid::GetTDim();
+    //const int spacedim=SU3Grid::GetDim();
+    //const int mindim=min(timedim,spacedim);
     //const int maxlimit=mindim/2+1;
     const int maxlimit=3;
     std::ofstream energyout;
@@ -474,12 +480,12 @@ for(int t=0;t<maxtime;t++){
     ostringstream conv2;
     conv2<<boxs;
     energyout.open((dir+"t"+convert.str()+"box"+conv2.str()+"BoxEnHisto.dat").c_str(),std::ios::out);
-    mymodell.BoxEnHisto(boxs,energyout,istimelike);
+    mymodell.BoxEnHisto(boxs,energyout,isfixorient,orientation);
     energyout.close();
     }
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
-    mymodell.CountMeanEnergyDens(energydens,istimelike);
-    energyavg<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false)<<endl;
+    mymodell.CountMeanEnergyDens(energydens,isfixorient,orientation);
+    energyavg<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false,0)<<endl;
     energydens.close();
     mymodell.HeatBathSweep();
 }

@@ -416,15 +416,22 @@ void Modell::CountUp(int idx,int idy,int idz,int idk,const unsigned int grididx1
 }
 
 //helper for plaquett energy on lattice one grididx fixed
-void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int & counter,ofstream & file){
+void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int & counter,ofstream & file,const bool isfixorient){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     cx_mat plaquett(3,3,fill::eye);
 
     //evergy plaquett counted 1 times!!!
     //cycle on selected links, select all links
-
-     for(int grid2=grididx+1;grid2<4;grid2++){
+	{//for block open
+		int grid2=0;
+		if(!isfixorient){
+				grid2=grididx+1;
+			}
+     for(;grid2<4;grid2++){
+		 if(grididx==grididx){
+			 }
+		else{
         for(int i=0;i<timedim;i++){
             for(int j=0;j<spacedim;j++){
                 for(int k=0;k<spacedim;k++){
@@ -437,20 +444,29 @@ void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int 
                 }//for k
             }//for j
         }//for i
+		}//else
      }//grid2
+	}//for block close
 
 }
 
 //helper for plaquett energy on lattice one grididx fixed without output
-void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int & counter){
+void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int & counter,const bool isfixorient){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     cx_mat plaquett(3,3,fill::eye);
 
     //evergy plaquett counted 1 times!!!
     //cycle on selected links, select all links
-
-     for(int grid2=grididx+1;grid2<4;grid2++){
+	{//for block open
+		int grid2=0;
+		if(!isfixorient){
+				grid2=grididx+1;
+			}
+     for(;grid2<4;grid2++){
+		 if(grididx==grididx){
+			 }
+		else{
         for(int i=0;i<timedim;i++){
             for(int j=0;j<spacedim;j++){
                 for(int k=0;k<spacedim;k++){
@@ -462,59 +478,69 @@ void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int 
                 }//for k
             }//for j
         }//for i
+		}//else
      }//grid2
+	}//for block close
 
 }
 
 //count mean for plaquett energy on lattice
-double Modell::CountMeanEnergyDens(ofstream & file,bool istimelike){
-    const int timedim=SU3Grid::GetTDim();
-    const int spacedim=SU3Grid::GetDim();
+double Modell::CountMeanEnergyDens(ofstream & file,const bool isfixorient,const int orientation){
+//    const int timedim=SU3Grid::GetTDim();
+ //   const int spacedim=SU3Grid::GetDim();
     double meanEDens=0;
     cx_mat plaquett(3,3,fill::eye);
     int counter=0;
+    {//for block open
     int grididxmax=4;
-    if(istimelike){
-        grididxmax=1;
+    int grididx=0;
+    if(isfixorient){
+		grididx=orientation;
+        grididxmax=orientation+1;
     }
     //evergy plaquett counted 1 times!!!
     //cycle on selected links, select all links
-    for(int grididx=0;grididx<grididxmax;grididx++){
-        CountForGrididxEnergyDens(grididx,meanEDens,counter,file);
+    for(;grididx<grididxmax;grididx++){
+        CountForGrididxEnergyDens(grididx,meanEDens,counter,file,isfixorient);
     }//for grid
+	}//for block close
 
 //debug
-cout<<"final counter endens: "<<counter<<endl;
+//cout<<"final counter endens: "<<counter<<endl;
     meanEDens/=counter;
     return meanEDens;
 }
 
 //count mean for plaquett energy on lattice without output
-double Modell::CountMeanEnergyDens(bool istimelike){
-    const int timedim=SU3Grid::GetTDim();
-    const int spacedim=SU3Grid::GetDim();
+double Modell::CountMeanEnergyDens(const bool isfixorient,const int orientation){
+//    const int timedim=SU3Grid::GetTDim();
+//    const int spacedim=SU3Grid::GetDim();
     double meanEDens=0;
     cx_mat plaquett(3,3,fill::eye);
     int counter=0;
+    {//for block open
     int grididxmax=4;
-    if(istimelike){
-        grididxmax=1;
+    int grididx=0;
+    if(isfixorient){
+		grididx=orientation;
+        grididxmax=orientation+1;
     }
     //evergy plaquett counted 1 times!!!
     //cycle on selected links, select all links
-    for(int grididx=0;grididx<grididxmax;grididx++){
-        CountForGrididxEnergyDens(grididx,meanEDens,counter);
+    for(;grididx<grididxmax;grididx++){
+        CountForGrididxEnergyDens(grididx,meanEDens,counter,isfixorient);
     }//for grid
+	}//for block close
 
 //debug
-cout<<"final counter endens: "<<counter<<endl;
+//cout<<"final counter endens: "<<counter<<endl;
     meanEDens/=counter;
     return meanEDens;
 }
 
  //count energy in a subsystem for one fix grididx
    void Modell::CountForGrididxBoxEnergy(const int boxidx,const int boxidy,const int boxidz,const int boxidk,const int boxsize,
-    const int grididx,double & BoxEnergyDens,int & counter){
+    const int grididx,double & BoxEnergyDens,int & counter,const bool isfixorient){
         const int timedim=SU3Grid::GetTDim();
         const int spacedim=SU3Grid::GetDim();
         const int boxmin1=boxsize-1;
@@ -523,8 +549,15 @@ cout<<"final counter endens: "<<counter<<endl;
 
         //evergy plaquett counted 1 times!!!
         //cycle on selected links, select all links
-
-        for(int grid2=grididx+1;grid2<4;grid2++){
+		{//for block open
+			int grid2=0;
+			if(!isfixorient){
+				grid2=grididx+1;
+			}
+        for(;grid2<4;grid2++){
+			if(grididx==grididx){
+			 }
+			else{
             for(int i=0;i<boxsize;i++){
                 for(int j=0;j<boxsize;j++){
                     for(int k=0;k<boxsize;k++){
@@ -542,36 +575,43 @@ cout<<"final counter endens: "<<counter<<endl;
                     }//for k
                 }//for j
             }//for i
+			}//else
         }//grid2
+		}//for block close
 //debug
 cout<<"boxendens after a cyc.: "<<BoxEnergyDens<<" counter: "<<counter<<endl;
     }
 
     //count energy in a subsystem
-    double Modell::CountBoxEnergy(const int boxidx,const int boxidy,const int boxidz,const int boxidk,const int boxsize,bool istimelike){
-        const int timedim=SU3Grid::GetTDim();
-        const int spacedim=SU3Grid::GetDim();
+    double Modell::CountBoxEnergy(const int boxidx,const int boxidy,const int boxidz,const int boxidk,const int boxsize,
+    const bool isfixorient,const int orientation){
+ //       const int timedim=SU3Grid::GetTDim();
+ //       const int spacedim=SU3Grid::GetDim();
         double BoxEnergyDens=0;
-        const int boxmin1=boxsize-1;
+ //       const int boxmin1=boxsize-1;
         int counter=0;
+        {//for block open
         int grididxmax=4;
-        if(istimelike){
-            grididxmax=1;
+        int grididx=0;
+        if(isfixorient){
+			grididx=orientation;
+            grididxmax=orientation+1;
         }
         //evergy plaquett counted 1 times!!!
         //cycle on selected links, select all links
-        for(int grididx=0;grididx<grididxmax;grididx++){
+        for(;grididx<grididxmax;grididx++){
         cout<<"grididx in boxen: "<<grididx<<endl;
-            CountForGrididxBoxEnergy(boxidx,boxidy,boxidz,boxidk,boxsize,grididx,BoxEnergyDens,counter);
+            CountForGrididxBoxEnergy(boxidx,boxidy,boxidz,boxidk,boxsize,grididx,BoxEnergyDens,counter,isfixorient);
         }//for grid
+		}//for block close
 
 //debug
-cout<<"final counter in boxen: "<<counter<<endl;
+//cout<<"final counter in boxen: "<<counter<<endl;
         return (BoxEnergyDens/=counter);
     }
 
 //count boxenergy histogram
-void Modell::BoxEnHisto(const int boxsize,std::ofstream & file,bool istimelike){
+void Modell::BoxEnHisto(const int boxsize,std::ofstream & file,const bool isfixorient, const int orientation){
     const int timedim=SU3Grid::GetTDim();
     const int spacedim=SU3Grid::GetDim();
     const int boxmin2=boxsize-2;
@@ -583,7 +623,7 @@ void Modell::BoxEnHisto(const int boxsize,std::ofstream & file,bool istimelike){
             for(int j=0;j<sdimmax;j++){
                 for(int k=0;k<sdimmax;k++){
                     for(int l=0;l<sdimmax;l++){
-                        file<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountBoxEnergy(i,j,k,l,boxsize,istimelike)<<endl;
+                        file<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountBoxEnergy(i,j,k,l,boxsize,isfixorient,orientation)<<endl;
                     }//for l
                 }//for k
             }//for j
