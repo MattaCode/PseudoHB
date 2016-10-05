@@ -146,7 +146,7 @@ for(int t=0;t<maxtime;t++){
 
 }
 
-    mymodell.writeToFileModell((dir+outconfig).c_str());
+//    mymodell.writeToFileModell((dir+outconfig).c_str());
 
 
 resultfile.close();
