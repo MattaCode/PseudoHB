@@ -437,7 +437,7 @@ void Modell::CountForGrididxEnergyDens(const int grididx,double & meanEDens,int 
                 for(int k=0;k<spacedim;k++){
                     for(int l=0;l<spacedim;l++){
                         CountUp(i,j,k,l,grididx,grid2,plaquett);
-                        file<<grididx<<'\t'<<grid2<<'\t'<<i<<'\t'<<j<<'\t'<<k<<'\t'<<l<<'\t'<<CountPlaqEnergy(plaquett)<<endl;
+                        file<<CountPlaqEnergy(plaquett)<<endl;
                         meanEDens+=CountPlaqEnergy(plaquett);
                         counter++;
                     }//for l
