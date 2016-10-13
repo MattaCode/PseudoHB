@@ -138,14 +138,14 @@ Modell::Modell():grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),s
 //same matrix for all element
 Modell::Modell(cx_mat & initmatrix):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
 //debug
-cout<<"Modell ctr with same matrix"<<endl;
+//cout<<"Modell ctr with same matrix"<<endl;
     MatrixInit(initmatrix);
 }
 
 //construct from random
 Modell::Modell(bool flag):grid(4),su3staple(3,3,fill::zeros),su2staple(2,2,fill::zeros),su2strootdet(0){
 //debug
-cout<<"Modell ctr from rand"<<endl;
+//cout<<"Modell ctr from rand"<<endl;
     RandomInit();
 }
 
@@ -202,7 +202,7 @@ inputfile.close();
 //Matrix Init
 void Modell::MatrixInit(arma::cx_mat & initmatrix){
  //debug
-cout<<"Modell matrixinit call"<<endl;
+//cout<<"Modell matrixinit call"<<endl;
     int tgridmax=SU3Grid::GetTDim();
     int gridmax=SU3Grid::GetDim();
     //sweep cycle
@@ -222,7 +222,7 @@ cout<<"Modell matrixinit call"<<endl;
 //RandomInit
 void Modell::RandomInit(){
 //debug
-cout<<"Modell randominit call"<<endl;
+//cout<<"Modell randominit call"<<endl;
     int tgridmax=SU3Grid::GetTDim();
     int gridmax=SU3Grid::GetDim();
     //sweep cycle
@@ -244,7 +244,7 @@ cout<<"Modell randominit call"<<endl;
 Modell& Modell::operator=(const Modell& frommodell){
     if(this!=&frommodell){
         //debug
-        cout<<"modell assignment call"<<endl;
+        //cout<<"modell assignment call"<<endl;
         grid=frommodell.grid;
         su3staple=frommodell.su3staple;
         su2staple=frommodell.su2staple;
@@ -610,7 +610,7 @@ void Modell::BoxEnHisto(const int boxsize,std::ofstream & file,const bool isfixo
     cx_mat plaquett(3,3,fill::eye);
     //cycle on lattice points
     //debug
-    cout<<"boxenhisto called"<<endl;
+    //cout<<"boxenhisto called"<<endl;
         for(int i=0;i<tdimmax;i++){
             for(int j=0;j<sdimmax;j++){
                 for(int k=0;k<sdimmax;k++){
@@ -1027,7 +1027,7 @@ complex<double> cmplavg(0,0);
 
 cmplavg/=(maxdim*maxdim*maxdim);
 //debug
-cout<<cmplavg<<endl;
+//cout<<cmplavg<<endl;
 return cmplavg;
 }
 
@@ -1056,7 +1056,7 @@ complex<double> cmplavg(0,0);
 
 cmplavg/=(maxdim*maxdim*maxdim);
 //debug
-cout<<cmplavg<<endl;
+//cout<<cmplavg<<endl;
 return cmplavg;
 }
 
