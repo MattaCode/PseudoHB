@@ -136,7 +136,7 @@ for(int t=0;t<maxtime;t++){
     polyaloop.open((dir+"PolyaLOOP"+convert.str()+".dat").c_str(),ios::out);
     result=mymodell.PolyakovLoopAVG(polyaloop);
     polyaloop.close();
-    cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
+//    cout<<"*********REAL of Polya.AVG RESULT: "<<real(result)<<endl;
     resultfile<<t<<'\t'<<real(result)<<'\t'<<imag(result)<<endl;
     energydens.open((dir+"EnergyDens"+convert.str()+".dat").c_str(),ios::out);
     energyout<<t<<'\t'<<mymodell.CountMeanEnergyDens(energydens,false,0)<<endl;
