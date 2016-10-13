@@ -592,7 +592,7 @@ double Modell::CountMeanEnergyDens(const bool isfixorient,const int orientation)
         //evergy plaquett counted 1 times!!!
         //cycle on selected links, select all links
         for(;grididx<grididxmax;grididx++){
-        cout<<"grididx in boxen: "<<grididx<<endl;
+//        cout<<"grididx in boxen: "<<grididx<<endl;
             CountForGrididxBoxEnergy(boxidx,boxidy,boxidz,boxidk,boxsize,grididx,BoxEnergyDens,counter,isfixorient);
         }//for grid
 		}//for block close
