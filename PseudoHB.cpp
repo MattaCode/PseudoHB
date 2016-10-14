@@ -878,7 +878,10 @@ cx_mat ustaple=(grid(grididx).GetGrid())(idx,idy,idz,idk)*su3staple;
 //cout<<"su2staple"<<su2staple<<endl;
 //cout<<"rootdet: "<<su2strootdet<<endl;
 //cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
-cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
+//cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
+if(abs(1-real(det(su2strootdet*inv(su2staple))))>0.0000000000001){
+cout<<"is it 1? "<<det(su2strootdet*inv(su2staple))<<endl;
+}
 
 }
 
@@ -922,8 +925,14 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //    //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
-cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+//cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
+if(abs(1-real(det(grid(grididx).GetGrid()(idx,idy,idz,idk)))>0.0000000000001){
+cout<<"is new real part 1? "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+}
+if(abs(0-imag(det(grid(grididx).GetGrid()(idx,idy,idz,idk)))>0.0000000000001){
+cout<<"is new im part 0? "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+}
 
 }
 
