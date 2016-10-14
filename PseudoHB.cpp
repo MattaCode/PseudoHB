@@ -878,7 +878,7 @@ cx_mat ustaple=(grid(grididx).GetGrid())(idx,idy,idz,idk)*su3staple;
 //cout<<"su2staple"<<su2staple<<endl;
 //cout<<"rootdet: "<<su2strootdet<<endl;
 //cout<<"rootdet*invstaple"<<su2strootdet*inv(su2staple)<<endl;
-//cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
+cout<<"determinant of this MUST equal 1: "<<det(su2strootdet*inv(su2staple))<<endl;
 
 }
 
@@ -922,7 +922,7 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //    //modify link
     grid(grididx).ModifyGrid()(idx,idy,idz,idk)=refresher*grid(grididx).GetGrid()(idx,idy,idz,idk);
 //debug - new det
-//cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
+cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
 
 }
