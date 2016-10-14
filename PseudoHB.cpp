@@ -927,10 +927,10 @@ void Modell::RefreshLinkpart(const int grididx, const int idx, const int idy, co
 //debug - new det
 //cout<<"new det: "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 //cout<<"new matrix "<<grid(grididx).GetGrid()(idx,idy,idz,idk)<<endl;
-if(abs(1-real(det(grid(grididx).GetGrid()(idx,idy,idz,idk)))>0.0000000000001){
+if(abs(1-real(det(grid(grididx).GetGrid()(idx,idy,idz,idk))))>0.0000000000001){
 cout<<"is new real part 1? "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 }
-if(abs(0-imag(det(grid(grididx).GetGrid()(idx,idy,idz,idk)))>0.0000000000001){
+if(abs(0-imag(det(grid(grididx).GetGrid()(idx,idy,idz,idk))))>0.0000000000001){
 cout<<"is new im part 0? "<<det(grid(grididx).GetGrid()(idx,idy,idz,idk))<<endl;
 }
 
