@@ -783,6 +783,11 @@ double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
     //generate a_0
     //with accept-reject
+//debug
+if(sqrt(1-a0*a0)<0){
+cout<<sqrt(1-a0*a0)<<"smaller than 0 Bern.error"<<endl;
+}
+
     bool accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
 //debug
@@ -796,6 +801,10 @@ int counter=1;
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
         a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
+//debug
+if(sqrt(1-a0*a0)<0){ 
+cout<<sqrt(1-a0*a0)<<"smaller than 0 Bern.error"<<endl;
+}
         accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
 //debug
@@ -804,7 +813,7 @@ counter++;
 //cout<<"num of trials: "<<counter<<endl;
     }
 //debug
-cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
+//cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
 return a0;
 }
 
