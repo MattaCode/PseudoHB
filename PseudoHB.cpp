@@ -804,7 +804,7 @@ counter++;
 //cout<<"num of trials: "<<counter<<endl;
     }
 //debug
-//cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
+cout<<"num of trials: "<<counter<<" a0: "<<a0<<endl;
 return a0;
 }
 
