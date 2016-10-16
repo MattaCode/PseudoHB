@@ -13,7 +13,7 @@ boost::mt19937 gen(time(NULL));
 bool Flip(const double accept){
 //debug
 //std::cout<<"Flip call"<<std::endl;
-//std::cout<<"accept prob.: "<<accept<<std::endl;
+std::cout<<"accept prob.: "<<accept<<std::endl;
     boost::random::bernoulli_distribution<> dist(accept);
     return dist(gen);
 }
