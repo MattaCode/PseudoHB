@@ -788,6 +788,16 @@ if((real(su2strootdet))<0.0000000001){
 cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
+//debug
+if(log(a0)<0.0000000001){
+cout<<log(a0)<<"too small?"<<endl;
+cout<<"coeff a0: "<<a0<<endl;
+}
+//debug
+if((log(a0)/real(su2strootdet))<0.0000000001){
+cout<<(log(a0)/real(su2strootdet)<<"too small? nan?"<<endl;
+cout<<"coeff a0: "<<a0<<endl;
+}
 
 
     bool accept=Flip(sqrt(1-a0*a0));
@@ -808,6 +818,17 @@ if((real(su2strootdet))<0.0000000001){
 cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
+//debug
+if(log(a0)<0.0000000001){
+cout<<log(a0)<<"too small?"<<endl;
+cout<<"coeff a0: "<<a0<<endl;
+}
+//debug
+if((log(a0)/real(su2strootdet))<0.0000000001){ 
+cout<<(log(a0)/real(su2strootdet)<<"too small? nan?"<<endl;
+cout<<"coeff a0: "<<a0<<endl;
+}
+
         accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
 //debug
