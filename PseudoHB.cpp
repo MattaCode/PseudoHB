@@ -789,7 +789,7 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(log(a0)<0.0000000001){
+if(abs(log(a0))<0.0000000001){
 cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
@@ -819,7 +819,7 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(log(a0)<0.0000000001){
+if(abs(log(a0))<0.0000000001){
 cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
