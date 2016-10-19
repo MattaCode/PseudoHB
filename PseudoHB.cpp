@@ -814,17 +814,17 @@ int counter=1;
         a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 //debug
-if((real(su2strootdet))<0.0000000001){
+if((real(su2strootdet))<0.000000000001){
 cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(abs(log(a0))<0.0000000001){
+if(abs(log(a0))<0.000000000001){
 cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(abs(log(a0)/real(su2strootdet))<0.0000000001){ 
+if(abs(log(a0)/real(su2strootdet))<0.000000000001){ 
 cout<<(log(a0)/real(su2strootdet))<<"too small? nan?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
