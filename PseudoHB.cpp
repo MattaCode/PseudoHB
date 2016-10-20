@@ -775,6 +775,10 @@ double Modell::GenerateCoeff0(){
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
 
 double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
+//debug
+if(isnan(a0)){
+cout<<"GetRealRandom got a0=NaN"<<endl;
+}
     a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 
@@ -789,16 +793,31 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
+if(isnan(real(su2strootdet))){
+cout<<"REsu2rootdet is NaN!"<<endl;
+}
+//debug
 if(abs(log(a0))<0.0000000001){
 cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
+}
+//debug
+if(isnan(log(a0))){
+cout<<"log(a0) is NaN!"<<endl;
 }
 //debug
 if(abs(log(a0)/real(su2strootdet))<0.0000000001){
 cout<<(log(a0)/real(su2strootdet))<<"too small? nan?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
-
+//debug
+if(isnan(log(a0)/real(su2strootdet))){
+cout<<"log/rootdet is NaN!"<<endl;
+}
+//debug
+if(isnan(a0)){
+cout<<"a0 is NaN!"<<endl;
+}
 
     bool accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
@@ -811,7 +830,12 @@ int counter=1;
     while(!accept){
         a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
-        a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
+//debug
+if(isnan(a0)){
+cout<<"GetRealRandom got a0=NaN"<<endl;
+}
+       
+ a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 //debug
 if((real(su2strootdet))<0.000000000001){
@@ -819,14 +843,30 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
+if(isnan(real(su2strootdet))){
+cout<<"REsu2rootdet is NaN!"<<endl;
+}
+//debug
 if(abs(log(a0))<0.000000000001){
 cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
+if(isnan(log(a0))){
+cout<<"log(a0) is NaN!"<<endl;
+}
+//debug
 if(abs(log(a0)/real(su2strootdet))<0.000000000001){ 
 cout<<(log(a0)/real(su2strootdet))<<"too small? nan?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
+}
+//debug
+if(isnan(log(a0)/real(su2strootdet))){
+cout<<"log/rootdet is NaN!"<<endl;
+}
+//debug
+if(isnan(a0)){
+cout<<"a0 is NaN!"<<endl;
 }
 
         accept=Flip(sqrt(1-a0*a0));
