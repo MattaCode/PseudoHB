@@ -776,7 +776,7 @@ double Modell::GenerateCoeff0(){
 
 double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //debug
-if(isnan(a0)){
+if(std::isnan(a0)){
 cout<<"GetRealRandom got a0=NaN"<<endl;
 }
     a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
@@ -793,7 +793,7 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(real(su2strootdet))){
+if(std::isnan(real(su2strootdet))){
 cout<<"REsu2rootdet is NaN!"<<endl;
 }
 //debug
@@ -802,7 +802,7 @@ cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(log(a0))){
+if(std::isnan(log(a0))){
 cout<<"log(a0) is NaN!"<<endl;
 }
 //debug
@@ -811,11 +811,11 @@ cout<<(log(a0)/real(su2strootdet))<<"too small? nan?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(log(a0)/real(su2strootdet))){
+if(std::isnan(log(a0)/real(su2strootdet))){
 cout<<"log/rootdet is NaN!"<<endl;
 }
 //debug
-if(isnan(a0)){
+if(std::isnan(a0)){
 cout<<"a0 is NaN!"<<endl;
 }
 
@@ -831,7 +831,7 @@ int counter=1;
         a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
 //debug
-if(isnan(a0)){
+if(std::isnan(a0)){
 cout<<"GetRealRandom got a0=NaN"<<endl;
 }
        
@@ -843,7 +843,7 @@ cout<<real(su2strootdet)<<"too small? div 0 err?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(real(su2strootdet))){
+if(std::isnan(real(su2strootdet))){
 cout<<"REsu2rootdet is NaN!"<<endl;
 }
 //debug
@@ -852,7 +852,7 @@ cout<<log(a0)<<"too small?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(log(a0))){
+if(std::isnan(log(a0))){
 cout<<"log(a0) is NaN!"<<endl;
 }
 //debug
@@ -861,11 +861,11 @@ cout<<(log(a0)/real(su2strootdet))<<"too small? nan?"<<endl;
 cout<<"coeff a0: "<<a0<<endl;
 }
 //debug
-if(isnan(log(a0)/real(su2strootdet))){
+if(std::isnan(log(a0)/real(su2strootdet))){
 cout<<"log/rootdet is NaN!"<<endl;
 }
 //debug
-if(isnan(a0)){
+if(std::isnan(a0)){
 cout<<"a0 is NaN!"<<endl;
 }
 
