@@ -775,26 +775,6 @@ double Modell::GenerateCoeff0(){
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
 
 double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
-//debug
-if(std::isnan(a0)){
-cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
-}
-//debug
-if(a0<0){
-cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(real(su2strootdet))){
-cout<<"REsu2rootdet is NaN! a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(log(a0))){
-cout<<"log(a0) is NaN! a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(log(a0)/real(su2strootdet))){
-cout<<"log/rootdet is NaN! a0: "<<a0<<endl;
-}
 
     a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
@@ -808,6 +788,12 @@ cout<<"log/rootdet is NaN! a0: "<<a0<<endl;
 if(std::isnan(a0)){
 cout<<"a0 is NaN! Will I die? "<<a0<<endl;
 }
+//debug
+if(a0<-1){
+cout<<"a0<-1: "<<a0<<" so changed to -1 !!!"<<endl;
+a0=-1;
+}
+
 
     bool accept=Flip(sqrt(1-a0*a0));
 //cout<<"flip? "<<accept<<endl;
@@ -820,32 +806,18 @@ int counter=1;
     while(!accept){
         a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 //cout<<"su2strootdet: "<<real(su2strootdet)<<endl;
-//debug
-if(std::isnan(a0)){
-cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
-}
-//debug
-if(a0<0){
-cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(real(su2strootdet))){
-cout<<"REsu2rootdet is NaN! a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(log(a0))){
-cout<<"log(a0) is NaN! a0: "<<a0<<endl;
-}
-//debug
-if(std::isnan(log(a0)/real(su2strootdet))){
-cout<<"log/rootdet is NaN! a0: "<<a0<<endl;
-}
        
  a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 //debug
 if(std::isnan(a0)){
 cout<<"a0 is NaN! Will I die? "<<a0<<endl;
+}
+
+//debug
+if(a0<-1){ 
+cout<<"a0<-1: "<<a0<<" so changed to -1 !!!"<<endl;
+a0=-1;
 }
 
         accept=Flip(sqrt(1-a0*a0));
