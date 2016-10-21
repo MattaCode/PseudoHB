@@ -779,6 +779,10 @@ double a0=GetRealRandom(exp(-2.*Modell::beta*real(su2strootdet)*2./3),1);
 if(std::isnan(a0)){
 cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
 }
+//debug
+if(a0<0){
+cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
+}
     a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 
@@ -819,7 +823,10 @@ int counter=1;
 if(std::isnan(a0)){
 cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
 }
-       
+//debug
+if(a0<0){
+cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
+}       
  a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
 //cout<<"a0: "<<a0<<endl;
 //debug
