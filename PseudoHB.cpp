@@ -783,14 +783,6 @@ cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
 if(a0<0){
 cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
 }
-    a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
-//cout<<"a0: "<<a0<<endl;
-
-//debug
-//cout<<su2strootdet<<endl;
-//cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
-    //generate a_0
-    //with accept-reject
 //debug
 if(std::isnan(real(su2strootdet))){
 cout<<"REsu2rootdet is NaN! a0: "<<a0<<endl;
@@ -803,6 +795,15 @@ cout<<"log(a0) is NaN! a0: "<<a0<<endl;
 if(std::isnan(log(a0)/real(su2strootdet))){
 cout<<"log/rootdet is NaN! a0: "<<a0<<endl;
 }
+
+    a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
+//cout<<"a0: "<<a0<<endl;
+
+//debug
+//cout<<su2strootdet<<endl;
+//cout<<"is it real? Equals this? "<<real(su2strootdet)<<endl;
+    //generate a_0
+    //with accept-reject
 //debug
 if(std::isnan(a0)){
 cout<<"a0 is NaN! Will I die? "<<a0<<endl;
@@ -826,9 +827,7 @@ cout<<"GetRealRandom got a0=NaN: "<<a0<<endl;
 //debug
 if(a0<0){
 cout<<"How could it happen?? Log will die. GetRealRandom got negative a0: "<<a0<<endl;
-}       
- a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
-//cout<<"a0: "<<a0<<endl;
+}
 //debug
 if(std::isnan(real(su2strootdet))){
 cout<<"REsu2rootdet is NaN! a0: "<<a0<<endl;
@@ -841,6 +840,9 @@ cout<<"log(a0) is NaN! a0: "<<a0<<endl;
 if(std::isnan(log(a0)/real(su2strootdet))){
 cout<<"log/rootdet is NaN! a0: "<<a0<<endl;
 }
+       
+ a0=1+1./(Modell::beta*2./3*real(su2strootdet))*log(a0);
+//cout<<"a0: "<<a0<<endl;
 //debug
 if(std::isnan(a0)){
 cout<<"a0 is NaN! Will I die? "<<a0<<endl;
